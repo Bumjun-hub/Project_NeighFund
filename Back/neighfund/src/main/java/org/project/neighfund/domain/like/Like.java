@@ -15,10 +15,10 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-//@Table(name = "likes", uniqueConstraints = {
-//        @UniqueConstraint(columnNames = {"member_id", "community_id"}),
-//        @UniqueConstraint(columnNames = {"member_id", "groupBuy_id"})
-//})
+@Table(name = "likes", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"member_id", "community_id"}),
+        @UniqueConstraint(columnNames = {"member_id", "groupBuy_id"})
+})
 public class Like {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
