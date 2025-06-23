@@ -1,0 +1,155 @@
+.suggestion-wrapper {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  font-family: 'Pretendard', sans-serif;
+}
+
+.suggestion-header {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 16px;
+}
+
+.suggestion-title {
+  text-align: center;
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.filters select {
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 14px;
+  background-color: white;
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
+
+.suggestion-write-button {
+  margin-left: auto;
+  background-color: #4caf50;
+  color: white;
+  padding: 8px 14px;
+  margin-bottom: 10px;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.suggestion-write-button:hover {
+  background-color: #388e3c;
+}
+
+.suggestion-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.suggestion-card {
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  background: linear-gradient(to right, #ffffff 65%, #e0f5ff);
+  transition: background 1.0s, transform 0.2s ease;
+  position: relative;
+}
+
+.suggestion-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.suggestion-card[data-category="환경"] {
+  background: linear-gradient(to right, #ffffff 65%, #b2dfdb);
+}
+
+.suggestion-card[data-category="교육"] {
+  background: linear-gradient(to right, #ffffff 65%, #bbdefb);
+}
+
+.suggestion-card[data-category="생활환경"] {
+  background: linear-gradient(to right, #ffffff 65%, #f0e68c);
+}
+
+.suggestion-card .suggestion-category {
+  font-size: 14px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 20px;
+  display: inline-block;
+  margin-bottom: 8px;
+  color: white;
+}
+
+.suggestion-card[data-category="환경"] .suggestion-category {
+  background-color: #4caf50;
+}
+
+.suggestion-card[data-category="교육"] .suggestion-category {
+  background-color: #2196f3;
+}
+
+.suggestion-card[data-category="생활환경"] .suggestion-category {
+  background-color: #ff9800;
+}
+
+.title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.suggestion-content {
+  font-size: 15px;
+  color: #333;
+  line-height: 1.4;
+}
+
+.suggestion-card .suggestion-meta {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+}
+
+.suggestion-status {
+  background-color: #cde0f5;
+  padding: 2px 8px;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .filters {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .suggestion-card {
+    padding: 16px;
+  }
+
+  .title {
+    font-size: 16px;
+  }
+
+  .suggestion-content {
+    font-size: 14px;
+  }
+
+  .title, .suggestion-content {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+}
