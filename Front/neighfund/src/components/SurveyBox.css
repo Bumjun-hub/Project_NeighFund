@@ -1,0 +1,45 @@
+.survey-box {
+    padding: 12px;
+    gap: 8px;
+    background-color: #f9fcff;
+    border: 2px solid #2196f3;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 180px;
+    /* ↓ 줄였음 */
+}
+
+.survey-question {
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.survey-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.survey-option {
+    padding: 10px 14px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: white;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s, border 0.2s;
+    text-align: left;
+}
+
+.survey-option:hover {
+    background-color: #e3f2fd;
+}
+
+.survey-option.selected {
+    border: 2px solid #2196f3;
+    background-color: #e3f2fd;
+    font-weight: bold;
+}

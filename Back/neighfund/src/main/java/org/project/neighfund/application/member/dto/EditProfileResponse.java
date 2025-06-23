@@ -1,0 +1,17 @@
+package org.project.neighfund.application.member.dto;
+
+import lombok.*;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class EditProfileResponse {
+    String message;
+    String name;
+    String email;
+    String phone;
+    String address;
+    String dongName;
+}

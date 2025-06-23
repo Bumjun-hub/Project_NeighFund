@@ -1,0 +1,260 @@
+/* Header.css */
+.Header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+/* 로고 */
+.header-left a {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #6366f1;
+  text-decoration: none;
+}
+
+/* 네비게이션 */
+.header-center {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    z-index: 1;
+}
+
+.header-center a,
+.header-center button {
+    color: rgb(0, 0, 0);
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: 500;
+    padding: 12px 0;
+    position: relative;
+    transition: all 0.3s ease;
+    margin-left: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+/* 그라디언트 언더라인 애니메이션 */
+.header-center a::after,
+.header-center button::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #000000);
+    transition: width 0.4s ease;
+    border-radius: 2px;
+}
+
+.header-center a:hover::after,
+.header-center button:hover::after {
+    width: 100%;
+}
+
+
+
+/* 활성 상태 (현재 페이지) */
+.header-center a.active::after {
+    width: 100%;
+    background: linear-gradient(90deg, #000000);
+}
+
+.header-center a.active {
+    text-shadow: 0 0 6px rgba(255, 255, 255, 0.4);
+}
+
+/* 오른쪽 영역 */
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* 알림 */
+.notification-container {
+  position: relative;
+}
+
+.notification-bell {
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  color: #666;
+}
+
+.notification-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: #ef4444;
+  color: white;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  font-size: 0.7rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.notification-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  width: 300px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  max-height: 400px;
+  overflow-y: auto;
+  z-index: 1000;
+}
+
+.notification-header {
+  padding: 1rem;
+  font-weight: bold;
+  border-bottom: 1px solid #eee;
+}
+
+.notification-empty {
+  padding: 2rem;
+  text-align: center;
+  color: #999;
+}
+
+.notification-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.notification-item {
+  padding: 1rem;
+  border-bottom: 1px solid #f0f0f0;
+  transition: background 0.2s;
+}
+
+.notification-item:hover {
+  background: #f8f9ff;
+}
+
+.notification-item.read {
+  opacity: 0.7;
+}
+
+.noti-card {
+  font-size: 0.9rem;
+}
+
+.noti-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.noti-type {
+  font-weight: 600;
+  color: #6366f1;
+}
+
+.noti-time {
+  font-size: 0.8rem;
+  color: #999;
+}
+
+.noti-content {
+  color: #333;
+}
+
+/* 프로필 */
+.header-user-profile {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+
+.header-profile-image {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.header-profile-placeholder {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #6366f1;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.header-username {
+  color: #333;
+  font-weight: 500;
+}
+
+/* 로그아웃 버튼 */
+.header-logout-btn {
+  background: none;
+  border: 1px solid #ddd;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #666;
+  transition: all 0.2s;
+}
+
+/* 로그인 링크 */
+.header-right a {
+  text-decoration: none;
+  color: #6366f1;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+  .Header {
+    padding: 0.5rem 1rem;
+  }
+  
+  .header-center {
+    gap: 1rem;
+  }
+  
+  .header-center a {
+    font-size: 0.9rem;
+  }
+  
+  .header-username {
+    display: none;
+  }
+}
