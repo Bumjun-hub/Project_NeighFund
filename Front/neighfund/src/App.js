@@ -7,6 +7,8 @@ import LoginPage from './pages/loginpage/LoginPage';
 import MemberPage from './pages/memberpage/MemberPage';
 import MyPage from './pages/mypage/MyPage';
 import FundPage from './pages/fundpage/FundPage';
+import FundInfoPage from './pages/fundpage/FundInfoPage';
+import SuggestionWritePage from './pages/suggestionspage/SuggestionWritePage';
 
 function App() {
   return (
@@ -15,7 +17,11 @@ function App() {
         <Route element={<Layout />}>
           <Route path="/" element={<MainPage />} />
           <Route path="/suggestion" element={<SuggestionPage />} />
+          <Route path="/suggestion/write" element={<SuggestionWritePage />} />
+
           <Route path="/funding" element={<FundPage />} />
+          <Route path ="/funding/info/:id" element={<FundInfoPage/>}/>
+
           <Route path="/login" element={<LoginPage />} />
           <Route path="/member" element={<MemberPage />} />
           <Route path="/mypage" element={<MyPage />} />
