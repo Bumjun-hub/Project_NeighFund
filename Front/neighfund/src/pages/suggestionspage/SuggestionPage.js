@@ -1,4 +1,4 @@
-import dummydata from "../../datas/dummydata";
+import {dummydata} from "../../datas/dummydata";
 
 // SuggestionPage.js
 import { useState } from 'react';
