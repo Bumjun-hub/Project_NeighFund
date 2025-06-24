@@ -61,7 +61,7 @@ const LoginPage = () => {
         setError('');
 
         try {
-            const response = await fetch('http://localhost:8080/api/login', {
+            const response = await fetch('http://localhost:8080/api/auth/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -125,30 +125,6 @@ const LoginPage = () => {
                         </svg>
                         Google로 로그인
                     </button>
-
-                    {/* 카카오 로그인 */}
-                    {/* <button
-                        type="button"
-                        onClick={() => handleSocialLogin('kakao')}
-                        className="social-login-button kakao"
-                    >
-                        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M9 0C4.03 0 0 3.15 0 7.03C0 9.71 1.69 12.05 4.26 13.31L3.36 16.71C3.3 16.89 3.51 17.04 3.66 16.92L7.74 14.25C8.15 14.29 8.57 14.31 9 14.31C13.97 14.31 18 11.16 18 7.28C18 3.4 13.97 0.25 9 0.25V0Z" fill="#3C1E1E"/>
-                        </svg>
-                        카카오로 로그인
-                    </button> */}
-
-                    {/* 네이버 로그인 */}
-                    {/* <button
-                        type="button"
-                        onClick={() => handleSocialLogin('naver')}
-                        className="social-login-button naver"
-                    >
-                        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12.1 9.8L5.9 0H0V18H5.9V8.2L12.1 18H18V0H12.1V9.8Z" fill="white"/>
-                        </svg>
-                        네이버로 로그인
-                    </button> */}
                 </div>
 
                 {/* 구분선 */}
