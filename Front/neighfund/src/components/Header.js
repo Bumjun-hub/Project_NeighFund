@@ -176,9 +176,9 @@ const Header = () => {
 
             <nav className="header-center">
                 <Link to="/funding">펀딩</Link>
-                <Link to="/board">프리오더</Link>
+                <Link to="/freeorder">프리오더</Link>
                 <Link to="/gathering">모임</Link>
-                <Link to="/donation">스토어</Link>
+                <Link to="/store">스토어</Link>
             </nav>
 
             <nav className="header-right">
