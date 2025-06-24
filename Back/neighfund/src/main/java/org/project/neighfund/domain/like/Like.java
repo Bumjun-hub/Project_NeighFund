@@ -18,8 +18,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 @Table(name = "likes", uniqueConstraints = {
-       @UniqueConstraint(columnNames = {"member_id", "community_id"}),
-       @UniqueConstraint(columnNames = {"member_id", "groupBuy_id"})
+        @UniqueConstraint(columnNames = {"member_id", "community_id"}),
+        @UniqueConstraint(columnNames = {"member_id", "groupBuy_id"})
 })
 public class Like {
     @Id
