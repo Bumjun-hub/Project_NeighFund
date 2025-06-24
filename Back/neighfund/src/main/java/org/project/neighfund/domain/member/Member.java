@@ -4,7 +4,11 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.project.neighfund.domain.Role.Role;
 import org.project.neighfund.domain.common.BaseEntity;
+import org.project.neighfund.domain.gathering.Gathering;
+import org.project.neighfund.domain.like.Like;
 import org.project.neighfund.enums.SocialProvider;
+
+import java.util.List;
 
 @Entity
 @Getter
@@ -46,4 +50,11 @@ public class Member extends BaseEntity {
 
     @Column(name = "image_url")
     private String imageUrl;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Gathering> gatherings;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Like> likes;
+
 }
