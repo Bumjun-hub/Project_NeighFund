@@ -9,24 +9,29 @@ import MyPage from './pages/mypage/MyPage';
 import FundPage from './pages/fundpage/FundPage';
 import FundInfoPage from './pages/fundpage/FundInfoPage';
 import SuggestionWritePage from './pages/suggestionspage/SuggestionWritePage';
+import { AuthProvider } from './utils/AuthProvider';
+import EditProfile from './pages/mypage/MyPageEditProfile';
 
 function App() {
   return (
     <div className="App">
-      <Routes>
-        <Route element={<Layout />}>
-          <Route path="/" element={<MainPage />} />
-          <Route path="/suggestion" element={<SuggestionPage />} />
-          <Route path="/suggestion/write" element={<SuggestionWritePage />} />
+      <AuthProvider>
+        <Routes>
+          <Route element={<Layout />}>
+            <Route path="/" element={<MainPage />} />
+            <Route path="/suggestion" element={<SuggestionPage />} />
+            <Route path="/suggestion/write" element={<SuggestionWritePage />} />
 
-          <Route path="/funding" element={<FundPage />} />
-          <Route path ="/funding/info/:id" element={<FundInfoPage/>}/>
+            <Route path="/funding" element={<FundPage />} />
+            <Route path ="/funding/info/:id" element={<FundInfoPage/>}/>
 
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/member" element={<MemberPage />} />
-          <Route path="/mypage" element={<MyPage />} />
-        </Route>
-      </Routes>
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/member" element={<MemberPage />} />
+            <Route path="/mypage" element={<MyPage />} />
+                      <Route path="/editProfile" element={<EditProfile />} />
+          </Route>
+        </Routes>
+      </AuthProvider>
     </div>
   );
 }

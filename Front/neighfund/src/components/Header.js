@@ -18,7 +18,7 @@ const Header = () => {
         try {
             console.log('Header: 사용자 인증 상태 확인 중...'); // 디버깅
             
-            const response = await fetch('http://localhost:8080/api/mypage', {
+            const response = await fetch('http://localhost:8080/api/auth/mypage', {
                 credentials: 'include'
             });
 
