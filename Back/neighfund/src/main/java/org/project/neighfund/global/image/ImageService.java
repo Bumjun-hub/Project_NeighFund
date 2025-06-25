@@ -2,12 +2,14 @@ package org.project.neighfund.global.image;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.project.neighfund.domain.gathering.Gathering;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.UUID;
 
@@ -86,6 +88,58 @@ public class ImageService {
             throw new IllegalArgumentException("삭제할 파일이 존재하지 않습니다");
         }
     }
+
+
+    @Transactional
+    public String saveGatheringImage(MultipartFile file, String memberEmail) {
+        if (file == null || file.isEmpty()) {
+            throw new IllegalArgumentException("업로드할 이미지 파일이 없습니다.");
+        }
+
+        // 저장 디렉토리 (e.g., /uploads/user@example.com)
+        String relativePath = "/uploads/" + memberEmail;
+        String absolutePath = getAbsolutePath() + File.separator + memberEmail;
+
+        // 디렉토리 생성
+        try {
+            Files.createDirectories(Paths.get(absolutePath));
+        } catch (IOException e) {
+            throw new RuntimeException("이미지 저장 디렉토리 생성 실패", e);
+        }
+
+        // 파일명 생성
+        String originalFileName = file.getOriginalFilename();
+        String ext = originalFileName.substring(originalFileName.lastIndexOf("."));
+        String newFileName = UUID.randomUUID() + ext;
+
+        String savedAbsolutePath = absolutePath + File.separator + newFileName;
+        String savedRelativePath = relativePath + "/" + newFileName;
+
+        // 저장
+        try {
+            file.transferTo(new File(savedAbsolutePath));
+        } catch (IOException e) {
+            throw new RuntimeException("이미지 저장 실패", e);
+        }
+
+        return savedRelativePath;  // DB에는 이 값 저장
+    }
+
+    public void deleteGatheringImage(Gathering gathering) {
+        if (gathering.getTitleImage() != null) {
+            try {
+                // 삭제 시에는 절대경로로 변환해서 삭제
+                String existingImagePath = gathering.getTitleImage().replace("/", File.separator);  // 상대 경로 처리
+                if (!existingImagePath.startsWith(System.getProperty("user.dir"))) {  // 절대경로 중복 방지
+                    existingImagePath = System.getProperty("user.dir") + existingImagePath;
+                }
+                Files.deleteIfExists(Paths.get(existingImagePath));
+            } catch (IOException e) {
+                System.err.println("기존 프로필 이미지 삭제 실패: " + e.getMessage());
+            }
+        }
+    }
+
 
 
 }
