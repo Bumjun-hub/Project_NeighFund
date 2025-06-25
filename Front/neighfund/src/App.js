@@ -11,6 +11,7 @@ import FundInfoPage from './pages/fundpage/FundInfoPage';
 import SuggestionWritePage from './pages/suggestionspage/SuggestionWritePage';
 import { AuthProvider } from './utils/AuthProvider';
 import EditProfile from './pages/mypage/MyPageEditProfile';
+import Gathering from './pages/gatheringpage/Gathering';
 
 function App() {
   return (
@@ -28,7 +29,9 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/member" element={<MemberPage />} />
             <Route path="/mypage" element={<MyPage />} />
-                      <Route path="/editProfile" element={<EditProfile />} />
+            <Route path="/editProfile" element={<EditProfile />} />
+
+            <Route path="/gathering" element={<Gathering />} />
           </Route>
         </Routes>
       </AuthProvider>
