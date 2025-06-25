@@ -26,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.awt.image.RescaleOp;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -155,8 +156,20 @@ public class FundService {
                         .fundStatus(fund.getFundStatus())
                         .title(fund.getTitle())
                         .subTitle(fund.getSubTitle())
-                        .thumbnailUrl()
-                )
+                        .thumbnailUrl(
+                                fund.getFundImages().stream()
+                                        .filter(fundImage -> fundImage.getImageType() == FundImageType.THUMBNAIL && !fundImage.getIsDeleted())
+                                        .map(FundImage::getImgUrl)
+                                        .findFirst()
+                                        .orElse(null)
+                        )
+                        .progressRate(fund.getProgressRate())
+                        .targetAmount(fund.getTargetAmount())
+                        .deadline(fund.getDeadline())
+                        .likes((long) fund.getLikes().size())
+                        .liked(false)
+                        .build())
+                .collect(Collectors.toList());
     }
 
     //상세조회

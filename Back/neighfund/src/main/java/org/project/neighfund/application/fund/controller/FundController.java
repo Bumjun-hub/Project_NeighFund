@@ -36,12 +36,17 @@ public class FundController {
             @RequestPart("title") String title,
             @RequestPart("subTitle") String subTitle,
             @RequestPart("content") String content,
-            @RequestPart("targetAmount") Integer targetAmount,
-            @RequestPart("deadline")LocalDateTime deadline,
+            @RequestPart("targetAmount") String targetAmountStr,
+            @RequestPart("deadline")String deadlineStr,
             @RequestPart(value = "imageType", required = false) List<FundImageType> imageTypes,
             @RequestPart(value = "images", required = false) List<MultipartFile> imageFiles,
             @AuthenticationPrincipal CustomUserDetails userDetails
             ){
+
+        LocalDateTime deadline = LocalDateTime.parse(deadlineStr);
+        Integer targetAmount = Integer.parseInt(targetAmountStr);
+
+
         FundDto fundDto = FundDto.builder()
                 .category(CommunityCategory.valueOf(category))
                 .fundType(FundType.valueOf(fundType))
@@ -108,7 +113,7 @@ public class FundController {
             @RequestParam(required = false) CommunityCategory category,
             @RequestParam(required = false) FundStatus status
     ) {
-        List<FundListDto> posts = fundService.viewAll();
+        List<FundListDto> posts = fundService.viewAll(category, status);
         return ResponseEntity.ok(posts);
     }
 

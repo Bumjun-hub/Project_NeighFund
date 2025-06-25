@@ -4,14 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.project.neighfund.domain.fund.FundImage;
-import org.project.neighfund.domain.member.Member;
 import org.project.neighfund.enums.CommunityCategory;
 import org.project.neighfund.enums.FundStatus;
-import org.project.neighfund.enums.FundType;
 
 import java.time.LocalDateTime;
-import java.util.List;
+
 
 @Data
 @NoArgsConstructor
