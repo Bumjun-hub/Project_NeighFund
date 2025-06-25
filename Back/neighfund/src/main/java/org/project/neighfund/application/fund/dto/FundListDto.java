@@ -1,0 +1,30 @@
+package org.project.neighfund.application.fund.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.project.neighfund.enums.CommunityCategory;
+import org.project.neighfund.enums.FundStatus;
+
+import java.time.LocalDateTime;
+
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class FundListDto {
+    private Long id;
+    private CommunityCategory category;
+    private FundStatus fundStatus;
+    private String title;
+    private String subTitle;
+    private String thumbnailUrl;
+    private Integer progressRate;  //달성률
+    private Integer targetAmount;  //목표금액
+    private Integer currentAmount;  //현재 모인 금액
+    private LocalDateTime deadline;  //마감일
+    private Long likes;
+    private boolean liked;  // 좋아요 여부
+}

@@ -1,0 +1,6 @@
+package org.project.neighfund.enums;
+
+public enum GatheringCategory {
+    SPORTS, SOCIAL, LITERATURE, OUTDOOR, MUSIC, JOB, CULTURE, LANGUAGE, GAME, CRAFT,
+    DANCE, VOLUNTEER, PHOTO, SELF_IMPROVEMENT, SPORTS_WATCHING, PET, COOKING, CAR_BIKE
+}
