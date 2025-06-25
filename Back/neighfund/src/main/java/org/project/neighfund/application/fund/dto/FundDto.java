@@ -23,4 +23,5 @@ public class FundDto {
     private String content;
     private Integer targetAmount;  //목표금액
     private LocalDateTime deadline;  //마감일
+    private String hashTags;
 }
