@@ -75,7 +75,13 @@ const Gathering = () => {
           {leftColumnCards.map((gathering) => (
             <div key={gathering.id} className="gathering-card">
               <div className="card-image">
-                <img src={gathering.image} alt={gathering.title} />
+                <img 
+                src={gathering.image} 
+                alt={gathering.title}
+                onError={(e) => {
+                    e.target.src = '/images/noImage.png';
+                }}
+                />
                 <span className="category-tag">{gathering.category}</span>
               </div>
               
@@ -98,7 +104,6 @@ const Gathering = () => {
                     </span>
                     <span className="comments">💬 {gathering.comments}</span>
                   </div>
-                  <button className="join-button">참여하기</button>
                 </div>
               </div>
             </div>
@@ -109,7 +114,13 @@ const Gathering = () => {
           {rightColumnCards.map((gathering) => (
             <div key={gathering.id} className="gathering-card">
               <div className="card-image">
-                <img src={gathering.image} alt={gathering.title} />
+                <img 
+                    src={gathering.image} 
+                    alt={gathering.title}
+                    onError={(e) => {
+                        e.target.src = '/images/noImage.png';
+                    }}
+                    />
                 <span className="category-tag">{gathering.category}</span>
               </div>
               
@@ -132,7 +143,6 @@ const Gathering = () => {
                     </span>
                     <span className="comments">💬 {gathering.comments}</span>
                   </div>
-                  <button className="join-button">참여하기</button>
                 </div>
               </div>
             </div>
