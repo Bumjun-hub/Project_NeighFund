@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.project.neighfund.domain.Role.Role;
 import org.project.neighfund.domain.common.BaseEntity;
+import org.project.neighfund.domain.gathering.Blacklist;
 import org.project.neighfund.domain.gathering.Gathering;
 import org.project.neighfund.domain.like.Like;
 import org.project.neighfund.enums.SocialProvider;
@@ -22,7 +23,7 @@ public class Member extends BaseEntity {
     private Long id; // PK
 
     @Column(nullable = false, unique = true)
-    private String username; // 유저이름
+    private String username; // 유저이름 OR 상호명
 
     @Column(nullable = false, unique = true)
     private String email; // 이메일

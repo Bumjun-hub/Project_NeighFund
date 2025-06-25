@@ -1,14 +1,12 @@
 package org.project.neighfund.application.gathering.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.project.neighfund.application.gathering.dto.GatheringCreateResponse;
-import org.project.neighfund.application.gathering.dto.GatheringDto;
-import org.project.neighfund.application.gathering.dto.GatheringResponse;
-import org.project.neighfund.application.gathering.dto.DeleteResponse;
+import org.project.neighfund.application.gathering.dto.*;
 import org.project.neighfund.application.gathering.service.GatheringService;
 import org.project.neighfund.config.CustomUserDetails;
 import org.project.neighfund.domain.member.Member;
 import org.project.neighfund.enums.GatheringCategory;
+import org.project.neighfund.global.dto.MessageResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -40,6 +38,22 @@ public class GatheringController {
         Member m = userDetails.getMember();
         gatheringService.createGathering(dto, titleImage ,m);
         return ResponseEntity.ok(new GatheringCreateResponse(dto.getTitle(), "소모임이 정상적으로 OPEN 되었습니다."));
+    }
+
+    @PostMapping("/{gatheringId}/join")
+    public ResponseEntity<String> joinGathering(
+            @PathVariable Long gatheringId,
+            @RequestPart("introduction") String introduction,
+            @RequestPart("nickname") String nickname,
+            @RequestPart(value = "image", required = false) MultipartFile image,
+            @AuthenticationPrincipal CustomUserDetails userDetails) throws IOException {
+        JoinGatheringDto dto = JoinGatheringDto.builder()
+                .introduction(introduction)
+                .nickname(nickname)
+                .build();
+        Member member = userDetails.getMember();
+        gatheringService.joinGathering(gatheringId, dto, member, image);
+        return ResponseEntity.ok(String.format("%d번 소모임 조인 성공", gatheringId));
     }
 
     @GetMapping("/detail/{gatheringId}")
@@ -80,5 +94,15 @@ public class GatheringController {
     @GetMapping("/list")
     public List<GatheringResponse> getGatheringList() {
         return gatheringService.getGatheringList();
+    }
+
+    @PostMapping("/{gatheringId}/blacklist/{targetMemberId}")
+    public ResponseEntity<MessageResponse> addToBlacklist(
+            @PathVariable Long gatheringId,
+            @PathVariable Long targetMemberId,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        Member member = userDetails.getMember();
+        gatheringService.addToBlacklist(gatheringId, targetMemberId, member);
+        return ResponseEntity.ok(new MessageResponse("블랙리스트 등록 완료:" + member.getUsername()));
     }
 }

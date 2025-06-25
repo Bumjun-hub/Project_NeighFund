@@ -6,6 +6,7 @@ import org.project.neighfund.domain.common.BaseEntity;
 import org.project.neighfund.domain.like.Like;
 import org.project.neighfund.domain.member.Member;
 import org.project.neighfund.enums.GatheringCategory;
+import org.project.neighfund.enums.GatheringType;
 
 import java.util.List;
 
@@ -36,6 +37,20 @@ public class Gathering extends BaseEntity {
     @Column(nullable = false)
     private String titleImage;
 
+    @Column(nullable = false)
+    @Builder.Default
+    private int memberCount = 0; // 총 멤버 수
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private GatheringType type; // FREE or VENDOR
+
+    @Column(nullable = false)
+    private boolean confirmed; // 업체 소모임 검수 상태, 자유 소모임은 true
+
+    @Column
+    private String businessLicenseUrl; // 업체 소모임의 사업자 등록증 URL
+
     @ManyToOne
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
@@ -54,5 +69,7 @@ public class Gathering extends BaseEntity {
 
     @OneToMany(mappedBy = "gathering", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Like> likes;
+
+
 
 }

@@ -26,4 +26,5 @@ public class GatheringResponse {
     private LocalDateTime updatedAt;
     private Long likes;
     private boolean liked;  // 좋아요 여부
+    private int memberCount;
 }

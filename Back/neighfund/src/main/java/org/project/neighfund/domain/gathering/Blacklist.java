@@ -18,4 +18,8 @@ public class Blacklist {
     @ManyToOne
     @JoinColumn(name = "gathering_id", nullable = false)
     private Gathering gathering;
+
+    @ManyToOne
+    @JoinColumn(name = "member_id", nullable = false)
+    private Member member;
 }

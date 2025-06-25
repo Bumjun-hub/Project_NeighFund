@@ -1,13 +1,15 @@
 package org.project.neighfund.application.gathering.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.project.neighfund.application.gathering.dto.GatheringDto;
 import org.project.neighfund.application.gathering.dto.GatheringResponse;
 import org.project.neighfund.application.gathering.dto.DeleteResponse;
-import org.project.neighfund.domain.gathering.Gathering;
-import org.project.neighfund.domain.gathering.GatheringRepository;
+import org.project.neighfund.application.gathering.dto.JoinGatheringDto;
+import org.project.neighfund.domain.gathering.*;
 import org.project.neighfund.domain.member.Member;
 import org.project.neighfund.domain.member.MemberRepository;
+import org.project.neighfund.enums.GatheringRole;
 import org.project.neighfund.global.image.ImageService;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,8 @@ public class GatheringService {
     private final GatheringRepository gatheringRepository;
     private final MemberRepository memberRepository;
     private final ImageService imageService;
+    private final BlacklistRepository blacklistRepository;
+    private final GatheringMemberRepository gatheringMemberRepository;
 
     public void createGathering(GatheringDto dto, MultipartFile file, Member m) throws IOException {
         validateMember(m);
@@ -42,6 +46,7 @@ public class GatheringService {
                 .dongName(dto.getDongName())
                 .titleImage(titleImage)
                 .member(m)
+                .memberCount(1)
                 .build();
 
         gatheringRepository.save(gathering);
@@ -70,14 +75,18 @@ public class GatheringService {
                 .updatedAt(gathering.getUpdatedAt())
                 .likes((long) gathering.getLikes().stream().filter(like -> like.getGathering() != null).count())
                 .liked(liked)
+                .memberCount(gathering.getMemberCount())
                 .build();
     }
 
     public GatheringResponse editGathering(Long id, GatheringDto dto, MultipartFile file, Member m) {
         validateMember(m);
-
         Gathering gathering = gatheringRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 소모임 번호입니다."));
+                .orElseThrow(() -> new IllegalArgumentException("소모임을 찾을 수 없습니다."));
+
+        if (!gathering.getMember().getId().equals(m.getId())) {
+            throw new IllegalStateException("리더만 소모임을 수정할 수 있습니다.");
+        }
 
         if (dto.getTitle() == null || dto.getTitle().isBlank()) {
             throw new IllegalArgumentException("제목을 입력하세요");
@@ -121,6 +130,7 @@ public class GatheringService {
                 .updatedAt(gathering.getUpdatedAt())
                 .likes((long)gathering.getLikes().stream().filter(like -> like.getGathering() != null).count())
                 .liked(liked)
+                .memberCount(gathering.getMemberCount())
                 .build();
     }
 
@@ -141,6 +151,58 @@ public class GatheringService {
         return gatherings.stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
+    }
+
+    public void joinGathering(Long gatheringId, JoinGatheringDto dto, Member member, MultipartFile image) {
+        Gathering gathering = gatheringRepository.findById(gatheringId)
+                .orElseThrow(() -> new IllegalArgumentException("소모임을 찾을 수 없습니다."));
+
+        if (blacklistRepository.existsByGatheringIdAndMemberId(gatheringId, member.getId())) {
+            throw new IllegalStateException("블랙리스트에 등록된 사용자는 참여할 수 없습니다.");
+        }
+
+        if (gatheringMemberRepository.findByGatheringIdAndMemberId(gatheringId, member.getId()).isPresent()) {
+            throw new IllegalStateException("이미 참여한 소모임입니다.");
+        }
+        if (gatheringMemberRepository.existsByGatheringIdAndNickname(gatheringId, dto.getNickname())) {
+            throw new IllegalStateException("이미 사용 중인 닉네임입니다.");
+        }
+
+        String profileImage = imageService.saveGatheringImage(image, member.getEmail());
+
+        GatheringMember gatheringMember = GatheringMember.builder()
+                .gathering(gathering)
+                .member(member)
+                .role(GatheringRole.USER)
+                .introduction(dto.getIntroduction())
+                .nickname(dto.getNickname())
+                .imageUrl(profileImage)
+                .build();
+        gatheringMemberRepository.save(gatheringMember);
+        gathering.setMemberCount(gathering.getMemberCount() + 1);
+        gatheringRepository.save(gathering);
+    }
+
+    @Transactional
+    public void addToBlacklist(Long gatheringId, Long targetMemberId, Member m) {
+        Gathering gathering = gatheringRepository.findById(gatheringId)
+                .orElseThrow(() -> new IllegalArgumentException("소모임을 찾을 수 없습니다."));
+
+        if (!gathering.getMember().getId().equals(m.getId())) {
+            throw new IllegalArgumentException("리더만 블랙리스틀 관리할 수 있습니다.");
+        }
+
+        Member member = memberRepository.findById(targetMemberId)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+
+        Blacklist blacklist = Blacklist.builder()
+                .gathering(gathering)
+                .member(member)
+                .build();
+        blacklistRepository.save(blacklist);
+        gatheringMemberRepository.deleteByGatheringIdAndMemberId(gatheringId, targetMemberId);
+        gathering.setMemberCount(gathering.getMemberCount() - 1);
+        gatheringRepository.save(gathering);
     }
 
     // 사용자 정보 확인
@@ -166,6 +228,7 @@ public class GatheringService {
                 .updatedAt(g.getUpdatedAt())
                 .likes((long) g.getLikes().stream().filter(l -> l.getGathering() != null).count())
                 .liked(liked)
+                .memberCount(g.getMemberCount())
                 .build();
     }
 }
