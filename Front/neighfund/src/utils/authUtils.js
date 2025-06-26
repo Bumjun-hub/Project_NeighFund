@@ -96,7 +96,7 @@ export const checkAuthStatus = async () => {
         console.log('🔍 checkAuthStatus 시작');
         
         // ✅ 일반 fetch 사용 (authenticatedFetch 사용 안함)
-        const response = await fetch('http://localhost:8080/api/mypage', {
+        const response = await fetch('http://localhost:8080/api/auth/mypage', {
             method: 'GET',
             credentials: 'include',
         });
@@ -116,7 +116,7 @@ export const checkAuthStatus = async () => {
             
             if (refreshResult) {
                 // 재시도 (여전히 일반 fetch 사용)
-                const retryResponse = await fetch('http://localhost:8080/api/mypage', {
+                const retryResponse = await fetch('http://localhost:8080/api/auth/mypage', {
                     method: 'GET',
                     credentials: 'include',
                 });
