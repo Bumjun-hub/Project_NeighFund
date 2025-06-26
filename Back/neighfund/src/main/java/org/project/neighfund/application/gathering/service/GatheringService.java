@@ -2,13 +2,11 @@ package org.project.neighfund.application.gathering.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.project.neighfund.application.gathering.dto.GatheringDto;
-import org.project.neighfund.application.gathering.dto.GatheringResponse;
-import org.project.neighfund.application.gathering.dto.DeleteResponse;
-import org.project.neighfund.application.gathering.dto.JoinGatheringDto;
+import org.project.neighfund.application.gathering.dto.*;
 import org.project.neighfund.domain.gathering.*;
 import org.project.neighfund.domain.member.Member;
 import org.project.neighfund.domain.member.MemberRepository;
+import org.project.neighfund.enums.GatheringPostCategory;
 import org.project.neighfund.enums.GatheringRole;
 import org.project.neighfund.global.image.ImageService;
 import org.springframework.security.access.AccessDeniedException;
@@ -27,8 +25,11 @@ public class GatheringService {
     private final ImageService imageService;
     private final BlacklistRepository blacklistRepository;
     private final GatheringMemberRepository gatheringMemberRepository;
+    private final GatheringPostRepository gatheringPostRepository;
+    private final PostImageRepository postImageRepository;
+    private final GatheringPhotoRepository gatheringPhotoRepository;
 
-    public void createGathering(GatheringDto dto, MultipartFile file, Member m) throws IOException {
+    public void createGathering(GatheringDto dto, MultipartFile file, Member m, MultipartFile profileImage) throws IOException {
         validateMember(m);
         if (dto.getTitle() == null || dto.getTitle().isBlank()) {
             throw new IllegalArgumentException("제목을 입력하세요");
@@ -38,6 +39,7 @@ public class GatheringService {
         }
 
         String titleImage = imageService.saveGatheringImage(file, m.getEmail());
+        String profileImagePath = imageService.saveGatheringImage(profileImage, m.getEmail());
 
         Gathering gathering = Gathering.builder()
                 .title(dto.getTitle())
@@ -47,9 +49,20 @@ public class GatheringService {
                 .titleImage(titleImage)
                 .member(m)
                 .memberCount(1)
+                .type(dto.getType())
+                .build();
+        gatheringRepository.save(gathering);
+
+        GatheringMember gatheringMember = GatheringMember.builder()
+                .gathering(gathering)
+                .member(m)
+                .role(GatheringRole.LEADER)
+                .introduction(dto.getIntroduction())
+                .nickname(dto.getNickname())
+                .imageUrl(profileImagePath)
                 .build();
 
-        gatheringRepository.save(gathering);
+        gatheringMemberRepository.save(gatheringMember);
     }
 
     public GatheringResponse getGathering(Long gatheringId, Member m) {
@@ -205,6 +218,116 @@ public class GatheringService {
         gatheringRepository.save(gathering);
     }
 
+    @Transactional
+    public void createPost(Long gatheringId, GatheringPostRequest request, Member member, List<MultipartFile> imageFiles) {
+        Gathering gathering = gatheringRepository.findById(gatheringId)
+                .orElseThrow(() -> new IllegalArgumentException("소모임을 찾을 수 없습니다."));
+
+        if(!gatheringMemberRepository.findByGatheringIdAndMemberId(gatheringId, member.getId()).isPresent()) {
+            throw new IllegalStateException("소모임 참여자만 게시글을 작성할 수 있습니다.");
+        }
+
+        if(request.getCategory() == GatheringPostCategory.NOTICE && !gathering.getMember().getId().equals(member.getId())) {
+            throw new IllegalArgumentException("NOTICE 게시글은 리더만 작성할 수 있습니다.");
+        }
+
+        GatheringPost post = GatheringPost.builder()
+                .gathering(gathering)
+                .member(member)
+                .title(request.getTitle())
+                .content(request.getContent())
+                .category(request.getCategory())
+                .build();
+        gatheringPostRepository.save(post);
+
+        if (imageFiles != null && !imageFiles.isEmpty()){
+            for (MultipartFile imageFile  : imageFiles) {
+                String imageUrl = imageService.saveImage(imageFile);
+
+                if (imageUrl != null) {
+                    PostImage image = PostImage.builder()
+                            .imgUrl(imageUrl)
+                            .gatheringPost(post)
+                            .build();
+                    postImageRepository.save(image);
+                }
+            }
+        }
+
+
+    }
+
+    @Transactional
+    public void createPhoto(Long gatheringId, MultipartFile image, Member member) throws IOException {
+        Gathering gathering = gatheringRepository.findById(gatheringId)
+                .orElseThrow(() -> new IllegalArgumentException("소모임을 찾을 수 없습니다."));
+
+        if (!gatheringMemberRepository.findByGatheringIdAndMemberId(gatheringId, member.getId()).isPresent()) {
+            throw new IllegalStateException("소모임 참여자만 사진을 업로드할 수 있습니다.");
+        }
+
+        String imageUrl = imageService.saveGatheringImage(image, member.getEmail());
+        GatheringPhoto photo = GatheringPhoto.builder()
+                .gathering(gathering)
+                .member(member)
+                .imageUrl(imageUrl)
+                .build();
+        gatheringPhotoRepository.save(photo);
+    }
+
+    public List<GroupPhotoResponse> getPhotos(Long gatheringId) {
+        return gatheringPhotoRepository.findByGatheringId(gatheringId)
+                .stream()
+                .map(photo -> {
+                    GroupPhotoResponse dto = new GroupPhotoResponse(photo.getImageUrl());
+                    return dto;
+                })
+                .collect(Collectors.toList());
+    }
+
+    public List<GroupPostDto> getPosts(Long gatheringId) {
+        return gatheringPostRepository.findByGatheringId(gatheringId)
+                .stream()
+                .map(post ->
+                    GroupPostDto.builder()
+                            .id(post.getId())
+                            .username(post.getMember().getUsername())
+                            .title(post.getTitle())
+                            .content(post.getContent())
+                            .category(post.getCategory())
+                            .createdAt(post.getCreatedAt())
+                            .updatedAt(post.getUpdatedAt())
+                            .viewCount(post.getViewCount())
+                            .likes((long) post.getLikes().stream().filter(like -> like.getGatheringPost() != null).count())
+                            .imgUrls(post.getPostImages().stream().map(PostImage::getImgUrl).collect(Collectors.toList()))
+                            .build())
+                .collect(Collectors.toList());
+    }
+
+    public GroupPostDto detailPost(Long gatheringId, Long postId, Member member) {
+        GatheringPost post = gatheringPostRepository.findByIdAndGathering_Id(postId, gatheringId);
+
+        post.setViewCount(post.getViewCount() == null ? 1 : post.getViewCount() + 1);
+
+        List<String> imageUrls = post.getPostImages().stream()
+                .filter(img -> !img.getIsDeleted()) // 삭제된 이미지 제외 (optional)
+                .map(PostImage::getImgUrl)
+                .collect(Collectors.toList());
+
+        return GroupPostDto.builder()
+                .id(postId)
+                .username(member.getUsername())
+                .title(post.getTitle())
+                .content(post.getContent())
+                .category(post.getCategory())
+                .createdAt(post.getCreatedAt())
+                .updatedAt(post.getUpdatedAt())
+                .viewCount(post.getViewCount())
+                .likes((long) post.getLikes().stream().filter(like -> like.getGatheringPost() != null).count())
+                .imgUrls(imageUrls)
+                .build();
+    }
+
     // 사용자 정보 확인
     public void validateMember (Member m){
         Member member = memberRepository.findById(m.getId())
@@ -231,4 +354,7 @@ public class GatheringService {
                 .memberCount(g.getMemberCount())
                 .build();
     }
+
+
+
 }

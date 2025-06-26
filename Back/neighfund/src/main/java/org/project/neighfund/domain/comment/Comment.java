@@ -3,6 +3,7 @@ package org.project.neighfund.domain.comment;
 import jakarta.persistence.*;
 import lombok.*;
 import org.project.neighfund.domain.common.BaseEntity;
+import org.project.neighfund.domain.gathering.GatheringPost;
 import org.project.neighfund.domain.member.Member;
 
 @Entity
@@ -26,4 +27,8 @@ public class Comment extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "gathering_post_id", nullable = false)
+    private GatheringPost gatheringPost;
 }
