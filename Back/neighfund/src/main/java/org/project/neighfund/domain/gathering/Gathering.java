@@ -46,7 +46,8 @@ public class Gathering extends BaseEntity {
     private GatheringType type; // FREE or VENDOR
 
     @Column(nullable = false)
-    private boolean confirmed; // 업체 소모임 검수 상태, 자유 소모임은 true
+    @Builder.Default
+    private boolean confirmed = false; // 업체 소모임 검수 상태, 자유 소모임은 true
 
     @Column
     private String businessLicenseUrl; // 업체 소모임의 사업자 등록증 URL

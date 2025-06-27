@@ -4,6 +4,10 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.project.neighfund.domain.member.Member;
 import org.project.neighfund.enums.GatheringRole;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -11,6 +15,7 @@ import org.project.neighfund.enums.GatheringRole;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@EntityListeners(AuditingEntityListener.class)
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = {"gathering_id", "member_id"}))
 public class GatheringMember {
     @Id
@@ -37,4 +42,8 @@ public class GatheringMember {
 
     @Column(length = 50, nullable = false)
     private String nickname; // 소모임별 닉네임
+
+    @CreatedDate
+    @Column(updatable = false)
+    private LocalDateTime createdAt; // 생성일
 }

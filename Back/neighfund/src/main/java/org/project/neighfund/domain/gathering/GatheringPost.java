@@ -2,7 +2,13 @@ package org.project.neighfund.domain.gathering;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.project.neighfund.domain.comment.Comment;
+import org.project.neighfund.domain.common.BaseEntity;
+import org.project.neighfund.domain.like.Like;
 import org.project.neighfund.domain.member.Member;
+import org.project.neighfund.enums.GatheringPostCategory;
+
+import java.util.List;
 
 @Entity
 @Getter
@@ -10,7 +16,7 @@ import org.project.neighfund.domain.member.Member;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class GatheringPost {
+public class GatheringPost extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -28,4 +34,21 @@ public class GatheringPost {
 
     @Column(columnDefinition = "TEXT")
     private String content;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private GatheringPostCategory category;
+
+    @Column(name = "view_count", columnDefinition = "BIGINT DEFAULT 0")
+    @Builder.Default
+    private Long viewCount = 0L;
+
+    @OneToMany(mappedBy = "gatheringPost", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PostImage> postImages;
+
+    @OneToMany(mappedBy = "gatheringPost", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Like> likes;
+
+    @OneToMany(mappedBy = "gatheringPost", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments;
 }
