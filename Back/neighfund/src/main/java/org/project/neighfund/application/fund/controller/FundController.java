@@ -3,6 +3,8 @@ package org.project.neighfund.application.fund.controller;
 import lombok.RequiredArgsConstructor;
 import org.project.neighfund.application.fund.dto.FundDto;
 import org.project.neighfund.application.fund.dto.FundListDto;
+import org.project.neighfund.application.fund.dto.FundOptionDto;
+import org.project.neighfund.application.fund.dto.FundResponseDto;
 import org.project.neighfund.application.fund.service.FundService;
 import org.project.neighfund.config.CustomUserDetails;
 import org.project.neighfund.domain.member.Member;
@@ -39,8 +41,9 @@ public class FundController {
             @RequestPart("targetAmount") Integer targetAmount,
             @RequestPart("deadline")@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime deadline,
             @RequestPart("hashTags") String hashTags,
-            @RequestPart(value = "images", required = false) List<MultipartFile> imageFiles,
-            @RequestParam(value = "contentImage", required = false) List<MultipartFile> contentImages,
+            @RequestPart(value = "options", required = false) List<FundOptionDto> options,
+            @RequestPart(value = "images", required = false) MultipartFile imageFile,
+            @RequestPart(value = "contentImage", required = false) MultipartFile contentImage,
             @AuthenticationPrincipal CustomUserDetails userDetails
             ){
 
@@ -54,8 +57,12 @@ public class FundController {
                 .targetAmount(targetAmount)
                 .deadline(deadline)
                 .hashTags(hashTags)
+                .options(options)
                 .build();
         Member loginUser = userDetails.getMember();
+
+        List<MultipartFile> imageFiles = imageFile != null ? List.of(imageFile) : List.of();
+        List<MultipartFile> contentImages = contentImage != null ? List.of(contentImage) : List.of();
 
         fundService.createPost(fundDto, imageFiles, contentImages, loginUser);
         return ResponseEntity.status(HttpStatus.CREATED).body("게시글이 작성되었습니다.");
@@ -74,6 +81,7 @@ public class FundController {
             @RequestPart("targetAmount") Integer targetAmount,
             @RequestPart("deadline")LocalDateTime deadline,
             @RequestPart("hashTags") String hashTags,
+            @RequestPart(value = "options", required = false) List<FundOptionDto> options,
             @RequestPart(value = "images", required = false) List<MultipartFile> imageFiles,
             @RequestPart(value = "contentImage", required = false) List<MultipartFile> contentImages,
             @RequestParam(value = "deleteImageIds", required = false) List<Long> deleteImageIds,
@@ -90,6 +98,7 @@ public class FundController {
                 .targetAmount(targetAmount)
                 .deadline(deadline)
                 .hashTags(hashTags)
+                .options(options)
                 .build();
         Member loginUser = userDetails.getMember();
 
@@ -120,6 +129,26 @@ public class FundController {
     }
 
     //상세조회
+    @GetMapping("/view/{id}")
+    public ResponseEntity<FundResponseDto> detailView(
+            @PathVariable Long id,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ){
+        Member loginUser = userDetails.getMember();
+        FundResponseDto posts = fundService.detailView(id, loginUser);
+        return ResponseEntity.ok(posts);
+    }
+
+    //관리자 검수 상태 변경
+    @PutMapping("/admin/approve/{id}")
+    public ResponseEntity<String> approveFund(
+            @PathVariable Long id,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ){
+        Member loginUser = userDetails.getMember();
+        fundService.approveFund(id, loginUser);
+        return ResponseEntity.ok("펀딩이 승인되었습니다.");
+    }
 
 
 

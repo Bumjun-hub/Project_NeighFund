@@ -22,13 +22,16 @@ public class FundResponseDto {
     private CommunityCategory category;
     private FundType fundType;
     private FundStatus fundStatus;
+    private List<FundOptionDto> options; //옵션
 
     private String title;
     private String subTitle;
     private String content;
 
-    private List<FundImage> fundImages;
+    private List<String> fundImages;
+    private List<Long> imgIds;
     private List<String> contentImgUrls;
+    private List<Long> contentImgIds;
 
     private Integer progressRate;  //달성률
     private Integer targetAmount;  //목표금액

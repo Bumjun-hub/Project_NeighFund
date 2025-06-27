@@ -4,12 +4,15 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.project.neighfund.application.fund.dto.FundDto;
 import org.project.neighfund.application.fund.dto.FundListDto;
+import org.project.neighfund.application.fund.dto.FundOptionDto;
+import org.project.neighfund.application.fund.dto.FundResponseDto;
 import org.project.neighfund.domain.fund.*;
 import org.project.neighfund.domain.member.Member;
 import org.project.neighfund.domain.member.MemberRepository;
 import org.project.neighfund.enums.CommunityCategory;
 import org.project.neighfund.enums.FundStatus;
 import org.project.neighfund.enums.FundType;
+import org.project.neighfund.enums.RoleName;
 import org.project.neighfund.global.image.ImageService;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
@@ -17,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,6 +31,7 @@ public class FundService {
     private final MemberRepository memberRepository;
     private final FundImageRepository fundImageRepository;
     private final FundContentImageRepository fundContentImageRepository;
+    private final FundOptionRepository fundOptionRepository;
     private final ImageService imageService;
 
     //작성
@@ -43,6 +48,7 @@ public class FundService {
                 .fundStatus(FundStatus.ONGOING)
                 .isApproved(false)
                 .title(fundDto.getTitle())
+                .subTitle(fundDto.getSubTitle())
                 .content(fundDto.getContent())
                 .currentParticipants(0)
                 .targetAmount(fundDto.getTargetAmount())
@@ -53,7 +59,21 @@ public class FundService {
                 .build();
         fundRepository.save(fund);
 
-        //썸네일용 1장
+        //option
+        List<FundOptionDto> options = fundDto.getOptions();
+        if (options != null && !options.isEmpty()) {
+            for (FundOptionDto optionDto : options) {
+                FundOption option = FundOption.builder()
+                        .fund(fund)
+                        .price(optionDto.getPrice())
+                        .content(optionDto.getContent())
+                        .quantity(optionDto.getQuantity())
+                        .build();
+                fundOptionRepository.save(option);
+            }
+        }
+
+        //썸네일 + 내용
         if (imageFiles != null && !imageFiles.isEmpty()) {
             for (MultipartFile imageFile : imageFiles) {
                 String imageUrl = imageService.saveImage(imageFile);
@@ -161,7 +181,44 @@ public class FundService {
                 }
             }
         }
+     //옵션관련
+        //옵션조회
+        List<FundOption> findOptions = fundOptionRepository.findByFund(fund);
+        Map<Long, FundOption> findOptionMap = findOptions.stream()
+                .collect(Collectors.toMap(FundOption::getId, option -> option));
+        //생성
+        List<FundOptionDto> options = fundDto.getOptions();
+        if (options != null && !options.isEmpty()){
+            for (FundOptionDto dto : options){
+                if (dto.getId() == null) {
+                    //생성
+                    FundOption newOption = FundOption.builder()
+                            .fund(fund)
+                            .price(dto.getPrice())
+                            .content(dto.getContent())
+                            .quantity(dto.getQuantity())
+                            .build();
+                    fundOptionRepository.save(newOption);
+                } else {
+                    //수정
+                    FundOption editOption = findOptionMap.get(dto.getId());
+                    if (editOption != null) {
+                        editOption.setPrice(dto.getPrice());
+                        editOption.setContent(dto.getContent());
+                        editOption.setQuantity(dto.getQuantity());
+                        fundOptionRepository.save(editOption);
+                        findOptionMap.remove(dto.getId());
+
+                    }
+                }
+            }
+        }
+        //삭제
+        for (FundOption deleteOption : findOptionMap.values()) {
+            fundOptionRepository.delete(deleteOption);
+        }
     }
+
     //삭제
     @Transactional
     public void deletePost(Long id, Member loginUser) {
@@ -172,7 +229,7 @@ public class FundService {
 
     //조회
     public List<FundListDto> viewAll(CommunityCategory category, FundStatus status, FundType type) {
-        List<Fund> funds = fundRepository.findAllApprovedTrue();
+        List<Fund> funds = fundRepository.findAllByIsApprovedTrue();
 
         return funds.stream()
                 .filter(fund -> category == null || fund.getCategory() == category)
@@ -195,14 +252,86 @@ public class FundService {
                         .progressRate(fund.getProgressRate())
                         .targetAmount(fund.getTargetAmount())
                         .deadline(fund.getDeadline())
-                        .likes((long) fund.getLikes().size())
-                        .liked(false)
                         .build())
                 .collect(Collectors.toList());
     }
 
     //상세조회
+    @Transactional
+    public FundResponseDto detailView(Long id, Member loginUser) {
+        Fund fund = fundRepository.findByIdAndIsApprovedTrue(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 펀딩입니다."));
 
+        List<FundOptionDto> options = fund.getFundOptions().stream()
+                .map(option -> FundOptionDto.builder()
+                        .id(option.getId())
+                        .price(option.getPrice())
+                        .content(option.getContent())
+                        .quantity(option.getQuantity())
+                        .build())
+                .collect(Collectors.toList());
+
+        List<String> fundImageUrls = fund.getFundImages().stream()
+                .filter(img -> !img.getIsDeleted())
+                .map(FundImage::getImgUrl)
+                .collect(Collectors.toList());
+
+        List<Long> fundImageIds = fund.getFundImages().stream()
+                .filter(img -> !img.getIsDeleted())
+                .map(FundImage::getId)
+                .collect(Collectors.toList());
+
+        List<String> contentImgUrls = fund.getFundContentImages().stream()
+                .filter(img -> !img.getIsDeleted())
+                .map(FundContentImage::getImgUrl)
+                .collect(Collectors.toList());
+
+        List<Long> contentImgIds = fund.getFundContentImages().stream()
+                .filter(img -> !img.getIsDeleted())
+                .map(FundContentImage::getId)
+                .collect(Collectors.toList());
+
+
+        // ⭐ 로그인 여부에 따라 추천 상태 처리
+        boolean liked = false;
+        if (loginUser != null && loginUser.getId() != null) {
+            liked = fund.getLikes().stream()
+                    .filter(like -> like.getFund() != null && like.getMember() != null)
+                    .anyMatch(like -> like.getMember().getId().equals(loginUser.getId()));
+        }
+
+        return FundResponseDto.builder()
+                .id(fund.getId())
+                .username(fund.getMember().getUsername())
+                .category(fund.getCategory())
+                .fundType(fund.getFundType())
+                .fundStatus(fund.getFundStatus())
+                .options(options)
+                .title(fund.getTitle())
+                .subTitle(fund.getSubTitle())
+                .content(fund.getContent())
+                .fundImages(fundImageUrls)
+                .imgIds(fundImageIds)
+                .contentImgUrls(contentImgUrls)
+                .contentImgIds(contentImgIds)
+                .progressRate(fund.getProgressRate())
+                .targetAmount(fund.getTargetAmount())
+                .currentAmount(fund.getCurrentAmount())
+                .currentParticipants(fund.getCurrentParticipants())
+                .deadline(fund.getDeadline())
+                .hashTags(fund.getHashTags())
+                .likes((long) fund.getLikes().size())
+                .liked(liked)
+                .build();
+    }
+
+    //관리자 검수 상태 변경
+    @Transactional
+    public void approveFund(Long id, Member loginUser) {
+        validateLogin(loginUser);
+        Fund fund = validatePost(id);
+        fund.setIsApproved(true);
+    }
 
     // 사용자 정보 확인
     public void validateMember (Member loginUser){
@@ -244,6 +373,16 @@ public class FundService {
     public Fund validatePost (Long id){
         return fundRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다"));
+    }
+
+    //로그인 사용자 기준
+    public void validateLogin(Member member) {
+        if (member == null) {
+            throw new IllegalArgumentException("로그인이 필요한 기능입니다.");
+        }
+        if (member.getRole().getName() != RoleName.ROLE_ADMIN) {
+            throw new AccessDeniedException("관리자만 사용할 수 있는 기능입니다.");
+        }
     }
 
 

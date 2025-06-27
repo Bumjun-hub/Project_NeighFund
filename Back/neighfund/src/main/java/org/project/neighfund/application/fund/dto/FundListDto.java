@@ -26,6 +26,4 @@ public class FundListDto {
     private Integer targetAmount;  //목표금액
     private Integer currentAmount;  //현재 모인 금액
     private LocalDateTime deadline;  //마감일
-    private Long likes;
-    private boolean liked;  // 좋아요 여부
 }

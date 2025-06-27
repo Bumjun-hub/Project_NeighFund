@@ -78,6 +78,9 @@ public class Fund extends BaseEntity {
     private String hashTags;
 
     @OneToMany(mappedBy = "fund", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<FundOption> fundOptions ;
+
+    @OneToMany(mappedBy = "fund", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Like> likes;
 
 }

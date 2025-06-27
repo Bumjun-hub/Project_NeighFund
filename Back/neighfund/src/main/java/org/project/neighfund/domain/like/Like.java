@@ -2,6 +2,9 @@ package org.project.neighfund.domain.like;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.project.neighfund.domain.community.Community;
+import org.project.neighfund.domain.fund.Fund;
+import org.project.neighfund.domain.gathering.Gathering;
 import org.project.neighfund.domain.member.Member;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -24,6 +27,18 @@ public class Like {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fund_id", nullable = false)
+    private Fund fund;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "community_id", nullable = false)
+    private Community community;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "gathering_id", nullable = false)
+    private Gathering gathering;
 
     @CreatedDate
     @Column(updatable = false)
