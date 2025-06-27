@@ -253,9 +253,95 @@ public class GatheringService {
                 }
             }
         }
-
-
     }
+
+    public List<GroupPostDto> getPosts(Long gatheringId) {
+        return gatheringPostRepository.findByGatheringId(gatheringId)
+                .stream()
+                .map(post ->
+                        GroupPostDto.builder()
+                                .id(post.getId())
+                                .username(post.getMember().getUsername())
+                                .title(post.getTitle())
+                                .content(post.getContent())
+                                .category(post.getCategory())
+                                .createdAt(post.getCreatedAt())
+                                .updatedAt(post.getUpdatedAt())
+                                .viewCount(post.getViewCount())
+                                .likes((long) post.getLikes().stream().filter(like -> like.getGatheringPost() != null).count())
+                                .imgUrls(post.getPostImages().stream().map(PostImage::getImgUrl).collect(Collectors.toList()))
+                                .build())
+                .collect(Collectors.toList());
+    }
+
+    public GroupPostDto detailPost(Long gatheringId, Long postId, Member member) {
+        GatheringPost post = gatheringPostRepository.findByIdAndGathering_Id(postId, gatheringId);
+
+        post.setViewCount(post.getViewCount() == null ? 1 : post.getViewCount() + 1);
+
+        List<String> imageUrls = post.getPostImages().stream()
+                .filter(img -> !img.getIsDeleted()) // 삭제된 이미지 제외 (optional)
+                .map(PostImage::getImgUrl)
+                .collect(Collectors.toList());
+
+        return GroupPostDto.builder()
+                .id(postId)
+                .username(member.getUsername())
+                .title(post.getTitle())
+                .content(post.getContent())
+                .category(post.getCategory())
+                .createdAt(post.getCreatedAt())
+                .updatedAt(post.getUpdatedAt())
+                .viewCount(post.getViewCount())
+                .likes((long) post.getLikes().stream().filter(like -> like.getGatheringPost() != null).count())
+                .imgUrls(imageUrls)
+                .build();
+    }
+
+    public GroupPostDto editPost(Long gatheringId, Long postId, String title, String content, List<MultipartFile> imageFiles, Member m) {
+        Gathering gathering = gatheringRepository.findById(gatheringId)
+                .orElseThrow(() -> new IllegalArgumentException("소모임을 찾을 수 없습니다."));
+
+        GatheringPost post = gatheringPostRepository.findByIdAndGathering_Id(postId, gatheringId);
+
+        if (!post.getMember().getId().equals(m.getId())) {
+            throw new IllegalArgumentException("작성자만 게시글을 수정할 수 있습니다.");
+        }
+            post.setTitle(title);
+            post.setContent(content);
+            gatheringPostRepository.save(post);
+
+        if (imageFiles != null && !imageFiles.isEmpty()){
+            for (MultipartFile imageFile  : imageFiles) {
+                String imageUrl = imageService.saveImage(imageFile);
+
+                if (imageUrl != null) {
+                    PostImage image = PostImage.builder()
+                            .imgUrl(imageUrl)
+                            .gatheringPost(post)
+                            .build();
+                    postImageRepository.save(image);
+                }
+            }
+        }
+
+        return GroupPostDto.builder()
+                .id(postId)
+                .username(m.getUsername())
+                .title(title)
+                .content(content)
+                .category(post.getCategory())
+                .createdAt(post.getCreatedAt())
+                .updatedAt(post.getUpdatedAt())
+                .viewCount(post.getViewCount())
+                .likes((long) post.getLikes().stream().filter(like -> like.getGatheringPost() != null).count())
+                .imgUrls(post.getPostImages().stream().map(PostImage::getImgUrl).collect(Collectors.toList()))
+                .build();
+    }
+
+
+
+
 
     @Transactional
     public void createPhoto(Long gatheringId, MultipartFile image, Member member) throws IOException {
@@ -285,48 +371,7 @@ public class GatheringService {
                 .collect(Collectors.toList());
     }
 
-    public List<GroupPostDto> getPosts(Long gatheringId) {
-        return gatheringPostRepository.findByGatheringId(gatheringId)
-                .stream()
-                .map(post ->
-                    GroupPostDto.builder()
-                            .id(post.getId())
-                            .username(post.getMember().getUsername())
-                            .title(post.getTitle())
-                            .content(post.getContent())
-                            .category(post.getCategory())
-                            .createdAt(post.getCreatedAt())
-                            .updatedAt(post.getUpdatedAt())
-                            .viewCount(post.getViewCount())
-                            .likes((long) post.getLikes().stream().filter(like -> like.getGatheringPost() != null).count())
-                            .imgUrls(post.getPostImages().stream().map(PostImage::getImgUrl).collect(Collectors.toList()))
-                            .build())
-                .collect(Collectors.toList());
-    }
 
-    public GroupPostDto detailPost(Long gatheringId, Long postId, Member member) {
-        GatheringPost post = gatheringPostRepository.findByIdAndGathering_Id(postId, gatheringId);
-
-        post.setViewCount(post.getViewCount() == null ? 1 : post.getViewCount() + 1);
-
-        List<String> imageUrls = post.getPostImages().stream()
-                .filter(img -> !img.getIsDeleted()) // 삭제된 이미지 제외 (optional)
-                .map(PostImage::getImgUrl)
-                .collect(Collectors.toList());
-
-        return GroupPostDto.builder()
-                .id(postId)
-                .username(member.getUsername())
-                .title(post.getTitle())
-                .content(post.getContent())
-                .category(post.getCategory())
-                .createdAt(post.getCreatedAt())
-                .updatedAt(post.getUpdatedAt())
-                .viewCount(post.getViewCount())
-                .likes((long) post.getLikes().stream().filter(like -> like.getGatheringPost() != null).count())
-                .imgUrls(imageUrls)
-                .build();
-    }
 
     // 사용자 정보 확인
     public void validateMember (Member m){
