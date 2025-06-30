@@ -10,11 +10,11 @@ import lombok.*;
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Builder
-public class FundImage {
+public class FundContentImage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @EqualsAndHashCode.Include //?
+    @EqualsAndHashCode.Include
     private Long id;
 
     private String imgUrl; // filePath + "/" + fileName
