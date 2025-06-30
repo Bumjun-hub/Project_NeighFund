@@ -9,6 +9,7 @@ import org.project.neighfund.enums.FundStatus;
 import org.project.neighfund.enums.FundType;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -23,4 +24,6 @@ public class FundDto {
     private String content;
     private Integer targetAmount;  //목표금액
     private LocalDateTime deadline;  //마감일
+    private String hashTags;
+    private List<FundOptionDto> options;
 }
