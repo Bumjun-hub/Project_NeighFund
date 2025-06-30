@@ -10,6 +10,7 @@ import org.project.neighfund.domain.member.Member;
 import org.project.neighfund.enums.CommunityCategory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,20 +23,30 @@ public class CommunityController {
 
     private final CommunityService communityService;
 
+    
+
+
+    // CommunityController.java
+    @GetMapping("/detail/{id}")
+    public ResponseEntity<CommunityResponseDto> getOne(@PathVariable Long id) {
+        CommunityResponseDto dto = communityService.getOne(id);
+        return ResponseEntity.ok(dto);
+    }
+
     //작성
     @PostMapping("/write")
     public ResponseEntity<String> createPost(@RequestBody CommunityDto communityDto,
-                                            @AuthenticationPrincipal CustomUserDetails userDetails){
-            Member loginUser = userDetails.getMember();
-            communityService.createPost(communityDto, loginUser);
-            return ResponseEntity.status(HttpStatus.CREATED).body("게시글이 등록되었습니다.");
-        }
+                                             @AuthenticationPrincipal CustomUserDetails userDetails) {
+        Member loginUser = userDetails.getMember();
+        communityService.createPost(communityDto, loginUser);
+        return ResponseEntity.status(HttpStatus.CREATED).body("게시글이 등록되었습니다.");
+    }
 
     //수정
     @PutMapping("/edit/{id}")
     public ResponseEntity<String> editPost(@PathVariable Long id,
-                                            @RequestBody CommunityDto communityDto,
-                                           @AuthenticationPrincipal CustomUserDetails userDetails){
+                                           @RequestBody CommunityDto communityDto,
+                                           @AuthenticationPrincipal CustomUserDetails userDetails) {
         Member loginUser = userDetails.getMember();
         communityService.editPost(id, communityDto, loginUser);
         return ResponseEntity.ok("게시물이 수정되었습니다.");
@@ -44,7 +55,7 @@ public class CommunityController {
     //삭제
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deletePost(@PathVariable Long id,
-                                             @AuthenticationPrincipal CustomUserDetails userDetails){
+                                             @AuthenticationPrincipal CustomUserDetails userDetails) {
         Member loginUser = userDetails.getMember();
         communityService.deletePost(id, loginUser);
         return ResponseEntity.ok("게시물이 삭제되었습니다.");
@@ -54,7 +65,7 @@ public class CommunityController {
     @GetMapping("/view")
     public ResponseEntity<List<CommunityResponseDto>> viewAll(
             @AuthenticationPrincipal CustomUserDetails userDetails) {
-        Member loginUser = userDetails.getMember();
+        Member loginUser = (userDetails != null) ? userDetails.getMember() : null;
         List<CommunityResponseDto> posts = communityService.viewAll(loginUser);
         return ResponseEntity.ok(posts);
     }
@@ -64,8 +75,8 @@ public class CommunityController {
     @GetMapping("/view/{category}")
     public ResponseEntity<List<CommunityResponseDto>> viewPost(
             @PathVariable CommunityCategory category,
-            @AuthenticationPrincipal CustomUserDetails userDetails){
-        Member loginUser = userDetails.getMember();
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        Member loginUser = (userDetails != null) ? userDetails.getMember() : null;
         List<CommunityResponseDto> posts = communityService.viewPost(category, loginUser);
         return ResponseEntity.ok(posts);
     }
@@ -76,15 +87,11 @@ public class CommunityController {
             @PathVariable Long id,
             @RequestBody CommunityStatusDto statusDto,
             @AuthenticationPrincipal CustomUserDetails userDetails
-            ){
+    ) {
         Member loginUser = userDetails.getMember();
         communityService.updateStatus(id, statusDto, loginUser);
         return ResponseEntity.ok("상태가 변경되었습니다.");
     }
-
-
-
-
 
 
 }

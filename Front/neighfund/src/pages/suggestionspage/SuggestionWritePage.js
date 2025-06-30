@@ -2,8 +2,11 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import './SuggestionWritePage.css';
 import Section from '../../components/Section';
+import { refreshToken } from '../../utils/authUtils';
 
 const SuggestionWritePage = () => {
+
+  const [currentUser, setCurrentUser] = useState("");
   const navigate = useNavigate();
   const { id } = useParams();
   const isEdit = !!id;
@@ -29,23 +32,57 @@ const SuggestionWritePage = () => {
   // 수정 모드일 경우 기존 데이터 불러오기
   useEffect(() => {
     if (isEdit) {
-      fetch(`/api/community/view/SUGGESTION`, {
+      fetch(`/api/community/detail/${id}`, {
         credentials: 'include',
       })
         .then(res => res.json())
-        .then(data => {
-          const post = data.find(item => item.id === parseInt(id));
-          if (post) {
-            setFormData({
-              title: post.title,
-              content: post.content,
-              category: post.category,
-            });
+        .then(post => {
+          if (post.username !== currentUser) {
+            alert("작성자만 수정할 수 있습니다.")
+            navigate("/suggestion");
+            return;
           }
+          setFormData({
+            title: post.title,
+            content: post.content,
+            category: post.category,
+          });
         })
         .catch(err => console.error('수정글 로딩 실패:', err));
     }
   }, [id, isEdit]);
+
+
+  //사용자 권한 읽기
+  useEffect(() => {
+    const fetchCurrentUser = async () => {
+      try {
+        let res = await fetch("/api/roleinfo", { credentials: "include" });
+
+        if (res.status === 401) {
+          const refreshed = await refreshToken(); // 토큰 갱신 함수
+          if (refreshed) {
+            res = await fetch("/api/roleinfo", { credentials: "include" });
+          }
+        }
+
+        if (res.ok) {
+          const data = await res.json(); // 👈 username을 포함하고 있어야 함
+          setCurrentUser(data.username);
+        } else {
+          throw new Error("로그인 필요");
+        }
+      } catch (e) {
+        console.error("사용자 정보 확인 실패:", e);
+        alert("로그인이 필요합니다.");
+        navigate("/login");
+      }
+    };
+
+    fetchCurrentUser();
+  }, [navigate]);
+
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -147,9 +184,22 @@ const SuggestionWritePage = () => {
             ))}
           </select>
 
-          <button type="submit" className="suggestion-write-submit">
-            {isEdit ? '수정' : '등록'}
-          </button>
+          <div className="suggestion-button-group">
+            <button type="submit" className="suggestion-write-submit">
+              {isEdit ? '수정' : '등록'}
+            </button>
+
+            {isEdit && (
+              <button
+                type="button"
+                className="suggestion-delete-button"
+                onClick={handleDelete}
+              >
+                삭제
+              </button>
+            )}
+          </div>
+
         </form>
       </div>
     </Section>

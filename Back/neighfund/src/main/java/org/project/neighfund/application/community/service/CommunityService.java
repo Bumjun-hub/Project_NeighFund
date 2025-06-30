@@ -96,6 +96,32 @@ public class CommunityService {
         }).collect(Collectors.toList());
     }
 
+    @Transactional
+    public CommunityResponseDto getOne(Long id) {
+        Community post = validatePost(id);
+
+        // 좋아요 수 세기
+        long likeCount = post.getLikes().stream()
+                .filter(like -> like.getCommunity() != null)
+                .count();
+
+        // 작성자 이름 처리 (null 방지)
+        String username = (post.getMember() != null) ? post.getMember().getUsername() : "알 수 없음";
+
+        return new CommunityResponseDto(
+                post.getId(),
+                username,
+                post.getCategory().name(),
+                post.getStatus().name(),
+                post.getTitle(),
+                post.getContent(),
+                post.getCreatedAt(),
+                post.getUpdatedAt(),
+                likeCount,
+                false // 단건 조회에서는 liked 처리 안함 (필요시 추가)
+        );
+    }
+
 
 
 
