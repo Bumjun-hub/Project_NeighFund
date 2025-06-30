@@ -10,21 +10,23 @@ const SuggestionPage = () => {
     const [suggestions, setSuggestions] = useState([]);
     const navigate = useNavigate();
 
- const categoryMap = {
-  EDUCATION: '교육',
-  ENVIRONMENT: '환경',
-  CULTURE: '문화',
-  PET: '애완동물',
-  SPORTS: '운동',
-  FOOD: '음식',
-  HOBBY: '취미',
-  WELFARE: '복지',
-  ETC: '기타',
-};
+    const categoryMap = {
+        EDUCATION: '교육',
+        ENVIRONMENT: '환경',
+        CULTURE: '문화',
+        PET: '애완동물',
+        SPORTS: '운동',
+        FOOD: '음식',
+        HOBBY: '취미',
+        WELFARE: '복지',
+        ETC: '기타',
+    };
 
-    const status ={
-        'FUNDED' : '공감하기'
-    }
+    const status = {
+        FUNDED: '펀딩 완료',
+        ON_HOLD: '보류 중',
+        RECRUITING: '모집 중',
+    };
 
     useEffect(() => {
         const fetchSuggestion = async () => {
@@ -42,6 +44,8 @@ const SuggestionPage = () => {
     }, []);
 
 
+
+
     const filtered = suggestions
         .filter((item) =>
             categoryFilter === '전체' ? true : item.category === categoryFilter
@@ -55,9 +59,12 @@ const SuggestionPage = () => {
 
     const handleLike = (id) => {
         setSuggestions((prev) =>
-            prev.map((item) =>
-                item.id === id ? { ...item, likes: item.likes + 1 } : item
-            )
+            prev.map((item) => {
+                if (item.id === id && item.status === 'RECRUITING') {
+                    return { ...item, likes: item.likes + 1 };
+                }
+                return item;
+            })
         );
     };
 
@@ -93,21 +100,27 @@ const SuggestionPage = () => {
                 <div className="suggestion-list">
                     {filtered.map((item) => (
                         <div key={item.id} className="suggestion-card" data-category={item.category}>
+                             <button
+                                    className="suggestion-edit-button" // 🔧 이 클래스는 스타일링용
+                                    onClick={() => navigate(`/suggestion/write/${item.id}`)} // 🔧 수정 페이지로 이동
+                                >
+                                     ✏
+                                </button>
                             <div className="suggestion-category">#{categoryMap[item.category]}</div>
                             <div className="title">{item.title}</div>
                             <div className="suggestion-content">{item.content}</div>
                             <div className="suggestion-meta">
                                 <span
-                                    style={{ cursor: 'pointer' }}
-                                    onClick={() => handleLike(item.id)}
+                                    style={{ cursor: item.status === 'RECRUITING' ? 'pointer' : 'not-allowed' }}
+                                    onClick={() => item.status === 'RECRUITING' && handleLike(item.id)}
                                 >
                                     ♡ {item.likes}
                                 </span>
-                                {/* 날짜 포맷 예쁘게 하고 싶을때} */}
-                                {/* <span>{new Date(item.createdAt).toLocaleDateString()}</span> */}
                                 <span>{item.createdAt}</span>
                                 <span className="suggestion-status">{status[item.status]}</span>
+                               
                             </div>
+
                         </div>
                     ))}
                 </div>

@@ -11,18 +11,22 @@ const SuggestionWritePage = () => {
   const [formData, setFormData] = useState({
     title: '',
     content: '',
-    category: '환경',
+    category: 'EDUCATION', // 기본값
   });
 
   const categoryMap = {
-    '환경': '환경',
-    '교통': '교통',
-    '문화': '문화',
-    '교육': '교육',
-    '복지': '복지',
+    EDUCATION: '교육',
+    ENVIRONMENT: '환경',
+    CULTURE: '문화',
+    PET: '애완동물',
+    SPORTS: '운동',
+    FOOD: '음식',
+    HOBBY: '취미',
+    WELFARE: '복지',
+    ETC: '기타',
   };
 
-  // 수정 시 기존 글 데이터 불러오기 (API가 없으면 이 부분 생략 가능)
+  // 수정 모드일 경우 기존 데이터 불러오기
   useEffect(() => {
     if (isEdit) {
       fetch(`/api/community/view/SUGGESTION`, {
@@ -45,7 +49,7 @@ const SuggestionWritePage = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
@@ -53,7 +57,7 @@ const SuggestionWritePage = () => {
 
     const payload = {
       ...formData,
-      category: 'SUGGESTION', // 고정 또는 formData.category로 쓰면 유동적
+      status: 'RECRUITING', // 작성 시 기본 상태
     };
 
     const url = isEdit
@@ -84,6 +88,29 @@ const SuggestionWritePage = () => {
     }
   };
 
+
+  // 🔴 삭제 요청 핸들러 추가
+  const handleDelete = async () => {
+    if (!window.confirm('정말로 삭제하시겠습니까?')) return;
+
+    try {
+      const res = await fetch(`/api/community/delete/${id}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+
+      if (res.ok) {
+        alert('게시글이 삭제되었습니다.');
+        navigate('/suggestion');
+      } else {
+        const msg = await res.text();
+        alert('삭제 실패: ' + msg);
+      }
+    } catch (err) {
+      console.error('삭제 실패:', err);
+      alert('서버 오류');
+    }
+  };
   return (
     <Section>
       <div className="suggestion-write-wrapper">
@@ -110,9 +137,13 @@ const SuggestionWritePage = () => {
           />
 
           <label>카테고리</label>
-          <select name="category" value={formData.category} onChange={handleChange}>
-            {Object.keys(categoryMap).map((key) => (
-              <option key={key} value={key}>{categoryMap[key]}</option>
+          <select
+            name="category"
+            value={formData.category}
+            onChange={handleChange}
+          >
+            {Object.entries(categoryMap).map(([key, value]) => (
+              <option key={key} value={key}>{value}</option>
             ))}
           </select>
 
