@@ -45,21 +45,10 @@ public class Like {
     @Column(updatable = false)
     private LocalDateTime createdAt; // 생성일
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "gathering_id", nullable = false)
-    private Gathering gathering;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "gathering_post_id", nullable = false)
     private GatheringPost gatheringPost;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "community_id", nullable = false)
-    private Community community;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "fund_id", nullable = false)
-    private Fund fund;
 
 
 }

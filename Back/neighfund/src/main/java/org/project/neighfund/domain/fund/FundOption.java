@@ -2,6 +2,7 @@ package org.project.neighfund.domain.fund;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.project.neighfund.domain.common.BaseEntity;
 
 @Entity
 @Getter
@@ -9,7 +10,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class FundOption {
+public class FundOption extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
