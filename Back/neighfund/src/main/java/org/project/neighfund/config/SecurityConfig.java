@@ -43,6 +43,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, "/api/auth/signup", "/api/auth/login").permitAll()
                         .requestMatchers("api/auth/**").authenticated()
+                        .requestMatchers("/api/community/view/**").permitAll()
                         .requestMatchers("/uploads/**").permitAll() // 이미지 경로
                         .requestMatchers("/login/oauth2/**", "/api/Oauth/**", "/oauth2/**").permitAll() // social login api 허용
                         .requestMatchers("/ws/**").authenticated()// 웹소켓 엔드포인트 허용
