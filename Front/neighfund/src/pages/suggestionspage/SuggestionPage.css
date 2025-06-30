@@ -69,16 +69,59 @@
   transform: translateY(-2px);
 }
 
+/* 환경 */
 .suggestion-card[data-category="환경"] {
   background: linear-gradient(to right, #ffffff 65%, #b2dfdb);
+  /* 연녹색 */
 }
 
+.suggestion-card[data-category="환경"] .suggestion-category {
+  background-color: #4caf50;
+  /* 녹색 */
+}
+
+/* 교통 */
+.suggestion-card[data-category="교통"] {
+  background: linear-gradient(to right, #ffffff 65%, #ffe082);
+  /* 연노랑 */
+}
+
+.suggestion-card[data-category="교통"] .suggestion-category {
+  background-color: #ffb300;
+  /* 진노랑 */
+}
+
+/* 문화 */
+.suggestion-card[data-category="문화"] {
+  background: linear-gradient(to right, #ffffff 65%, #e1bee7);
+  /* 연보라 */
+}
+
+.suggestion-card[data-category="문화"] .suggestion-category {
+  background-color: #ab47bc;
+  /* 보라 */
+}
+
+/* 교육 */
 .suggestion-card[data-category="교육"] {
   background: linear-gradient(to right, #ffffff 65%, #bbdefb);
+  /* 연파랑 */
 }
 
-.suggestion-card[data-category="생활환경"] {
-  background: linear-gradient(to right, #ffffff 65%, #f0e68c);
+.suggestion-card[data-category="교육"] .suggestion-category {
+  background-color: #2196f3;
+  /* 파랑 */
+}
+
+/* 복지 */
+.suggestion-card[data-category="복지"] {
+  background: linear-gradient(to right, #ffffff 65%, #c8e6c9);
+  /* 연초록 */
+}
+
+.suggestion-card[data-category="복지"] .suggestion-category {
+  background-color: #66bb6a;
+  /* 초록 */
 }
 
 .suggestion-card .suggestion-category {
@@ -147,9 +190,10 @@
     font-size: 14px;
   }
 
-  .title, .suggestion-content {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
+  .title,
+  .suggestion-content {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }
