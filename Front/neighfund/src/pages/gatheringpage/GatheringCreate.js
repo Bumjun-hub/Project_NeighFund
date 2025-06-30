@@ -6,7 +6,7 @@ const GatheringCreate = () => {
   const [formData, setFormData] = useState({
     title: '',
     category: '',
-    type: 'FREE', // 기본값으로 무료 소모임 고정
+    type: 'FREE',
     dongName: '',
     content: '',
     introduction: '',
