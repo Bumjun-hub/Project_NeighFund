@@ -23,6 +23,8 @@ function App() {
             <Route path="/" element={<MainPage />} />
             <Route path="/suggestion" element={<SuggestionPage />} />
             <Route path="/suggestion/write" element={<SuggestionWritePage />} />
+            <Route path="/suggestion/write/:id" element={<SuggestionWritePage/>}/>
+          
 
             <Route path="/funding" element={<FundPage />} />
             <Route path ="/funding/info/:id" element={<FundInfoPage/>}/>
