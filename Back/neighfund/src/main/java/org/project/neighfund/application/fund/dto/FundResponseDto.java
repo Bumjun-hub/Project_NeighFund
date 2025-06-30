@@ -35,7 +35,7 @@ public class FundResponseDto {
 
     private Integer progressRate;  //달성률
     private Integer targetAmount;  //목표금액
-    private Integer currentAmount;  //현재 모인 금액
+    private Long currentAmount;  //현재 모인 금액
     private Integer currentParticipants = 0;  //현재참여자
     private LocalDateTime deadline;  //마감일
     private String hashTags;

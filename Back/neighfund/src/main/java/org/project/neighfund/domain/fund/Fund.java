@@ -60,10 +60,10 @@ public class Fund extends BaseEntity {
     private List<FundContentImage> fundContentImages ;
 
     @Column(name = "current_participants", nullable = false)
-    private Long currentParticipants = 0L;  //현재참여자
+    private Integer currentParticipants = 0;  //현재참여자
 
     @Column(name = "target_amount", nullable = false)
-    private Long targetAmount;  //목표금액
+    private Integer targetAmount;  //목표금액
 
     @Column(name = "current_amount", nullable = false)
     private Long currentAmount = 0L;  //현재 모인 금액

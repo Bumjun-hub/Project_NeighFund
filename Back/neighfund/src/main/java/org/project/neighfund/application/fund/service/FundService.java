@@ -9,6 +9,7 @@ import org.project.neighfund.application.fund.dto.FundResponseDto;
 import org.project.neighfund.domain.fund.*;
 import org.project.neighfund.domain.member.Member;
 import org.project.neighfund.domain.member.MemberRepository;
+import org.project.neighfund.domain.participation.Participation;
 import org.project.neighfund.enums.CommunityCategory;
 import org.project.neighfund.enums.FundStatus;
 import org.project.neighfund.enums.FundType;
@@ -52,7 +53,7 @@ public class FundService {
                 .content(fundDto.getContent())
                 .currentParticipants(0)
                 .targetAmount(fundDto.getTargetAmount())
-                .currentAmount(0)
+                .currentAmount(0L)
                 .progressRate(0)
                 .deadline(fundDto.getDeadline())
                 .hashTags(fundDto.getHashTags())
@@ -74,7 +75,6 @@ public class FundService {
         }
 
         //썸네일 + 내용
-        if (imageFiles != null && !imageFiles.isEmpty()) {
             for (MultipartFile imageFile : imageFiles) {
                 String imageUrl = imageService.saveImage(imageFile);
 
@@ -87,9 +87,7 @@ public class FundService {
                     fundImageRepository.save(image);
                 }
             }
-        }
         // content용
-        if (contentImages != null && !contentImages.isEmpty()) {
             for (MultipartFile contentFile : contentImages) {
                 String imageUrl = imageService.saveImage(contentFile);
 
@@ -102,7 +100,6 @@ public class FundService {
                     fundContentImageRepository.save(image);
                 }
             }
-        }
     }
     //수정  글을 수정하면 다시 검수 받아야 함
     @Transactional
@@ -361,6 +358,7 @@ public class FundService {
             throw new IllegalArgumentException("마감일은 현재 이후로 설정해주세요");
         }
     }
+
 
     //작성자확인
     public void validateMember (Member loginUser, Member writer){
