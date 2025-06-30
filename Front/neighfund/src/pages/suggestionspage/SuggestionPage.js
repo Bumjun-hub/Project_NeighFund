@@ -10,18 +10,26 @@ const SuggestionPage = () => {
     const [suggestions, setSuggestions] = useState([]);
     const navigate = useNavigate();
 
-    const categoryMap = {
-        '환경': '환경',
-        '교통': '교통',
-        '문화': '문화',
-        '교육': '교육',
-        '복지': '복지',
-    };
+ const categoryMap = {
+  EDUCATION: '교육',
+  ENVIRONMENT: '환경',
+  CULTURE: '문화',
+  PET: '애완동물',
+  SPORTS: '운동',
+  FOOD: '음식',
+  HOBBY: '취미',
+  WELFARE: '복지',
+  ETC: '기타',
+};
+
+    const status ={
+        'FUNDED' : '공감하기'
+    }
 
     useEffect(() => {
         const fetchSuggestion = async () => {
             try {
-                const res = await fetch('/api/community/view/SUGGESTION', {
+                const res = await fetch('/api/community/view', {
                     credentials: 'include',
                 });
                 const data = await res.json();
@@ -85,7 +93,7 @@ const SuggestionPage = () => {
                 <div className="suggestion-list">
                     {filtered.map((item) => (
                         <div key={item.id} className="suggestion-card" data-category={item.category}>
-                            <div className="suggestion-category">#{item.category}</div>
+                            <div className="suggestion-category">#{categoryMap[item.category]}</div>
                             <div className="title">{item.title}</div>
                             <div className="suggestion-content">{item.content}</div>
                             <div className="suggestion-meta">
@@ -98,7 +106,7 @@ const SuggestionPage = () => {
                                 {/* 날짜 포맷 예쁘게 하고 싶을때} */}
                                 {/* <span>{new Date(item.createdAt).toLocaleDateString()}</span> */}
                                 <span>{item.createdAt}</span>
-                                <span className="suggestion-status">{item.status}</span>
+                                <span className="suggestion-status">{status[item.status]}</span>
                             </div>
                         </div>
                     ))}

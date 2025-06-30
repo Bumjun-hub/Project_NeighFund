@@ -50,6 +50,16 @@ public class CommunityController {
         return ResponseEntity.ok("게시물이 삭제되었습니다.");
     }
 
+    // 전체 글 조회
+    @GetMapping("/view")
+    public ResponseEntity<List<CommunityResponseDto>> viewAll(
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        Member loginUser = userDetails.getMember();
+        List<CommunityResponseDto> posts = communityService.viewAll(loginUser);
+        return ResponseEntity.ok(posts);
+    }
+
+
     //카테고리별조회
     @GetMapping("/view/{category}")
     public ResponseEntity<List<CommunityResponseDto>> viewPost(

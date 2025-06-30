@@ -103,12 +103,12 @@
 }
 
 /* 교육 */
-.suggestion-card[data-category="교육"] {
+.suggestion-card[data-category="EDUCATION"] {
   background: linear-gradient(to right, #ffffff 65%, #bbdefb);
   /* 연파랑 */
 }
 
-.suggestion-card[data-category="교육"] .suggestion-category {
+.suggestion-card[data-category="EDUCATION"] .suggestion-category {
   background-color: #2196f3;
   /* 파랑 */
 }
