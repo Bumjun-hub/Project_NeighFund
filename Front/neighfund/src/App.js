@@ -12,6 +12,7 @@ import SuggestionWritePage from './pages/suggestionspage/SuggestionWritePage';
 import { AuthProvider } from './utils/AuthProvider';
 import EditProfile from './pages/mypage/MyPageEditProfile';
 import Gathering from './pages/gatheringpage/Gathering';
+import GatheringCreate from './pages/gatheringpage/GatheringCreate';
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
             <Route path="/editProfile" element={<EditProfile />} />
 
             <Route path="/gathering" element={<Gathering />} />
+            <Route path="/gatheringcreate" element={<GatheringCreate />} />
           </Route>
         </Routes>
       </AuthProvider>
