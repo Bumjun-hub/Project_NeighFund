@@ -4,9 +4,6 @@ import './MyPage.css';
 import MyPageEditProfile from './MyPageEditProfile';
 import CheckPw from './CheckPw.js'; 
 import ChangePw from './ChangePw.js';
-// import WishList  from './WishList';
-// import RecipeFavorite  from './RecipeFavorite';
-// import RecipeInfoPage from '../recipepage/RecipeInfoPage'; 
 import MyPosts from './MyPosts';
 import { PiFinnTheHumanBold } from "react-icons/pi";
 import { authenticatedFetch } from '../../utils/authUtils';
@@ -23,7 +20,7 @@ const MyPage = () => {
         address: '',
         profileImage: ''
     });
-    const [updateKey, setUpdateKey] = useState(0); // ✅ 강제 리렌더링용
+    const [updateKey, setUpdateKey] = useState(0);
     const [currentView, setCurrentView] = useState('main'); 
     const [showPasswordCheck, setShowPasswordCheck] = useState(false); 
     const { user } = useAuth();
@@ -68,19 +65,6 @@ const MyPage = () => {
         }
     }, [location]);
 
-    // useEffect(() => {
-    //     const handlePopState = (event) => {
-    //         if (currentView === 'recipeDetail') {
-    //             setSelectedRecipe(null);
-    //             setCurrentView('recipeFavorite');
-    //         } else {
-    //             setCurrentView('main');
-    //         }
-    //     };
-    //     window.addEventListener('popstate', handlePopState);
-    //     return () => window.removeEventListener('popstate', handlePopState);
-    // }, [currentView]);
-
     const handleChangePassword = () => {
         setShowChangePw(true);
         navigate('/mypage?view=changePw');
@@ -91,17 +75,6 @@ const MyPage = () => {
         navigate('/mypage');
     };
 
-    const handleRecipeClick = (recipe) => {
-        setSelectedRecipe(recipe);
-        setCurrentView('recipeDetail');
-        navigate(`/mypage?view=recipeDetail&recipeId=${recipe.RCP_SEQ}`);
-    };
-
-    // const handleBackFromRecipe = () => {
-    //     setSelectedRecipe(null);
-    //     setCurrentView('recipeFavorite');
-    //     navigate('/mypage?view=recipeFavorite');
-    // };
 
     const getProfileImageUrl = (imageUrl) => {
         if (!imageUrl) return null;
@@ -119,7 +92,7 @@ const MyPage = () => {
                 const data = await response.json();
                 
                 setUserInfo({
-                    username: data.username || data.name, // ✅ name도 고려
+                    username: data.username || data.name,
                     email: data.email,
                     phone: data.phone,
                     address: data.address,
@@ -144,46 +117,14 @@ const MyPage = () => {
 
     const handlePasswordCheckCancel = () => {
         setShowPasswordCheck(false);
-        navigate('/mypage'); // 메인으로 돌아가기
+        navigate('/mypage');
     };
-
-    // const handleGoToWishList = () => {
-    //     setCurrentView('wishlist');
-    //     navigate('/mypage?view=wishlist');
-    // };
-
-    // const handleGoToRecipeFavorite = () => {
-    //     setCurrentView('recipeFavorite');
-    //     navigate('/mypage?view=recipeFavorite');
-    // };
 
     const handleGoToMyPost = () => {
         setCurrentView('myPosts');
         navigate('/mypage?view=myPosts');
     };
 
-    // URL 파라미터에 따라 뷰 설정
-    useEffect(() => {
-        const urlParams = new URLSearchParams(location.search);
-        const view = urlParams.get('view');
-        const recipeId = urlParams.get('recipeId');
-
-        if (view) {
-            setCurrentView(view);
-            if (view === 'changePw') {
-                setShowChangePw(true);
-            } else if (view === 'recipeDetail' && recipeId) {
-                // 필요시 레시피 데이터를 다시 가져오는 로직 추가
-                // setSelectedRecipe(recipe);
-            }
-        } else {
-            // URL에 view 파라미터가 없으면 메인 화면
-            setCurrentView('main');
-            setShowChangePw(false);
-            setShowPasswordCheck(false);
-            setSelectedRecipe(null);
-        }
-    }, [location.search]);
 
     // ✅ 프로필 편집에서 메인으로 돌아올 때 사용자 정보 새로고침
     useEffect(() => {
@@ -192,27 +133,9 @@ const MyPage = () => {
         }
     }, [currentView]);
 
-    // if (currentView === 'recipeDetail' && selectedRecipe) {
-    //     return (
-    //         <RecipeInfoPage 
-    //             recipe={selectedRecipe} 
-    //             onBackClick={handleBackFromRecipe}
-    //             hideHeartButton={true}
-    //         />
-    //     );
-    // }
-
     if (currentView === 'editProfile') {
         return <MyPageEditProfile />;
     }
-
-    // if (currentView === 'wishlist') {
-    //     return <WishList />;
-    // }
-
-    // if (currentView === 'recipeFavorite') {
-    //     return <RecipeFavorite onRecipeClick={handleRecipeClick} />;
-    // }
 
     if (currentView === 'myPosts') {
         return <MyPosts />;
@@ -226,11 +149,11 @@ const MyPage = () => {
                         <img 
                             src={getProfileImageUrl(userInfo.profileImage)}
                             alt="프로필"
-                            key={userInfo.profileImage} // ✅ 이미지 변경 시 리렌더링 강제
+                            key={userInfo.profileImage} 
                         />
                     ) : (
-                        <div>
-                            <PiFinnTheHumanBold size={80}/>
+                        <div className="mypage-profile-placeholder">
+                            {(userInfo?.username || userInfo?.name)?.charAt(0).toUpperCase() || 'U'}
                         </div>
                     )}
                 </div>
@@ -257,16 +180,6 @@ const MyPage = () => {
                         text="비밀번호 변경" 
                         onClick={handleChangePassword}
                     />
-                    {/* <MenuItem 
-                        icon="💜" 
-                        text="위시리스트" 
-                        onClick={handleGoToWishList}
-                    /> */}
-                    {/* <MenuItem 
-                        icon="🔖" 
-                        text="레시피 즐겨찾기" 
-                        onClick={handleGoToRecipeFavorite}
-                    /> */}
                     <MenuItem 
                         icon="📝" 
                         text="내가 쓴 글" 
