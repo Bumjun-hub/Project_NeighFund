@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import './SuggestionWritePage.css';
 import Section from '../../components/Section';
 import { refreshToken } from '../../utils/authUtils';
+import SuggestionAPI from './SuggestionAPI';
 
 const SuggestionWritePage = () => {
 
@@ -29,58 +30,55 @@ const SuggestionWritePage = () => {
     ETC: '기타',
   };
 
-  // 수정 모드일 경우 기존 데이터 불러오기
-  useEffect(() => {
-    if (isEdit) {
-      fetch(`/api/community/detail/${id}`, {
-        credentials: 'include',
-      })
-        .then(res => res.json())
-        .then(post => {
-          if (post.username !== currentUser) {
-            alert("작성자만 수정할 수 있습니다.")
-            navigate("/suggestion");
-            return;
-          }
-          setFormData({
-            title: post.title,
-            content: post.content,
-            category: post.category,
-          });
-        })
-        .catch(err => console.error('수정글 로딩 실패:', err));
-    }
-  }, [id, isEdit]);
-
 
   //사용자 권한 읽기
   useEffect(() => {
-    const fetchCurrentUser = async () => {
+    const fetchUser = async () => {
       try {
-        let res = await fetch("/api/roleinfo", { credentials: "include" });
-
-        if (res.status === 401) {
-          const refreshed = await refreshToken(); // 토큰 갱신 함수
-          if (refreshed) {
-            res = await fetch("/api/roleinfo", { credentials: "include" });
-          }
-        }
-
-        if (res.ok) {
-          const data = await res.json(); // 👈 username을 포함하고 있어야 함
-          setCurrentUser(data.username);
-        } else {
-          throw new Error("로그인 필요");
-        }
+        let user = await SuggestionAPI.getCurrentUser();
+        setCurrentUser(user.username);
       } catch (e) {
-        console.error("사용자 정보 확인 실패:", e);
-        alert("로그인이 필요합니다.");
-        navigate("/login");
+        const refreshed = await refreshToken();
+        if (refreshed) {
+          try {
+            const user = await SuggestionAPI.getCurrentUser();
+            setCurrentUser(user.username);
+          } catch (err) {
+            console.error("재요청 실패:", err);
+            alert("로그인이 필요합니다.");
+            navigate("/login");
+          }
+        } else {
+          alert("로그인이 필요합니다.");
+          navigate("/login");
+        }
       }
     };
-
-    fetchCurrentUser();
+    fetchUser();
   }, [navigate]);
+
+
+  useEffect(() => {
+    const fetchEditData = async () => {
+      if (!isEdit) return;
+      try {
+        const post = await SuggestionAPI.getSuggestionDetail(id);
+        if (post.username !== currentUser) {
+          alert("작성자만 수정할 수 있습니다.");
+          navigate("/suggestion");
+          return;
+        }
+        setFormData({
+          title: post.title,
+          content: post.content,
+          category: post.category,
+        });
+      } catch (err) {
+        console.error('수정글 로딩 실패:', err);
+      }
+    };
+    fetchEditData();
+  }, [id, isEdit, currentUser]);
 
 
 
@@ -91,63 +89,35 @@ const SuggestionWritePage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const payload = {
-      ...formData,
-      status: 'RECRUITING', // 작성 시 기본 상태
-    };
-
-    const url = isEdit
-      ? `/api/community/edit/${id}`
-      : '/api/community/write';
-    const method = isEdit ? 'PUT' : 'POST';
+    const payload = { ...formData, status: 'RECRUITING' };
 
     try {
-      const res = await fetch(url, {
-        method,
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-      });
-
-      if (res.ok) {
-        alert(isEdit ? '제안글이 수정되었습니다!' : '제안글이 등록되었습니다!');
-        navigate('/suggestion');
+      if (isEdit) {
+        await SuggestionAPI.updateSuggestion(id, payload);
+        alert('제안글이 수정되었습니다!');
       } else {
-        const msg = await res.text();
-        alert('요청 실패: ' + msg);
+        await SuggestionAPI.createSuggestion(payload);
+        alert('제안글이 등록되었습니다!');
       }
+      navigate('/suggestion');
     } catch (err) {
       console.error('요청 실패:', err);
       alert('서버 오류');
     }
   };
 
-
-  // 🔴 삭제 요청 핸들러 추가
   const handleDelete = async () => {
     if (!window.confirm('정말로 삭제하시겠습니까?')) return;
-
     try {
-      const res = await fetch(`/api/community/delete/${id}`, {
-        method: 'DELETE',
-        credentials: 'include',
-      });
-
-      if (res.ok) {
-        alert('게시글이 삭제되었습니다.');
-        navigate('/suggestion');
-      } else {
-        const msg = await res.text();
-        alert('삭제 실패: ' + msg);
-      }
+      await SuggestionAPI.deleteSuggestion(id);
+      alert('게시글이 삭제되었습니다.');
+      navigate('/suggestion');
     } catch (err) {
       console.error('삭제 실패:', err);
       alert('서버 오류');
     }
   };
+
   return (
     <Section>
       <div className="suggestion-write-wrapper">

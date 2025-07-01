@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import './SuggestionPage.css';
 import { useNavigate } from "react-router-dom";
 import Section from "../../components/Section";
+import SuggestionAPI from './SuggestionAPI';
 
 const SuggestionPage = () => {
     const [categoryFilter, setCategoryFilter] = useState('전체');
@@ -31,10 +32,7 @@ const SuggestionPage = () => {
     useEffect(() => {
         const fetchSuggestion = async () => {
             try {
-                const res = await fetch('/api/community/view', {
-                    credentials: 'include',
-                });
-                const data = await res.json();
+                const data = await SuggestionAPI.getAllSuggestions();
                 setSuggestions(Array.isArray(data) ? data : []);
             } catch (err) {
                 console.error("제안글 불러오기 실패:", err);
