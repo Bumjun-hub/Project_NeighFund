@@ -66,7 +66,7 @@ export const refreshToken = async () => {
     try {
         console.log('🔄 refreshToken 함수 시작');
         
-        const response = await fetch('http://localhost:8080/api/refresh', {
+        const response = await fetch('http://localhost:8080/api/auth/refresh', {
             method: 'POST',
             credentials: 'include',
         });

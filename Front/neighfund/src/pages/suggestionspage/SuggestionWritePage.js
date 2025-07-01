@@ -33,6 +33,8 @@ const SuggestionWritePage = () => {
 
   //사용자 권한 읽기
   useEffect(() => {
+    if (!isEdit) return; // 수정 모드일 때만 사용자 정보 요청
+
     const fetchUser = async () => {
       try {
         let user = await SuggestionAPI.getCurrentUser();
@@ -54,13 +56,15 @@ const SuggestionWritePage = () => {
         }
       }
     };
+
     fetchUser();
-  }, [navigate]);
+  }, [navigate, isEdit]);
+
 
 
   useEffect(() => {
     const fetchEditData = async () => {
-      if (!isEdit) return;
+      if (!isEdit || !currentUser) return; // currentUser가 없으면 대기
       try {
         const post = await SuggestionAPI.getSuggestionDetail(id);
         if (post.username !== currentUser) {
