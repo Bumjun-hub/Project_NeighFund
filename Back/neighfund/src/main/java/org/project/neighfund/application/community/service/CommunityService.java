@@ -62,7 +62,70 @@ public class CommunityService {
         communityRepository.delete(community);
     }
 
-    //전체조회
+    @Transactional
+    public List<CommunityResponseDto> viewAll(Member loginUser) {
+        List<Community> communities = communityRepository.findAllByOrderByCreatedAtDesc();
+
+        return communities.stream().map(post -> {
+            if (post.getStatus() == CommunityStatus.RECRUITING && post.getLikes().size() >= 50) {
+                post.setStatus(CommunityStatus.FUNDED);
+            }
+
+            boolean liked = false;
+            if (loginUser != null && loginUser.getId() != null) {
+                liked = post.getLikes().stream()
+                        .filter(like -> like.getCommunity() != null && like.getMember() != null)
+                        .anyMatch(like -> like.getMember().getId().equals(loginUser.getId()));
+            }
+
+            // 🛡️ 여기서 member가 null인지 체크하고 처리
+            String username = (post.getMember() != null) ? post.getMember().getUsername() : "알 수 없음";
+
+            return new CommunityResponseDto(
+                    post.getId(),
+                    username,
+                    post.getCategory().name(),
+                    post.getStatus().name(),
+                    post.getTitle(),
+                    post.getContent(),
+                    post.getCreatedAt(),
+                    post.getUpdatedAt(),
+                    (long) post.getLikes().stream().filter(like -> like.getCommunity() != null).count(),
+                    liked
+            );
+        }).collect(Collectors.toList());
+    }
+
+    @Transactional
+    public CommunityResponseDto getOne(Long id) {
+        Community post = validatePost(id);
+
+        // 좋아요 수 세기
+        long likeCount = post.getLikes().stream()
+                .filter(like -> like.getCommunity() != null)
+                .count();
+
+        // 작성자 이름 처리 (null 방지)
+        String username = (post.getMember() != null) ? post.getMember().getUsername() : "알 수 없음";
+
+        return new CommunityResponseDto(
+                post.getId(),
+                username,
+                post.getCategory().name(),
+                post.getStatus().name(),
+                post.getTitle(),
+                post.getContent(),
+                post.getCreatedAt(),
+                post.getUpdatedAt(),
+                likeCount,
+                false // 단건 조회에서는 liked 처리 안함 (필요시 추가)
+        );
+    }
+
+
+
+
+    //카테고리 조회
     @Transactional
     public List<CommunityResponseDto> viewPost(CommunityCategory category, Member loginUser) {
         List<Community> communities = communityRepository.findByCategoryOrderByCreatedAtDesc(category);

@@ -2,6 +2,7 @@ package org.project.neighfund.domain.fund;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.project.neighfund.domain.common.BaseEntity;
 import org.project.neighfund.domain.like.Like;
 import org.project.neighfund.domain.member.Member;
 import org.project.neighfund.enums.CommunityCategory;
@@ -17,7 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Fund {
+public class Fund extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -38,6 +39,9 @@ public class Fund {
     @Column(nullable = false)
     private FundStatus fundStatus;
 
+    @Column(name = "is_approved", nullable = false)
+    private Boolean isApproved = false; // 검수상태 false -> 안보임
+
     @Column(nullable = false)
     private String title;
 
@@ -51,6 +55,9 @@ public class Fund {
 
     @OneToMany(mappedBy = "fund", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<FundImage> fundImages ;
+
+    @OneToMany(mappedBy = "fund", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<FundContentImage> fundContentImages ;
 
     @Column(name = "current_participants", nullable = false)
     private Integer currentParticipants = 0;  //현재참여자
@@ -66,6 +73,12 @@ public class Fund {
 
     @Column(name = "deadline", nullable = false)
     private LocalDateTime deadline;  //마감일
+
+    @Column(name = "hash_tags")
+    private String hashTags;
+
+    @OneToMany(mappedBy = "fund", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<FundOption> fundOptions ;
 
     @OneToMany(mappedBy = "fund", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Like> likes;

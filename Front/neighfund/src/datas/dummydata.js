@@ -196,7 +196,7 @@ export const gatheringData  = [
     title: "🚀 스타트업 창업 스터디 모임",
     description: "예비 창업가 실전 스터디! 매주 목요일 7시 강남역",
     price: "월 5만원",
-    image: "/api/placeholder/200/150",
+    image: "/images/coffee.jpg",
     likes: 24,
     comments: 18,
     category: "창업"
@@ -206,7 +206,7 @@ export const gatheringData  = [
     title: "💼 직장인 협업툴 마스터 클래스",
     description: "직장인들을 위한 협업툴 완전 정복 프로그램! 노션, 슬랙, 피그마, 아사나, 트렐로 등 최신 협업툴을 A부터 Z까지 마스터하는 8주 완성 코스입니다. 단순한 기능 소개를 넘어서 실제 업무 시나리오를 기반으로 한 실습 중심의 커리큘럼으로 구성되어 있어요. 프로젝트 관리, 팀 커뮤니케이션, 문서 협업, 디자인 협업까지 모든 업무 영역에서 효율성을 극대화하는 노하우를 전수합니다. 수강생들에게는 각종 템플릿과 워크시트를 제공하며, 수료 후에도 지속적인 Q&A 지원을 받을 수 있어요.",
     price: "8만원",
-    image: "/api/placeholder/200/150",
+    image: "/images/programmer.jpg",
     likes: 31,
     comments: 12,
     category: "협업"
@@ -216,7 +216,7 @@ export const gatheringData  = [
     title: "🎨 UX/UI 디자이너 성장 모임",
     description: "디자이너 포트폴리오 리뷰 모임",
     price: "월 3만원",
-    image: "/api/placeholder/200/150",
+    image: "/images/study.jpg",
     likes: 47,
     comments: 29,
     category: "디자인"
@@ -226,7 +226,7 @@ export const gatheringData  = [
     title: "🏺 도자기 공예 원데이 클래스",
     description: "손으로 직접 만드는 도자기의 매력을 느껴보세요! 20년 경력의 전문 도예가 선생님과 함께하는 특별한 하루 체험 클래스입니다. 물레 돌리기부터 시작해서 성형, 장식, 유약 바르기까지 도자기 제작의 전 과정을 직접 경험할 수 있어요. 초보자도 걱정 없이 참여할 수 있도록 1:1 개별 지도를 제공하며, 각자의 개성이 담긴 유니크한 작품을 완성할 수 있습니다. 완성된 작품은 전문 가마에서 구워져 2주 후 픽업 가능하며, 일상에서 실제로 사용할 수 있는 실용적인 그릇으로 제작됩니다. 홍대 감성 가득한 아늑한 공방에서 진행되며, 차와 간식도 함께 제공돼요!",
     price: "6만원",
-    image: "/api/placeholder/200/150",
+    image: "/images/pottery.jpg",
     likes: 19,
     comments: 8,
     category: "공예"
@@ -236,7 +236,7 @@ export const gatheringData  = [
     title: "🌲 주말 등산 힐링 모임",
     description: "매주 토요일 서울 근교 등산 모임",
     price: "무료 (교통비 개별)",
-    image: "/api/placeholder/200/150",
+    image: "/images/mountaineer.jpg",
     likes: 63,
     comments: 34,
     category: "자연"
