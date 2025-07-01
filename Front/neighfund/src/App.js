@@ -13,37 +13,59 @@ import { AuthProvider } from './utils/AuthProvider';
 import EditProfile from './pages/mypage/MyPageEditProfile';
 import Gathering from './pages/gatheringpage/Gathering';
 import GatheringCreate from './pages/gatheringpage/GatheringCreate';
+
 import ClassCreationPage from './pages/gatheringpage/ClassCreationPage';
 import GatheringInfo from './pages/gatheringpage/GatheringInfo';
+
+import FundCreateLayout from './pages/fundpage/FundCreateLayout';
+import FundCreateTermsPage from './pages/fundpage/FundCreateTermsPage';
+import FundCreateInfoPage from './pages/fundpage/FundCreateInfoPage';
+import FundCreateStoryPage from './pages/fundpage/FundCreateStoryPage';
+import FundCreateRewardPage from './pages/fundpage/FundCreateRewardPage';
+import { FundingProvider } from './pages/fundpage/FundingProvider';
+
 
 function App() {
   return (
     <div className="App">
-      <AuthProvider>
-        <Routes>
-          <Route element={<Layout />}>
-            <Route path="/" element={<MainPage />} />
-            <Route path="/suggestion" element={<SuggestionPage />} />
-            <Route path="/suggestion/write" element={<SuggestionWritePage />} />
-            <Route path="/suggestion/write/:id" element={<SuggestionWritePage/>}/>
-          
+      <FundingProvider>
+        <AuthProvider>
+          <Routes>
+            <Route element={<Layout />}>
+              <Route path="/" element={<MainPage />} />
+              <Route path="/suggestion" element={<SuggestionPage />} />
+              <Route path="/suggestion/write" element={<SuggestionWritePage />} />
+              <Route path="/suggestion/write/:id" element={<SuggestionWritePage />} />
 
-            <Route path="/funding" element={<FundPage />} />
-            <Route path ="/funding/info/:id" element={<FundInfoPage/>}/>
 
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/member" element={<MemberPage />} />
-            <Route path="/mypage" element={<MyPage />} />
-            <Route path="/editProfile" element={<EditProfile />} />
+              <Route path="/funding" element={<FundPage />} />
+              <Route path="/funding/info/:id" element={<FundInfoPage />} />
+              <Route path="/funding/create/Layout" element={<FundCreateLayout />} />
+              <Route path="/funding/create/terms" element={<FundCreateTermsPage />} />
+              <Route path="/funding/create/info" element={<FundCreateInfoPage />} />
+              <Route path="/funding/create/story" element={<FundCreateStoryPage />} />
+              <Route path="/funding/create/reward" element={<FundCreateRewardPage />} />
 
-            <Route path="/gathering" element={<Gathering />} />
-            <Route path="/gatheringcreate" element={<GatheringCreate />} />
-            <Route path="/classcreationpage" element={<ClassCreationPage />} />
-            <Route path="/gatherings/:gatheringId" element={<GatheringInfo />} />
-            
-          </Route>
-        </Routes>
-      </AuthProvider>
+
+              <Route path="/gathering" element={<Gathering />} />
+              <Route path="/gatheringcreate" element={<GatheringCreate />} />
+              <Route path="/classcreationpage" element={<ClassCreationPage />} />
+              <Route path="/gatherings/:gatheringId" element={<GatheringInfo />} />
+
+
+
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/member" element={<MemberPage />} />
+              <Route path="/mypage" element={<MyPage />} />
+              <Route path="/editProfile" element={<EditProfile />} />
+
+              <Route path="/gathering" element={<Gathering />} />
+              <Route path="/gatheringcreate" element={<GatheringCreate />} />
+            </Route>
+          </Routes>
+        </AuthProvider>
+      </FundingProvider>
+
     </div>
   );
 }

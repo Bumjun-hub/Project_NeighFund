@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.project.neighfund.domain.common.BaseEntity;
 import org.project.neighfund.domain.fund.Fund;
+import org.project.neighfund.domain.fund.FundOption;
 import org.project.neighfund.domain.member.Member;
 
 @Entity
@@ -26,7 +27,14 @@ public class Participation extends BaseEntity {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fund_option_id", nullable = false)
+    private FundOption fundOption;   //리워드
+
     @Column(nullable = false)
-    private Integer quantity;
+    private Integer quantity;    //수량
+
+    @Column(nullable = false)
+    private Long paidAmount;   //결제가격
 
 }

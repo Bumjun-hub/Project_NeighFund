@@ -1,0 +1,77 @@
+.reward-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.reward-item {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  background-color: #fafafa;
+}
+
+.reward-item input,
+.reward-item textarea {
+  padding: 10px;
+  font-size: 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.reward-item textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.remove-btn {
+  align-self: flex-end;
+  padding: 6px 12px;
+  background-color: #ff5c5c;
+  color: white;
+  font-size: 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 4px;
+}
+
+.add-btn {
+  padding: 10px;
+  background-color: #4caf50;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.add-btn:hover {
+  background-color: #388e3c;
+}
+
+.next-btn {
+  margin-top: 12px;
+  padding: 12px;
+  background-color: #6c63ff;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  align-self: flex-end;
+  transition: background-color 0.2s ease;
+}
+
+.next-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
