@@ -1,12 +1,36 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import GatheringAPI from './GatheringAPI';
 import './Gathering.css';
+import { useNavigate } from 'react-router-dom';
+import { checkAuthStatus } from '../../utils/authUtils';
 
 const Gathering = () => {
   const [gatherings, setGatherings] = useState([]);
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
+
+  const handleCreateGathering = async () => {
+    try {
+        console.log('🔍 소모임 만들기 버튼 클릭 - 인증 체크 시작');
+        
+        // 인증 상태 확인
+        const authResult = await checkAuthStatus();
+        
+        if (authResult.isAuthenticated) {
+            console.log('✅ 인증 성공 - 소모임 만들기 페이지로 이동');
+            window.location.href = '/GatheringCreate';
+        } else {
+            console.log('❌ 인증 실패 - 로그인 페이지로 이동');
+            alert('로그인이 필요한 서비스입니다.');
+            window.location.href = '/login';
+        }
+    } catch (error) {
+        console.error('💥 소모임 만들기 버튼 오류:', error);
+        alert('오류가 발생했습니다. 다시 시도해주세요.');
+    }
+};
 
   // 초기 데이터 로드
   useEffect(() => {
@@ -14,38 +38,27 @@ const Gathering = () => {
   }, []);
 
   const loadInitialData = async () => {
-    try {
-      setIsLoading(true);
-      setError(null);
-      const data = await GatheringAPI.getGatheringList();
-      setGatherings(data || []);
-      
-      // 만약 받은 데이터가 적다면 hasMore를 false로 설정
-      if (!data || data.length < 10) {
-        setHasMore(false);
-      }
-    } catch (error) {
-      console.error('초기 데이터 로드 실패:', error);
-      
-      // 401 에러라도 빈 배열로 설정하여 목록 페이지는 보여줌
-      if (error.message.includes('401')) {
-        console.log('로그인하지 않은 사용자 - 빈 목록 표시');
-        setGatherings([]);
-        setError(null); // 에러 메시지 표시하지 않음
-      } else {
-        setError('소모임 목록을 불러오는데 실패했습니다.');
-        setGatherings([]);
-      }
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  setIsLoading(true);
+  setError(null);
+  
+  try {
+    // API에서 에러 처리를 모두 담당하므로 간단히 호출
+    const data = await GatheringAPI.getGatheringList();
+    setGatherings(data);
+    
+    // hasMore 설정
+    setHasMore(data.length >= 10);
+    
+  } catch (error) {
+    // 이론적으로는 여기까지 오지 않아야 함 (API에서 처리)
+    console.error('예상치 못한 에러:', error);
+    setGatherings([]);
+  } finally {
+    setIsLoading(false);
+  }
+};
 
-  // 페이지네이션이나 무한스크롤을 위한 추가 데이터 로드
-  // 현재 백엔드 API가 페이지네이션을 지원하지 않으므로 일시적으로 비활성화
   const loadMoreData = useCallback(() => {
-    // 현재 백엔드 API가 페이지네이션을 지원하지 않으므로
-    // 추가 로드 기능은 비활성화
     setHasMore(false);
   }, []);
 
@@ -53,8 +66,7 @@ const Gathering = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-
-  // 무한스크롤 구현 (현재는 비활성화)
+  
   useEffect(() => {
     const handleScroll = () => {
       if (window.innerHeight + document.documentElement.scrollTop >= 
@@ -88,7 +100,7 @@ const Gathering = () => {
   // 소모임 카드 클릭 시 상세 페이지로 이동
   const handleCardClick = (gatheringId) => {
    
-    //navigate(`/gatherings/${gatheringId}`);
+    navigate(`/gatherings/${gatheringId}`);
     
     // 임시로 콘솔 출력
     console.log('소모임 상세 페이지로 이동:', gatheringId);
@@ -151,21 +163,16 @@ const Gathering = () => {
 
   return (
     <div className="gathering-container">
-      {/* 소모임 생성 버튼 */}
-      <div className="gathering-header">
+      <div className="gathering-grid">
+        <div className="left-column">
+          <div className="gathering-header">
         <button 
           className="create-gathering-btn"
-          onClick={() => {
-            console.log('버튼 클릭됨');
-            window.location.href = '/GatheringCreate';
-          }}
+          onClick={handleCreateGathering}
         >
           + 새 소모임 만들기
         </button>
       </div>
-
-      <div className="gathering-grid">
-        <div className="left-column">
           {leftColumnCards.map((gathering) => (
             <div 
               key={gathering.id} 

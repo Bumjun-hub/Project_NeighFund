@@ -24,6 +24,6 @@ public class FundListDto {
     private String imageUrl;
     private Integer progressRate;  //달성률
     private Integer targetAmount;  //목표금액
-    private Integer currentAmount;  //현재 모인 금액
+    private Long currentAmount;  //현재 모인 금액
     private LocalDateTime deadline;  //마감일
 }

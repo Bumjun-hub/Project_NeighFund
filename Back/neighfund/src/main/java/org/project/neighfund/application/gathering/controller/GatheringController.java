@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/gatherings")
+@RequestMapping("/api/gatherings/free")
 @RequiredArgsConstructor
 public class GatheringController {
     private final GatheringService gatheringService;
