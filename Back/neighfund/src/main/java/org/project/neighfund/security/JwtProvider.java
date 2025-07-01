@@ -115,7 +115,7 @@ import java.util.Date;
                     .httpOnly(true)
                     .secure(false)
                     .sameSite("Strict") // ✅ Strict로 변경
-                    .path("/api/refresh")
+                    .path("/api/auth/refresh")
                     .maxAge((int) (refreshTokenValidity / 1000))
                     .build();
 
@@ -201,7 +201,7 @@ import java.util.Date;
             Cookie refreshTokenCookie = new Cookie("refresh_token", null);
             refreshTokenCookie.setHttpOnly(true);
             refreshTokenCookie.setSecure(false);
-            refreshTokenCookie.setPath("/api/refresh");
+            refreshTokenCookie.setPath("/api/auth/refresh");
             refreshTokenCookie.setMaxAge(0);
             response.addCookie(refreshTokenCookie);
         }

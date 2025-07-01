@@ -171,6 +171,41 @@ public class MemberController {
         }
     }
 
+    @PutMapping("changedPwd")
+    public ResponseEntity<?> changePassword(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                            @RequestBody ChangedPwdRequest pwdRequest, HttpServletResponse response) {
+        try {
+            Member member = userDetails.getMember();
+            Member updatedMember = memberService.changedPwd(member, pwdRequest);
+
+            CustomUserDetails updatedUserDetails = new CustomUserDetails(updatedMember);
+
+            // 토큰 재 생성을 위해 Authentication 재설정
+            Authentication authentication = new UsernamePasswordAuthenticationToken(
+                    updatedUserDetails, null, updatedUserDetails.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            jwtProvider.clearTokensInCookies(response);
+            String newAccessToken = jwtProvider.generateAccessToken(authentication);
+            String newRefreshToken = jwtProvider.generateRefreshToken(authentication);
+            jwtProvider.setTokensInCookies(response, newAccessToken, newRefreshToken);
+
+            return ResponseEntity.ok(new ChangedPwdResponse("비밀번호 변경 성공", updatedMember.getEmail()));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest()
+                    .body(new ErrorResponse(e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ErrorResponse("서버 오류가 발생했습니다."));
+        }
+    }
+
+    @GetMapping("/mypage")
+    public ResponseEntity<MypageResponse> mypageInfo(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        MypageResponse mypageResponse = memberService.mypageInfo(userDetails.getMember());
+        return ResponseEntity.ok(mypageResponse);
+    }
+
     @GetMapping("/roleinfo")
     public ResponseEntity<RoleInfoResponse> getRoleInfo(@AuthenticationPrincipal CustomUserDetails userDetails) {
         Member m = userDetails.getMember();

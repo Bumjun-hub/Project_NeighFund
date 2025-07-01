@@ -147,6 +147,37 @@ public class MemberService {
         return false;
     }
 
+    public MypageResponse mypageInfo(Member member) {
+        return  memberRepository.findById(member.getId())
+                .map(m -> new MypageResponse(m.getEmail(), m.getUsername(), m.getPhone(), m.getAddress(), m.getDongName(), m.getImageUrl()))
+                .orElseThrow(() -> new RuntimeException("해당 회원을 찾을 수 없습니다."));
+    }
+
+    public Member changedPwd(Member member, ChangedPwdRequest pwdRequest) {
+        Optional<Member> OpUser = memberRepository.findByEmail(member.getEmail());
+
+        if (OpUser.isPresent()) {
+            Member m = OpUser.get();
+
+            if (!passwordEncoder.matches(pwdRequest.getOldPassword(), m.getPassword())) {
+                throw new IllegalArgumentException("기존 비밀번호가 일치하지 않습니다.");
+            }
+
+            if (!pwdRequest.getNewPassword().equals(pwdRequest.getConfirmPassword())) {
+                throw new IllegalArgumentException("새 비밀번호가 일치하지 않습니다.");
+            }
+
+            String enPass = passwordEncoder.encode(pwdRequest.getNewPassword());
+            m.setPassword(enPass);
+
+            memberRepository.save(m);
+
+            return m;
+        }
+        throw new IllegalArgumentException("등록되어 있지 않은 이메일입니다.");
+
+    }
+
     public RoleInfoResponse getRoleInfo(Member m) {
         Optional<Member> opUser =  memberRepository.findById(m.getId());
         if (opUser.isPresent()) {

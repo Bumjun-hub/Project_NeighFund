@@ -74,7 +74,7 @@ const ChangePw = ({ onClose, onSuccess }) => {
         };
 
         try {
-            const response = await authenticatedFetch('http://localhost:8080/api/changedPwd', {
+            const response = await authenticatedFetch('http://localhost:8080/api/auth/changedPwd', {
                 method: 'PUT',
                 body: JSON.stringify(requestBody),
             });
