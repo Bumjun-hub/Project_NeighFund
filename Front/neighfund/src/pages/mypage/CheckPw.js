@@ -14,7 +14,7 @@ const CheckPw = ({ onPasswordVerified, onCancel, authenticatedFetch }) => {
       let response;
       
       if (authenticatedFetch) {
-        response = await authenticatedFetch('http://localhost:8080/api/mypage/auth/checkPwd', {
+        response = await authenticatedFetch('http://localhost:8080/api/auth/mypage/checkPwd', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -22,7 +22,7 @@ const CheckPw = ({ onPasswordVerified, onCancel, authenticatedFetch }) => {
           body: JSON.stringify({ password: inputPassword })
         });
       } else {
-        response = await fetch('http://localhost:8080/api/mypage/auth/checkPwd', {
+        response = await fetch('http://localhost:8080/api/auth/mypage/checkPwd', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
