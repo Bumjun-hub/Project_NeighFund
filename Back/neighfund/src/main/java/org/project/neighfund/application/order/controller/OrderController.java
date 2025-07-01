@@ -1,7 +1,6 @@
 package org.project.neighfund.application.order.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.project.neighfund.application.order.dto.OrderDto;
 import org.project.neighfund.application.order.dto.OrderResponseDto;
 import org.project.neighfund.application.order.service.OrderService;
@@ -26,12 +25,11 @@ public class OrderController {
     @PostMapping("/{optionId}")
     public ResponseEntity<String> createOrder(
             @PathVariable Long optionId,
-            @PathVariable Long fundId,
             @RequestBody OrderDto orderDto,
             @AuthenticationPrincipal CustomUserDetails userDetails
             ){
         Member loginUser = userDetails.getMember();
-        orderService.createOrder(optionId, fundId, orderDto, loginUser);
+        orderService.createOrder(optionId, orderDto, loginUser);
         return  ResponseEntity.ok("주문(참여)이 완료되었습니다.");
     }
 
@@ -87,7 +85,19 @@ public class OrderController {
         return ResponseEntity.ok(dto);
     }
 
-    //7. 주문상태 변경 - 관리자
+    //7. 주문 수량 변경
+    @PutMapping("/myPage/order/{orderId}/quantity")
+    public ResponseEntity<String> updateQuantity(
+            @PathVariable Long orderId,
+            @RequestParam int newQuantity,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ){
+        Member loginUser = userDetails.getMember();
+        orderService.updateQuantity(orderId, newQuantity, loginUser);
+        return ResponseEntity.ok("수량이 변경되었습니다");
+    }
+
+    //8. 주문상태 변경 - 관리자
     @PutMapping("/admin/{orderId}/status")
     public ResponseEntity<String> updateStatus(
             @PathVariable Long orderId,

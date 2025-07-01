@@ -30,10 +30,11 @@ public class OrderService {
 
     //신청(구매)
     @Transactional
-    public void createOrder(Long optionId,Long fundId, OrderDto orderDto, Member loginUser) {
+    public void createOrder(Long optionId, OrderDto orderDto, Member loginUser) {
         validateLogin(loginUser);
-        Fund fund = validatePost(fundId);
-        FundOption option = validateOption(optionId, fund); //펀드랑 옵션 매핑
+        FundOption option = validateOption(optionId); //펀드랑 옵션 매핑
+
+        Fund fund = option.getFund();
 
         // 상태 마감 -> 신청불가
         if (fund.getFundStatus() == FundStatus.CLOSED) {
@@ -41,7 +42,7 @@ public class OrderService {
         }
 
         //중복신청여부
-        if (orderRepository.existsByFundAndMember(fund, loginUser)) {
+        if (orderRepository.existsByFundOptionAndMember(fund, loginUser)) {
             throw new IllegalArgumentException("이미 신청한 펀드 입니다");
         }
 
@@ -121,7 +122,7 @@ public class OrderService {
     @Transactional
     public List<OrderResponseDto> getOrders(Long fundId, Long optionId, OrderStatus status) {
         Fund fund = validatePost(fundId);  //해당펀드가 있는지
-        FundOption option = validateOption(optionId, fund); //펀드랑 옵션 매핑
+        FundOption option = validateOption(optionId); //펀드랑 옵션 매핑
 
         List<Order> orders = (status == null)
                 ? orderRepository.findByFundOption(option)
@@ -216,6 +217,41 @@ public class OrderService {
                 .build();
     }
 
+    // 주문수량변경
+    public void updateQuantity(Long orderId, int newQuantity, Member loginUser) {
+        Order order = validateOrder(orderId);
+       if (!order.getMember().equals(loginUser))
+           throw new AccessDeniedException("본인의 주문만 수정할 수 있습니다");
+
+       if (order.getStatus() != OrderStatus.PENDING)
+           throw new IllegalArgumentException("입금완료 후에는 수정할 수 없습니다");
+
+       int diff = newQuantity - order.getQuantity();
+       FundOption opt = order.getFundOption();
+
+       //수량 증가시 재고 확인
+        if (diff > 0 && opt.getQuantity() < diff)
+            throw new IllegalArgumentException("재고가 부족합니다");
+
+        // 재고 보정
+        opt.setQuantity(opt.getQuantity() - diff);
+
+        //금액,펀드 집계 보정
+        long newAmount = (long) newQuantity * opt.getPrice();
+        long delta = newAmount - order.getTotalAmount();
+
+        Fund fund = opt.getFund();
+        fund.setCurrentAmount(fund.getCurrentAmount() + delta);
+        int progress = (int) Math.round(
+                (double) fund.getCurrentAmount() * 100 / fund.getTargetAmount());
+        fund.setProgressRate(Math.min(progress, 100));
+
+        //주문 업데이트
+        order.setQuantity(newQuantity);
+        order.setTotalAmount(newAmount);
+    }
+
+
     //주문상태 변경 - 관리자
     @Transactional
     public void updateStatus(Long orderId, OrderStatus status) {
@@ -238,10 +274,11 @@ public class OrderService {
     }
 
     //펀드 - 옵션 매핑
-    private FundOption validateOption(Long optionId, Fund fund) {
+    private FundOption validateOption(Long optionId) {
         FundOption option = fundOptionRepository.findById(optionId)
                 .orElseThrow(()-> new IllegalArgumentException("해당 옵션이 없습니다"));
-        if (!option.getFund().equals(fund)) {
+        Fund fund = option.getFund();
+        if (fund == null) {
             throw new IllegalArgumentException("옵션이 펀드와 일치하지 않습니다. ");
         }
         return option;
