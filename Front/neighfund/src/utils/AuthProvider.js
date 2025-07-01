@@ -65,7 +65,7 @@ export const AuthProvider = ({ children }) => {
         setIsAuthenticated(false);
         setUser(null);
     }
-}, 1 * 10 * 1000);
+}, 13 * 60 * 1000);
 
     console.log('⏰ 토큰 자동 갱신 타이머 설정됨 (13분 간격)');
 
