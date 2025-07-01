@@ -111,7 +111,7 @@ const MyPage = () => {
 
     const fetchUserInfo = async () => {
         try {
-            const response = await authenticatedFetch('http://localhost:8080/api/mypage', {
+            const response = await authenticatedFetch('http://localhost:8080/api/auth/mypage', {
                 method: 'GET',
             });
             
