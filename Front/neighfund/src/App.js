@@ -13,6 +13,8 @@ import { AuthProvider } from './utils/AuthProvider';
 import EditProfile from './pages/mypage/MyPageEditProfile';
 import Gathering from './pages/gatheringpage/Gathering';
 import GatheringCreate from './pages/gatheringpage/GatheringCreate';
+import ClassCreationPage from './pages/gatheringpage/ClassCreationPage';
+import GatheringInfo from './pages/gatheringpage/GatheringInfo';
 
 function App() {
   return (
@@ -36,6 +38,9 @@ function App() {
 
             <Route path="/gathering" element={<Gathering />} />
             <Route path="/gatheringcreate" element={<GatheringCreate />} />
+            <Route path="/classcreationpage" element={<ClassCreationPage />} />
+            <Route path="/gatherings/:gatheringId" element={<GatheringInfo />} />
+            
           </Route>
         </Routes>
       </AuthProvider>
