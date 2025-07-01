@@ -171,6 +171,12 @@ public class MemberController {
         }
     }
 
+    @GetMapping("/mypage")
+    public ResponseEntity<MypageResponse> mypageInfo(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        MypageResponse mypageResponse = memberService.mypageInfo(userDetails.getMember());
+        return ResponseEntity.ok(mypageResponse);
+    }
+
     @GetMapping("/roleinfo")
     public ResponseEntity<RoleInfoResponse> getRoleInfo(@AuthenticationPrincipal CustomUserDetails userDetails) {
         Member m = userDetails.getMember();

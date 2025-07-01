@@ -159,6 +159,18 @@ public class GatheringController {
         return ResponseEntity.ok(dto);
     }
 
+    @PutMapping("/{gatheringId}/edit/{postId}")
+    public ResponseEntity<GroupPostDto> editPost(@PathVariable Long gatheringId,
+                                                 @PathVariable Long postId,
+                                                 @RequestPart("title") String title,
+                                                 @RequestPart("content") String content,
+                                                 @RequestPart(value = "images", required = false) List<MultipartFile> image,
+                                                 @AuthenticationPrincipal CustomUserDetails userDetails) {
+        Member member = userDetails.getMember();
+        GroupPostDto dto = gatheringService.editPost(gatheringId, postId, title, content, image, member);
+        return ResponseEntity.ok(dto);
+    }
+
     // FREE 소모임 사진 올리기(사진첩)
     @PostMapping(value = "/{gatheringId}/photos", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<MessageResponse> createPhoto(
