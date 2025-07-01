@@ -147,6 +147,12 @@ public class MemberService {
         return false;
     }
 
+    public MypageResponse mypageInfo(Member member) {
+        return  memberRepository.findById(member.getId())
+                .map(m -> new MypageResponse(m.getEmail(), m.getUsername(), m.getPhone(), m.getAddress(), m.getDongName(), m.getImageUrl()))
+                .orElseThrow(() -> new RuntimeException("해당 회원을 찾을 수 없습니다."));
+    }
+
     public RoleInfoResponse getRoleInfo(Member m) {
         Optional<Member> opUser =  memberRepository.findById(m.getId());
         if (opUser.isPresent()) {
