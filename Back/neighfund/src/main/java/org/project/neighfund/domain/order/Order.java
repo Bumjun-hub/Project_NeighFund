@@ -1,11 +1,10 @@
-package org.project.neighfund.domain.order.domain;
+package org.project.neighfund.domain.order;
 
 import jakarta.persistence.*;
 import lombok.*;
 import org.project.neighfund.domain.common.BaseEntity;
 import org.project.neighfund.domain.fund.FundOption;
 import org.project.neighfund.domain.member.Member;
-import org.project.neighfund.domain.participation.Participation;
 import org.project.neighfund.enums.OrderStatus;
 
 import java.time.LocalDateTime;
