@@ -26,7 +26,7 @@ const SuggestionPage = () => {
     const status = {
         FUNDED: '펀딩 완료',
         ON_HOLD: '보류 중',
-        RECRUITING: '모집 중',
+        RECRUITING: '공감하기',
     };
 
     useEffect(() => {
@@ -55,16 +55,27 @@ const SuggestionPage = () => {
             return new Date(b.createdAt) - new Date(a.createdAt);
         });
 
-    const handleLike = (id) => {
-        setSuggestions((prev) =>
-            prev.map((item) => {
-                if (item.id === id && item.status === 'RECRUITING') {
-                    return { ...item, likes: item.likes + 1 };
-                }
-                return item;
-            })
-        );
+    const handleLike = async (id) => {
+        try {
+            const result = await SuggestionAPI.toggleLike(id); // API 호출
+            const liked = result.liked;
+
+            setSuggestions(prev =>
+                prev.map(item => {
+                    if (item.id === id) {
+                        const likes = liked ? item.likes + 1 : item.likes - 1;
+                        return { ...item, liked, likes };
+                    }
+                    return item;
+                })
+            );
+        } catch (err) {
+            console.error("공감 실패:", err);
+            alert("공감 처리 중 오류가 발생했습니다.");
+        }
     };
+
+
 
     return (
         <Section>
@@ -98,26 +109,39 @@ const SuggestionPage = () => {
                 <div className="suggestion-list">
                     {filtered.map((item) => (
                         <div key={item.id} className="suggestion-card" data-category={item.category}>
-                             <button
-                                    className="suggestion-edit-button" // 🔧 이 클래스는 스타일링용
-                                    onClick={() => navigate(`/suggestion/write/${item.id}`)} // 🔧 수정 페이지로 이동
-                                >
-                                     ✏
-                                </button>
+                            <button
+                                className="suggestion-edit-button" // 🔧 이 클래스는 스타일링용
+                                onClick={() => navigate(`/suggestion/write/${item.id}`)} // 🔧 수정 페이지로 이동
+                            >
+                                ✏
+                            </button>
                             <div className="suggestion-category">#{categoryMap[item.category]}</div>
                             <div className="title">{item.title}</div>
                             <div className="suggestion-content">{item.content}</div>
                             <div className="suggestion-meta">
                                 <span
-                                    style={{ cursor: item.status === 'RECRUITING' ? 'pointer' : 'not-allowed' }}
-                                    onClick={() => item.status === 'RECRUITING' && handleLike(item.id)}
+                                    style={{ cursor: 'pointer' }}
+                                    onClick={() => handleLike(item.id)}
                                 >
                                     ♡ {item.likes}
                                 </span>
-                                <span>{item.createdAt}</span>
-                                <span className="suggestion-status">{status[item.status]}</span>
-                               
+
+                                <span>
+                                    {item.status === 'RECRUITING' ? (
+                                        <button
+                                            onClick={() => handleLike(item.id)}
+                                            className="suggestion-like-button"
+                                        >
+                                            {item.liked ? '💔 공감 취소' : '♡ 공감하기'}
+                                        </button>
+                                    ) : (
+                                        <span className="suggestion-status">
+                                            {status[item.status]}
+                                        </span>
+                                    )}
+                                </span>
                             </div>
+
 
                         </div>
                     ))}

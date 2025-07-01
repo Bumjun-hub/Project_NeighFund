@@ -7,10 +7,12 @@ import SuggestionAPI from './SuggestionAPI';
 
 const SuggestionWritePage = () => {
 
-  const [currentUser, setCurrentUser] = useState("");
   const navigate = useNavigate();
   const { id } = useParams();
   const isEdit = !!id;
+  const [currentUser, setCurrentUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(isEdit);
+
 
   const [formData, setFormData] = useState({
     title: '',
@@ -31,58 +33,39 @@ const SuggestionWritePage = () => {
   };
 
 
-  //사용자 권한 읽기
   useEffect(() => {
-    if (!isEdit) return; // 수정 모드일 때만 사용자 정보 요청
+    if (!isEdit) return;
 
-    const fetchUser = async () => {
+    const fetchUserAndPost = async () => {
       try {
         let user = await SuggestionAPI.getCurrentUser();
         setCurrentUser(user.username);
-      } catch (e) {
-        const refreshed = await refreshToken();
-        if (refreshed) {
-          try {
-            const user = await SuggestionAPI.getCurrentUser();
-            setCurrentUser(user.username);
-          } catch (err) {
-            console.error("재요청 실패:", err);
-            alert("로그인이 필요합니다.");
-            navigate("/login");
-          }
-        } else {
-          alert("로그인이 필요합니다.");
-          navigate("/login");
-        }
-      }
-    };
 
-    fetchUser();
-  }, [navigate, isEdit]);
-
-
-
-  useEffect(() => {
-    const fetchEditData = async () => {
-      if (!isEdit || !currentUser) return; // currentUser가 없으면 대기
-      try {
         const post = await SuggestionAPI.getSuggestionDetail(id);
-        if (post.username !== currentUser) {
+
+        if (post.username !== user.username) {
           alert("작성자만 수정할 수 있습니다.");
           navigate("/suggestion");
           return;
         }
+
         setFormData({
           title: post.title,
           content: post.content,
           category: post.category,
         });
+
+        setIsLoading(false); // 🔹 로딩 끝
       } catch (err) {
-        console.error('수정글 로딩 실패:', err);
+        console.error("작성자 확인 실패:", err);
+        alert("접근 권한이 없습니다.");
+        navigate("/suggestion");
       }
     };
-    fetchEditData();
-  }, [id, isEdit, currentUser]);
+
+    fetchUserAndPost();
+  }, [id, isEdit, navigate]);
+
 
 
 
@@ -121,6 +104,9 @@ const SuggestionWritePage = () => {
       alert('서버 오류');
     }
   };
+
+
+  if (isLoading) return null;
 
   return (
     <Section>
