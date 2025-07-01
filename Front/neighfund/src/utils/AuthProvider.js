@@ -110,7 +110,7 @@ export const AuthProvider = ({ children }) => {
     const logout = async () => {
         try {
             // 서버에 로그아웃 요청
-            await fetch('http://localhost:8080/api/logout', {
+            await fetch('http://localhost:8080/api/auth/logout', {
                 method: 'POST',
                 credentials: 'include',
             });

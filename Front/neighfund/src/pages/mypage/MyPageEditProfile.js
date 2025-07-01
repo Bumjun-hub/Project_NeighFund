@@ -31,7 +31,7 @@ const MyPageEditProfile = () => {
 
   const fetchProfile = async () => {
     try {
-      const response = await fetch('/api/mypage', {
+      const response = await fetch('/api/auth/mypage', {
         method: 'GET',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' }
@@ -57,7 +57,7 @@ const MyPageEditProfile = () => {
 
   const fetchAvailableImages = async () => {
     try {
-      const response = await fetch('/api/profile/getimages', {
+      const response = await fetch('/api/auth/profile/getimages', {
         method: 'GET',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' }
@@ -134,7 +134,7 @@ const MyPageEditProfile = () => {
 
     try {
       // 프로필 정보 업데이트
-      const profileResponse = await fetch('/api/mypage/auth/editProfile', {
+      const profileResponse = await fetch('/api/auth/mypage/editProfile', {
         method: 'PUT',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
@@ -161,7 +161,7 @@ const MyPageEditProfile = () => {
         const imageName = editData.imageUrl.substring(editData.imageUrl.lastIndexOf('/') + 1);
         console.log('이미지 업데이트 시도:', imageName);
         
-        const imageResponse = await fetch('/api/profile/upload', {
+        const imageResponse = await fetch('/api/auth/profile/upload', {
           method: 'POST',
           credentials: 'include',
           headers: { 'Content-Type': 'application/json' },

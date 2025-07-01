@@ -146,7 +146,7 @@ export const checkAuthStatus = async () => {
  */
 export const changePassword = async (currentPassword, newPassword) => {
     try {
-        const response = await authenticatedFetch('http://localhost:8080/api/changedPwd', {
+        const response = await authenticatedFetch('http://localhost:8080/api/auth/changedPwd', {
             method: 'PUT',
             body: JSON.stringify({
                 currentPassword,
@@ -172,7 +172,7 @@ export const changePassword = async (currentPassword, newPassword) => {
  */
 export const deleteAccount = async () => {
     try {
-        const response = await authenticatedFetch('http://localhost:8080/api/deletion', {
+        const response = await authenticatedFetch('http://localhost:8080/api/auth/deletion', {
             method: 'DELETE',
         });
 
