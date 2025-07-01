@@ -66,7 +66,7 @@ public class Fund extends BaseEntity {
     private Integer targetAmount;  //목표금액
 
     @Column(name = "current_amount", nullable = false)
-    private Integer currentAmount;  //현재 모인 금액
+    private Long currentAmount = 0L;  //현재 모인 금액
 
     @Column(name = "progressRate", nullable = false)
     private Integer progressRate;  //달성률
