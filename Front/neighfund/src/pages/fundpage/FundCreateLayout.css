@@ -1,0 +1,43 @@
+.fund-create-wrapper {
+  max-width: 768px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  font-family: 'Pretendard', sans-serif;
+}
+
+.fund-create-title {
+  font-size: 26px;
+  font-weight: bold;
+  margin-bottom: 24px;
+}
+
+.fund-create-steps {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+}
+
+.step {
+  font-size: 16px;
+  color: #aaa;
+  font-weight: 500;
+}
+
+.step.active {
+  color: #3f51b5;
+  font-weight: bold;
+}
+
+.step-arrow {
+  color: #bbb;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.fund-create-content {
+  background-color: #fff;
+  border-radius: 12px;
+}
