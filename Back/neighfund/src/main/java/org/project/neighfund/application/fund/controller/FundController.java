@@ -30,79 +30,44 @@ public class FundController {
     private final FundService fundService;
 
     //작성
+    // 수정된 부분: createPost(), editPost() 메서드 구조 변경
     @PostMapping(value = "write", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> createPost(
-            @RequestPart("category") String category,
-            @RequestPart("fundType") String fundType,
-            @RequestPart("fundStatus") String fundStatus,
-            @RequestPart("title") String title,
-            @RequestPart("subTitle") String subTitle,
-            @RequestPart("content") String content,
-            @RequestPart("targetAmount") Integer targetAmount,
-            @RequestPart("deadline")@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime deadline,
-            @RequestPart("hashTags") String hashTags,
-            @RequestPart(value = "options", required = false) List<FundOptionDto> options,
-            @RequestPart(value = "images", required = false) MultipartFile imageFile,
-            @RequestPart(value = "contentImage", required = false) MultipartFile contentImage,
+            @RequestPart("fundDto") FundDto fundDto, // ✅ 하나로 받음
+            @RequestPart(value = "mainImage", required = false) MultipartFile imageFile,
+            @RequestPart(value = "contentImages", required = false) List<MultipartFile> contentImages,
             @AuthenticationPrincipal CustomUserDetails userDetails
-            ){
-
-        FundDto fundDto = FundDto.builder()
-                .category(CommunityCategory.valueOf(category))
-                .fundType(FundType.valueOf(fundType))
-                .fundStatus(FundStatus.ONGOING)
-                .title(title)
-                .subTitle(subTitle)
-                .content(content)
-                .targetAmount(targetAmount)
-                .deadline(deadline)
-                .hashTags(hashTags)
-                .options(options)
-                .build();
+    ) {
         Member loginUser = userDetails.getMember();
-
-        List<MultipartFile> imageFiles = imageFile != null ? List.of(imageFile) : List.of();
-        List<MultipartFile> contentImages = contentImage != null ? List.of(contentImage) : List.of();
-
-        fundService.createPost(fundDto, imageFiles, contentImages, loginUser);
+        fundService.createPost(
+                fundDto,
+                imageFile != null ? List.of(imageFile) : List.of(),
+                contentImages != null ? contentImages : List.of(),
+                loginUser
+        );
         return ResponseEntity.status(HttpStatus.CREATED).body("게시글이 작성되었습니다.");
     }
 
-    //수정
     @PutMapping(value = "edit/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> editPost(
             @PathVariable Long id,
-            @RequestPart("category") String category,
-            @RequestPart("fundType") String fundType,
-            @RequestPart("fundStatus") String fundStatus,
-            @RequestPart("title") String title,
-            @RequestPart("subTitle") String subTitle,
-            @RequestPart("content") String content,
-            @RequestPart("targetAmount") Integer targetAmount,
-            @RequestPart("deadline")LocalDateTime deadline,
-            @RequestPart("hashTags") String hashTags,
-            @RequestPart(value = "options", required = false) List<FundOptionDto> options,
-            @RequestPart(value = "images", required = false) List<MultipartFile> imageFiles,
-            @RequestPart(value = "contentImage", required = false) List<MultipartFile> contentImages,
+            @RequestPart("fundDto") FundDto fundDto, // ✅ 동일하게 하나로 받음
+            @RequestPart(value = "mainImage", required = false) MultipartFile imageFile,
+            @RequestPart(value = "contentImages", required = false) List<MultipartFile> contentImages,
             @RequestParam(value = "deleteImageIds", required = false) List<Long> deleteImageIds,
             @RequestParam(value = "deleteContentImageIds", required = false) List<Long> deleteContentImageIds,
             @AuthenticationPrincipal CustomUserDetails userDetails
-    ){
-        FundDto fundDto = FundDto.builder()
-                .category(CommunityCategory.valueOf(category))
-                .fundType(FundType.valueOf(fundType))
-                .fundStatus(FundStatus.ONGOING)
-                .title(title)
-                .subTitle(subTitle)
-                .content(content)
-                .targetAmount(targetAmount)
-                .deadline(deadline)
-                .hashTags(hashTags)
-                .options(options)
-                .build();
+    ) {
         Member loginUser = userDetails.getMember();
-
-        fundService.editPost(id, fundDto, imageFiles, contentImages, deleteImageIds, deleteContentImageIds, loginUser);
+        fundService.editPost(
+                id,
+                fundDto,
+                imageFile != null ? List.of(imageFile) : List.of(),
+                contentImages != null ? contentImages : List.of(),
+                deleteImageIds,
+                deleteContentImageIds,
+                loginUser
+        );
         return ResponseEntity.ok("게시글이 수정되었습니다.");
     }
 
@@ -111,7 +76,7 @@ public class FundController {
     public ResponseEntity<String> deletePost(
             @PathVariable Long id,
             @AuthenticationPrincipal CustomUserDetails userDetails
-    ){
+    ) {
         Member loginUser = userDetails.getMember();
         fundService.deletePost(id, loginUser);
         return ResponseEntity.ok("게시글이 삭제되었습니다.");
@@ -133,7 +98,7 @@ public class FundController {
     public ResponseEntity<FundResponseDto> detailView(
             @PathVariable Long id,
             @AuthenticationPrincipal CustomUserDetails userDetails
-    ){
+    ) {
         Member loginUser = userDetails.getMember();
         FundResponseDto posts = fundService.detailView(id, loginUser);
         return ResponseEntity.ok(posts);
@@ -144,15 +109,11 @@ public class FundController {
     public ResponseEntity<String> approveFund(
             @PathVariable Long id,
             @AuthenticationPrincipal CustomUserDetails userDetails
-    ){
+    ) {
         Member loginUser = userDetails.getMember();
         fundService.approveFund(id, loginUser);
         return ResponseEntity.ok("펀딩이 승인되었습니다.");
     }
-
-
-
-
 
 
 }

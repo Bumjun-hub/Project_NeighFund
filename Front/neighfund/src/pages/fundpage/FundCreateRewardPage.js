@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import FundCreateLayout from './FundCreateLayout';
 import './FundCreateRewardPage.css';
+import { useFunding } from './FundingProvider';
 
 const FundCreateRewardPage = () => {
   const [rewards, setRewards] = useState([
     { title: '', description: '', amount: '' },
   ]);
+  const { setFundData, fundData } = useFunding();
 
   const handleChange = (index, field, value) => {
     const newRewards = [...rewards];
@@ -21,6 +23,73 @@ const FundCreateRewardPage = () => {
     const newRewards = rewards.filter((_, i) => i !== index);
     setRewards(newRewards);
   };
+
+
+  const handleSubmit = async () => {
+    // context에 options 저장
+    setFundData((prev) => ({
+      ...prev,
+      options: rewards,
+    }));
+
+    const payload = {
+      category: fundData.category,
+      fundType: fundData.fundType || "NORMAL", // 기본값 처리
+      fundStatus: fundData.fundStatus || "ONGOING",
+      title: fundData.title,
+      subTitle: fundData.subTitle || "",
+      content: fundData.content,
+      targetAmount: Number(fundData.targetAmount),
+      deadline: new Date(fundData.deadline).toISOString(),
+      hashTags: fundData.hashTags || "",
+      options: rewards.map((r) => ({
+        title: r.title,
+        description: r.description,
+        price: Number(r.amount),
+        quantity: 1
+      })),
+    };
+
+    const formData = new FormData();
+
+    // ✅ DTO 전체 JSON으로 묶어서 보내기
+    formData.append("fundDto", new Blob([JSON.stringify(payload)], { type: "application/json" }));
+
+    // ✅ 대표 이미지
+    if (fundData.mainImage) {
+      formData.append("mainImage", fundData.mainImage);
+    }
+
+    // ✅ 본문 이미지
+    fundData.contentImages.forEach((img) => {
+      formData.append("contentImages", img);
+    });
+
+    // ✅ 토큰 포함해서 fetch
+    const token = localStorage.getItem("accessToken");
+
+    try {
+      const response = await fetch("http://localhost:3000/api/fund/write", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("서버 오류 발생");
+      }
+
+      alert("펀딩 등록 성공!");
+    } catch (err) {
+      console.error("에러:", err);
+      alert("펀딩 등록 실패");
+    }
+  };
+
+
+
 
   const isValid = rewards.every(
     (r) => r.title && r.description && r.amount
@@ -57,7 +126,7 @@ const FundCreateRewardPage = () => {
         ))}
 
         <button className="add-btn" onClick={addReward}>+ 리워드 추가</button>
-        <button className="next-btn" disabled={!isValid}>제출</button>
+        <button className="next-btn" disabled={!isValid} onClick={handleSubmit}>제출</button>
       </div>
     </FundCreateLayout>
   );

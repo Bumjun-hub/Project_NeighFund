@@ -69,6 +69,8 @@ public class FundService {
                         .price(optionDto.getPrice())
                         .content(optionDto.getContent())
                         .quantity(optionDto.getQuantity())
+                        .title(optionDto.getTitle())
+                        .description(optionDto.getDescription())
                         .build();
                 fundOptionRepository.save(option);
             }
@@ -191,18 +193,22 @@ public class FundService {
                     //생성
                     FundOption newOption = FundOption.builder()
                             .fund(fund)
+                            .title(dto.getTitle())
                             .price(dto.getPrice())
                             .content(dto.getContent())
                             .quantity(dto.getQuantity())
+                            .description(dto.getDescription())
                             .build();
                     fundOptionRepository.save(newOption);
                 } else {
                     //수정
                     FundOption editOption = findOptionMap.get(dto.getId());
                     if (editOption != null) {
+                        editOption.setTitle(dto.getTitle());
                         editOption.setPrice(dto.getPrice());
                         editOption.setContent(dto.getContent());
                         editOption.setQuantity(dto.getQuantity());
+                        editOption.setDescription(dto.getDescription());
                         fundOptionRepository.save(editOption);
                         findOptionMap.remove(dto.getId());
 
@@ -262,6 +268,9 @@ public class FundService {
         List<FundOptionDto> options = fund.getFundOptions().stream()
                 .map(option -> FundOptionDto.builder()
                         .id(option.getId())
+                        .title(option.getTitle())
+                        .description(option.getDescription())
+                        .amount(option.getPrice())
                         .price(option.getPrice())
                         .content(option.getContent())
                         .quantity(option.getQuantity())
