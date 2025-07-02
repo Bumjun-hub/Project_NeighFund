@@ -65,7 +65,7 @@ export const AuthProvider = ({ children }) => {
         setIsAuthenticated(false);
         setUser(null);
     }
-}, 13 * 60 * 1000);
+}, 1 * 60 * 1000);
 
     console.log('⏰ 토큰 자동 갱신 타이머 설정됨 (13분 간격)');
 
@@ -110,7 +110,7 @@ export const AuthProvider = ({ children }) => {
     const logout = async () => {
         try {
             // 서버에 로그아웃 요청
-            await fetch('http://localhost:8080/api/logout', {
+            await fetch('http://localhost:8080/api/auth/logout', {
                 method: 'POST',
                 credentials: 'include',
             });

@@ -23,8 +23,6 @@ public class CommunityController {
 
     private final CommunityService communityService;
 
-    
-
 
     // CommunityController.java
     @GetMapping("/detail/{id}")

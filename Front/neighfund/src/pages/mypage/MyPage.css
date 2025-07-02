@@ -33,9 +33,22 @@
 }
 
 .profile-image svg {
-  width: 32px;
-  height: 32px;
+  min-width: 32px;
+  min-height: 32px;
   color: #6c757d;
+}
+
+.mypage-profile-placeholder {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: #6366f1;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 50px;
 }
 
 .profile-name {
