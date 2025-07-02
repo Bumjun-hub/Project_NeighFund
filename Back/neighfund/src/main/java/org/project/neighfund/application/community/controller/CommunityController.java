@@ -23,7 +23,7 @@ public class CommunityController {
 
     private final CommunityService communityService;
 
-    
+
 
 
     // CommunityController.java
