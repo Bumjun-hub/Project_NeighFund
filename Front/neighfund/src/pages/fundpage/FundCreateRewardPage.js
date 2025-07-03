@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import FundCreateLayout from './FundCreateLayout';
 import './FundCreateRewardPage.css';
 import { useFunding } from './FundingProvider';
+import { useNavigate } from 'react-router-dom';
 
 const FundCreateRewardPage = () => {
+  const navigate = useNavigate();
   const [rewards, setRewards] = useState([
     { title: '', description: '', amount: '' },
   ]);
@@ -82,6 +84,7 @@ const FundCreateRewardPage = () => {
       }
 
       alert("펀딩 등록 성공!");
+      navigate("/funding/")
     } catch (err) {
       console.error("에러:", err);
       alert("펀딩 등록 실패");

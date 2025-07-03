@@ -8,14 +8,18 @@ const FundInfoPage = () => {
     console.log("✅ FundInfoPage - id from useParams():", id);
     const [fund, setFund] = useState(null);
     const [activeTab, setActiveTab] = useState('intro');
-
     const [selectedReward, setSelectedReward] = useState(null);
+    const [myOrderOptionIds, setMyOrderOptionIds] = useState([]);
 
     // 리워드 선택 핸들러
     const handleSelectReward = (opt) => {
+        if (myOrderOptionIds.includes(opt.id)) {
+            alert("이미 신청한 리워드입니다.");
+            return;
+        }
         setSelectedReward((prev) =>
-            prev?.title === opt.title ? null : opt
-        ); // 같은 항목 누르면 해제
+            prev?.id === opt.id ? null : opt
+        );
     };
 
     const handleParticipateClick = async () => {
@@ -48,6 +52,21 @@ const FundInfoPage = () => {
     };
 
 
+    // 로그인 사용자의 기존 주문 목록 불러오기
+    useEffect(() => {
+        fetch("/api/orders/myPage/order", {
+            method: "GET",
+            credentials: "include",
+        })
+            .then((res) => res.ok ? res.json() : [])
+            .then((data) => {
+                const optionIds = data.map(order => order.optionId);
+                setMyOrderOptionIds(optionIds);
+            })
+            .catch(() => setMyOrderOptionIds([]));
+    }, []);
+
+
     useEffect(() => {
         fetch(`/api/fund/view/${id}`)
             .then((res) => res.json())
@@ -59,6 +78,8 @@ const FundInfoPage = () => {
     }, [id]);
 
     if (!fund) return <div className="not-found">해당 펀딩을 찾을 수 없습니다.</div>;
+
+
 
 
     return (
