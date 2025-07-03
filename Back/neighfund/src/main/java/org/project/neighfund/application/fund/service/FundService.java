@@ -9,7 +9,6 @@ import org.project.neighfund.application.fund.dto.FundResponseDto;
 import org.project.neighfund.domain.fund.*;
 import org.project.neighfund.domain.member.Member;
 import org.project.neighfund.domain.member.MemberRepository;
-import org.project.neighfund.domain.participation.Participation;
 import org.project.neighfund.enums.CommunityCategory;
 import org.project.neighfund.enums.FundStatus;
 import org.project.neighfund.enums.FundType;
