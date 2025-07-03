@@ -16,6 +16,7 @@ import GatheringCreate from './pages/gatheringpage/GatheringCreate';
 
 import ClassCreationPage from './pages/gatheringpage/ClassCreationPage';
 import GatheringInfo from './pages/gatheringpage/GatheringInfo';
+import GatheringJoin from './pages/gatheringpage/GatheringJoin';
 
 import FundCreateLayout from './pages/fundpage/FundCreateLayout';
 import FundCreateTermsPage from './pages/fundpage/FundCreateTermsPage';
@@ -51,6 +52,7 @@ function App() {
               <Route path="/gatheringcreate" element={<GatheringCreate />} />
               <Route path="/classcreationpage" element={<ClassCreationPage />} />
               <Route path="/gatherings/:gatheringId" element={<GatheringInfo />} />
+              <Route path="/gatherings/:gatheringId/join" element={<GatheringJoin />} />
 
 
 
