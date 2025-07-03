@@ -1,9 +1,8 @@
 package org.project.neighfund.application.vendorGathering.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.project.neighfund.application.vendorGathering.dto.VendorGatheringCreateDto;
-import org.project.neighfund.application.vendorGathering.dto.VendorGatheringCreateResponse;
-import org.project.neighfund.application.vendorGathering.dto.VendorGatheringUpdateDto;
+import org.project.neighfund.application.vendorGathering.dto.*;
 import org.project.neighfund.application.vendorGathering.service.VendorGatheringService;
 import org.project.neighfund.config.CustomUserDetails;
 import org.project.neighfund.domain.member.Member;
@@ -22,7 +21,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class VendorGatheringController {
     private final VendorGatheringService vendorGatheringService;
-
+    
+    // 원데이 클래스 글 생성
     @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<VendorGatheringCreateResponse> createVendorGathering(
             @AuthenticationPrincipal CustomUserDetails userDetails,
@@ -50,7 +50,8 @@ public class VendorGatheringController {
         String message = "원데이클래스가 제출되었습니다. 관리자 검수를 기다려주세요.";
         return ResponseEntity.ok(new VendorGatheringCreateResponse(dto.getTitle(), message));
     }
-
+    
+    // 무료주차여부, 수업시간, 상세사진들 업로드
     @PostMapping(value = "/{gatheringId}/updateDetails", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> updateVendorGatheringDetails(
             @PathVariable Long gatheringId,
@@ -66,7 +67,31 @@ public class VendorGatheringController {
         vendorGatheringService.updateVendorGatheringDetails(gatheringId, dto, member, productImages);
         return ResponseEntity.ok("원데이클래스 디테일이 업데이트되었습니다.");
     }
-
-
+    
+    // 원데이 클래스 글 상세 조회
+    @GetMapping("/detail/{gatheringId}")
+    public ResponseEntity<VendorDetailResponse> getVendorGathering(@PathVariable Long gatheringId,
+                                                                   @AuthenticationPrincipal CustomUserDetails userDetails) {
+        Member member = userDetails.getMember();
+        VendorDetailResponse response = vendorGatheringService.getVendorGathering(gatheringId, member);
+        return ResponseEntity.ok(response);
+    }
+    
+    // 원데이클래스 글 전체 조회
+    @GetMapping("/list")
+    public List<VendorDetailResponse> getVendorGatheringList() {
+        return vendorGatheringService.getVendorGatheringList();
+    }
+    
+    // 원데이클래스 승인
+    @PostMapping(value = "/{gatheringId}/confirm", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> confirmVendorGathering(
+            @PathVariable Long gatheringId,
+            @Valid @RequestBody AdminConfirmDto dto,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        Member admin = userDetails.getMember();
+        vendorGatheringService.confirmVendorGathering(gatheringId, dto, admin);
+        return ResponseEntity.ok().build();
+    }
 
 }
