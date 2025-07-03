@@ -7,6 +7,7 @@ import org.project.neighfund.domain.fund.Fund;
 import org.project.neighfund.domain.gathering.Gathering;
 import org.project.neighfund.domain.gathering.GatheringPost;
 import org.project.neighfund.domain.member.Member;
+import org.project.neighfund.domain.vendorGathering.VendorGathering;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -49,6 +50,10 @@ public class Like {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "gathering_post_id", nullable = false)
     private GatheringPost gatheringPost;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "vendorGathering_id", nullable = false)
+    private VendorGathering vendorGathering;
 
 
 }

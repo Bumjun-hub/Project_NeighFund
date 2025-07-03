@@ -25,7 +25,7 @@ public class GatheringController {
     private final GatheringService gatheringService;
     
     // 사용자 FREE 소모임 작성
-    @PostMapping("create")
+    @PostMapping("/create")
     public ResponseEntity<GatheringCreateResponse> createGathering(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                                    @RequestPart("title") String title,
                                                                    @RequestPart("category") String category,
@@ -35,7 +35,8 @@ public class GatheringController {
                                                                    @RequestPart("introduction") String introduction,
                                                                    @RequestPart("nickname") String nickname,
                                                                    @RequestPart(value = "titleImage", required = false) MultipartFile titleImage,
-                                                                   @RequestPart(value = "profileImage", required = false) MultipartFile profileImage) throws IOException {
+                                                                   @RequestPart(value = "profileImage", required = false) MultipartFile profileImage
+                                                                   ) throws IOException {
         GatheringDto dto = GatheringDto.builder()
                 .title(title)
                 .category(GatheringCategory.valueOf(category.toUpperCase()))
@@ -78,7 +79,7 @@ public class GatheringController {
     }
     
     // FREE 소모임 수정
-    @PutMapping("edit/{id}")
+    @PutMapping("/edit/{id}")
     public ResponseEntity<GatheringResponse> editGathering(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                                    @PathVariable Long id,
                                                                    @RequestPart("title") String title,

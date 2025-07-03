@@ -45,8 +45,10 @@ spring:
 
     servlet:
       multipart:
-        max-file-size: 20MB
-        max-request-size: 20MB
+        max-file-size: 200MB
+        max-request-size: 400MB
+      tomcat:
+        max-http-form-post-size: -1
     web:
       resources:
         static-locations: file:./uploads/,classpath:/static/
@@ -59,3 +61,10 @@ jwt:
     secret: ${JWT_ACCESS_SECRET}
   refresh:
     secret: ${JWT_REFRESH_SECRET}
+
+logging:
+  level:
+    org.springframework.web.multipart: DEBUG
+    org.springframework.web.servlet: DEBUG
+    org.springframework.web: DEBUG
+    root: INFO

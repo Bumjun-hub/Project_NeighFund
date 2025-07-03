@@ -7,6 +7,7 @@ import org.project.neighfund.domain.common.BaseEntity;
 import org.project.neighfund.domain.gathering.Blacklist;
 import org.project.neighfund.domain.gathering.Gathering;
 import org.project.neighfund.domain.like.Like;
+import org.project.neighfund.domain.vendorGathering.VendorGathering;
 import org.project.neighfund.enums.SocialProvider;
 
 import java.util.List;
@@ -57,5 +58,8 @@ public class Member extends BaseEntity {
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Like> likes;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<VendorGathering> vendorGatherings;
 
 }

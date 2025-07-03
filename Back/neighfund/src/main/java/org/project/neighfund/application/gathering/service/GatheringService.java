@@ -3,11 +3,15 @@ package org.project.neighfund.application.gathering.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.project.neighfund.application.gathering.dto.*;
+
 import org.project.neighfund.domain.gathering.*;
 import org.project.neighfund.domain.member.Member;
 import org.project.neighfund.domain.member.MemberRepository;
+
+import org.project.neighfund.domain.vendorGathering.VendorProductRepository;
 import org.project.neighfund.enums.GatheringPostCategory;
 import org.project.neighfund.enums.GatheringRole;
+
 import org.project.neighfund.global.image.ImageService;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
@@ -371,8 +375,6 @@ public class GatheringService {
                 .collect(Collectors.toList());
     }
 
-
-
     // 사용자 정보 확인
     public void validateMember (Member m){
         Member member = memberRepository.findById(m.getId())
@@ -399,7 +401,5 @@ public class GatheringService {
                 .memberCount(g.getMemberCount())
                 .build();
     }
-
-
 
 }
