@@ -5,7 +5,7 @@ import FundCard from '../../components/FundCard';
 import SurveyBox from '../../components/SurveyBox';
 
 const FundPage = () => {
-  const [funds, setFunds] = useState([]);
+  const [funds, setFunds] = useState([]); // ✅ 기본값 빈 배열
   const [visibleCount, setVisibleCount] = useState(4);
   const observerRef = useRef();
 
@@ -16,8 +16,19 @@ const FundPage = () => {
   useEffect(() => {
     fetch("/api/fund/view")
       .then((res) => res.json())
-      .then((data) => setFunds(data))
-      .catch((err) => console.error("펀딩 목록 불러오기 실패:", err));
+      .then((data) => {
+        console.log("🔥 받아온 펀딩 목록:", data);
+        if (Array.isArray(data)) {
+          setFunds(data);
+        } else {
+          console.error("🚨 응답이 배열이 아닙니다:", data);
+          setFunds([]); // 안전 처리
+        }
+      })
+      .catch((err) => {
+        console.error("❌ 펀딩 목록 불러오기 실패:", err);
+        setFunds([]);
+      });
   }, []);
 
   useEffect(() => {
@@ -36,25 +47,6 @@ const FundPage = () => {
     };
   }, []);
 
-
-  useEffect(() => {
-    console.log("✅ useEffect 실행됨"); // useEffect 작동 확인
-
-    fetch("/api/fund/view")
-      .then((res) => {
-        console.log("✅ fetch 응답 상태:", res.status); // 응답 코드 확인
-        return res.json();
-      })
-      .then((data) => {
-        console.log("🔥 받아온 펀딩 목록:", data); // 실제 데이터 확인
-        setFunds(data);
-      })
-      .catch((err) => {
-        console.error("❌ fetch 에러:", err);
-      });
-  }, []);
-
-
   return (
     <Section>
       <div className="fund-page-wrapper">
@@ -66,10 +58,11 @@ const FundPage = () => {
         </div>
 
         <div className="fund-grid">
-          {funds.slice(0, visibleCount).map((fund) => {
-            console.log("펀딩 항목:", fund); // ✅ 이거 추가
-            return <FundCard key={fund.id} fund={fund} />;
-          })}
+          {Array.isArray(funds) &&
+            funds.slice(0, visibleCount).map((fund) => {
+              console.log("펀딩 항목:", fund);
+              return <FundCard key={fund.id} fund={fund} />;
+            })}
         </div>
 
         <div ref={observerRef} style={{ height: 1 }}></div>
