@@ -10,6 +10,7 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MultipartException;
 
 import java.util.Map;
 
@@ -62,5 +63,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, String>> handleGlobalException(Exception e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("message", "서버 내부 오류가 발생했습니다."));
+    }
+
+    @ExceptionHandler(MultipartException.class)
+    public ResponseEntity<?> handleMultipartException(MultipartException e) {
+        e.printStackTrace();  // 로그에 전체 스택 트레이스 출력
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "파일 업로드 처리 중 오류가 발생했습니다."));
     }
 }
