@@ -1,7 +1,7 @@
 import AddressInput from "../memberpage/AddressInput";
 import { useState } from "react";
 
-const FundParticipateInfoStep = ({ form, setForm, onNext, onPrev, fundId, optionId, salePrice }) => {
+const FundParticipateInfoStep = ({ form, setForm, onNext, onPrev, optionId, salePrice }) => {
   const [loading, setLoading] = useState(false);
 
   // 연락처 자동 하이픈 처리
@@ -33,21 +33,26 @@ const FundParticipateInfoStep = ({ form, setForm, onNext, onPrev, fundId, option
 
     try {
       const token = localStorage.getItem("accessToken");
-      const res = await fetch(`/api/fund/${fundId}/apply`, {
+      const res = await fetch(`/api/orders/${optionId}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`
         },
         body: JSON.stringify({
-          optionId: optionId,
-          quantity: Number(form.quantity)
+          quantity: Number(form.quantity),
+          name: form.name,
+          address: form.address,
+          detailAddress: form.detailAddress,
+          phone: form.phone,
+          paymentName: form.paymentName,
+          paymentBank: form.paymentBank
         }),
       });
 
       setLoading(false);
       if (res.ok) {
-        alert("🎉 참여가 완료되었습니다!");
+        alert("🎉 참여 신청이 완료되었습니다!");
         onNext();
       } else {
         const msg = await res.text();
@@ -59,7 +64,6 @@ const FundParticipateInfoStep = ({ form, setForm, onNext, onPrev, fundId, option
     }
   };
 
-  // ✅ 금액 계산 로직 수정
   const unitPrice = Number(salePrice) || 0;
   const quantity = Number(form.quantity) || 1;
   const totalAmount = unitPrice * quantity;
@@ -120,6 +124,28 @@ const FundParticipateInfoStep = ({ form, setForm, onNext, onPrev, fundId, option
             onChange={handleChange}
             placeholder="010-0000-0000"
             maxLength={13}
+            required
+          />
+        </div>
+
+        <div>
+          <label>입금자명</label>
+          <input
+            type="text"
+            name="paymentName"
+            value={form.paymentName}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        <div>
+          <label>입금은행</label>
+          <input
+            type="text"
+            name="paymentBank"
+            value={form.paymentBank}
+            onChange={handleChange}
             required
           />
         </div>

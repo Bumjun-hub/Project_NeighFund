@@ -5,7 +5,7 @@ import FundParticipateInfoStep from "./FundParticipateInfoStep";
 import FundParticipateNoticeStep from "./FundParticipateNoticeStep";
 
 const FundParticipatePage = () => {
-  
+
 
   // ✅ URL 파라미터에서 리워드 정보 가져오기
   const queryParams = new URLSearchParams(window.location.search);
@@ -23,11 +23,12 @@ const FundParticipatePage = () => {
     phone: "",
     paymentName: "",
     paymentBank: "",
-    rewardTitle: rewardTitle || "", // ✅ 리워드명 UI에 표시용
+    rewardTitle: rewardTitle || "", // 리워드명 UI에 표시용
   });
   const [fund, setFund] = useState(null);
 
   useEffect(() => {
+    if (!fundId || isNaN(fundId)) return; // 보호코드
     fetch(`/api/fund/view/${fundId}`)
       .then(res => res.json())
       .then(data => setFund(data));
@@ -50,8 +51,8 @@ const FundParticipatePage = () => {
           onNext={() => setStep(3)}
           onPrev={() => setStep(1)}
           fund={fund}
-          optionId={optionId}       // ✅ ParticipationDto 전송에 사용
-          salePrice={rewardAmount}  // ✅ 총 금액 계산용
+          optionId={optionId}       //  ParticipationDto 전송에 사용
+          salePrice={rewardAmount}  //  총 금액 계산용
         />
       )}
       {step === 3 && (

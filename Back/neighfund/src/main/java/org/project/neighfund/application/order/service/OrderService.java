@@ -42,7 +42,7 @@ public class OrderService {
         }
 
         //중복신청여부
-        if (orderRepository.existsByFundOptionAndMember(fund, loginUser)) {
+        if (orderRepository.existsByFundOptionAndMember(option, loginUser)) {
             throw new IllegalArgumentException("이미 신청한 펀드 입니다");
         }
 
@@ -67,6 +67,9 @@ public class OrderService {
                 .phone(orderDto.getPhone())
                 .paymentName(orderDto.getPaymentName())
                 .paymentBank(orderDto.getPaymentBank())
+                .accountHolderName("neighFund") // ✅ 직접 넣기
+                .virtualAccount("1234-5678-9012") // 혹시 몰라 이것도 명시
+                .bankName("TestBank")
                 .status(OrderStatus.PENDING)
                 .build();
         orderRepository.save(order);

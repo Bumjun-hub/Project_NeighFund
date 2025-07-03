@@ -11,7 +11,7 @@ import java.util.List;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long> {
-    boolean existsByFundOptionAndMember(Fund fund, Member loginUser);
+    boolean existsByFundOptionAndMember(FundOption fundOption, Member loginUser);
 
     List<Order> findByFundOption(FundOption option);
 

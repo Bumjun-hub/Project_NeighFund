@@ -5,6 +5,7 @@ import Section from '../../components/Section';
 
 const FundInfoPage = () => {
     const { id } = useParams();
+    console.log("✅ FundInfoPage - id from useParams():", id);
     const [fund, setFund] = useState(null);
     const [activeTab, setActiveTab] = useState('intro');
 
@@ -17,12 +18,35 @@ const FundInfoPage = () => {
         ); // 같은 항목 누르면 해제
     };
 
-    const handleParticipateClick = () => {
-        if (!selectedReward) return alert("리워드를 선택해주세요!");
+    const handleParticipateClick = async () => {
+        if (!selectedReward) {
+            alert("리워드를 선택해주세요!");
+            return;
+        }
 
-        const url = `/funding/participate?id=${id}&optionId=${selectedReward.id}&title=${encodeURIComponent(selectedReward.title)}&amount=${selectedReward.amount}`;
-        window.open(url, '_blank', 'width=700,height=800');
+        try {
+            const res = await fetch("/api/auth/roleinfo", {
+                method: "GET",
+                credentials: "include", //  쿠키 기반 인증에서는 꼭 필요!
+            });
+
+            if (!res.ok) {
+                alert("로그인이 필요한 기능입니다.");
+                window.location.href = "/login"; // 로그인 페이지로 이동
+                return;
+            }
+
+            // 로그인된 경우 → 참여 페이지 새 창 열기
+
+            const url = `/funding/participate?id=${fund.id}&optionId=${selectedReward.id}&title=${encodeURIComponent(selectedReward.title)}&amount=${selectedReward.amount}`;
+
+            window.open(url, "_blank", "width=700,height=800");
+        } catch (error) {
+            alert("서버 오류가 발생했습니다.");
+            console.error("참여 버튼 오류:", error);
+        }
     };
+
 
     useEffect(() => {
         fetch(`/api/fund/view/${id}`)
@@ -51,8 +75,8 @@ const FundInfoPage = () => {
 
                         <div className="fund-stats">
 
-                            <p><strong>목표 금액:</strong> {fund.targetAmount.toLocaleString()}원</p>
-                            <p><strong>현재 금액:</strong> {fund.currentAmount.toLocaleString()}원</p>
+                            <p><strong>목표 금액:</strong> {fund.targetAmount != null ? fund.targetAmount.toLocaleString() : '0'}원</p>
+                            <p><strong>현재 금액:</strong> {fund.currentAmount != null ? fund.currentAmount.toLocaleString() : '0'}원</p>
                             <p><strong>참여자 수:</strong> {fund.currentParticipants}명</p>
                             <p><strong>마감일:</strong> {fund.deadline?.split("T")[0]}</p>
                         </div>
@@ -103,7 +127,7 @@ const FundInfoPage = () => {
                             )}
                         </div>
                     </div>
-                    {/* ✅ 리워드 목록 렌더링 */}
+                    {/*  리워드 목록 렌더링 */}
                     <div className='fund-reward-right'>
                         <h3 style={{ marginBottom: '10px' }}>🎁 리워드</h3>
                         {fund.options && fund.options.map((opt, idx) => (
@@ -122,7 +146,7 @@ const FundInfoPage = () => {
                             </div>
                         ))}
 
-                        {/* ✅ 리워드 선택 후 버튼 하나만 표시 */}
+                        {/*  리워드 선택 후 버튼 하나만 표시 */}
                         <button
                             className="fund-participate-btn"
                             disabled={!selectedReward}

@@ -94,14 +94,18 @@ public class FundController {
     }
 
     //상세조회
+
     @GetMapping("/view/{id}")
     public ResponseEntity<FundResponseDto> detailView(
             @PathVariable Long id,
-            @AuthenticationPrincipal CustomUserDetails userDetails
+            @AuthenticationPrincipal CustomUserDetails userDetails // ✅ 로그인 안 한 경우 null
     ) {
-        Member loginUser = userDetails.getMember();
-        FundResponseDto posts = fundService.detailView(id, loginUser);
-        return ResponseEntity.ok(posts);
+        // ✅ 비로그인 사용자는 null로 처리
+        Member loginUser = (userDetails != null) ? userDetails.getMember() : null;
+
+        // ✅ 서비스에 loginUser(null 허용)를 넘겨줌
+        FundResponseDto post = fundService.detailView(id, loginUser);
+        return ResponseEntity.ok(post);
     }
 
     //관리자 검수 상태 변경
