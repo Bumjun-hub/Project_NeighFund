@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.project.neighfund.domain.common.BaseEntity;
 
+import org.project.neighfund.domain.like.Like;
 import org.project.neighfund.domain.member.Member;
 import org.project.neighfund.enums.GatheringCategory;
 import org.project.neighfund.enums.GatheringType;
@@ -68,4 +69,7 @@ public class VendorGathering extends BaseEntity {
 
     @OneToMany(mappedBy = "vendorGathering", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReservationSlot> reservationSlots; // 예약 슬롯
+
+    @OneToMany(mappedBy = "vendorGathering", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Like> likes; // 원데이클래스 게시글
 }
