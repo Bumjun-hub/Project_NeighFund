@@ -1,8 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import GatheringAPI from './GatheringAPI';
 import './GatheringCreate.css';
 
 const GatheringCreate = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  
+  // 수정 모드인지 확인
+  const isEditMode = location.state?.isEdit || false;
+  const gatheringId = location.state?.gatheringId;
+  const initialData = location.state?.gatheringData;
+
   const [formData, setFormData] = useState({
     title: '',
     category: '',
@@ -19,6 +28,26 @@ const GatheringCreate = () => {
   const [profileImagePreview, setProfileImagePreview] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  // 수정 모드일 때 초기 데이터 설정
+  useEffect(() => {
+    if (isEditMode && initialData) {
+      setFormData({
+        title: initialData.title || '',
+        category: initialData.category || '',
+        type: initialData.type || 'FREE',
+        dongName: initialData.dongName || '',
+        content: initialData.content || '',
+        introduction: '', // 수정 시에는 기존 소개글 없음
+        nickname: '' // 수정 시에는 기존 닉네임 없음
+      });
+      
+      // 기존 이미지가 있으면 미리보기로 설정
+      if (initialData.titleImage) {
+        setTitleImagePreview(initialData.titleImage);
+      }
+    }
+  }, [isEditMode, initialData]);
 
   // 카테고리 옵션
   const categories = [
@@ -80,7 +109,7 @@ const GatheringCreate = () => {
 
   // 폼 검증
   const validateForm = () => {
-    const { title, category, dongName, content, introduction, nickname } = formData;
+    const { title, category, dongName, content } = formData;
     
     if (!title.trim()) {
       setError('소모임 제목을 입력해주세요.');
@@ -98,13 +127,18 @@ const GatheringCreate = () => {
       setError('소모임 설명을 입력해주세요.');
       return false;
     }
-    if (!introduction.trim()) {
-      setError('한줄 소개를 입력해주세요.');
-      return false;
-    }
-    if (!nickname.trim()) {
-      setError('소모임 닉네임을 입력해주세요.');
-      return false;
+
+    // 수정 모드가 아닐 때만 필수 체크
+    if (!isEditMode) {
+      const { introduction, nickname } = formData;
+      if (!introduction.trim()) {
+        setError('한줄 소개를 입력해주세요.');
+        return false;
+      }
+      if (!nickname.trim()) {
+        setError('소모임 닉네임을 입력해주세요.');
+        return false;
+      }
     }
 
     return true;
@@ -122,38 +156,55 @@ const GatheringCreate = () => {
     setError(null);
 
     try {
-      const gatheringData = {
-        ...formData,
-        titleImage,
-        profileImage
-      };
+      if (isEditMode) {
+        // 수정 모드
+        const editData = {
+          title: formData.title,
+          category: formData.category,
+          dongName: formData.dongName,
+          content: formData.content,
+          titleImage
+        };
 
-      const response = await GatheringAPI.createGathering(gatheringData);
-      
-      // 성공 시 처리
-      alert('소모임이 성공적으로 생성되었습니다!');
-      
-      // 폼 초기화
-      setFormData({
-        title: '',
-        category: '',
-        type: 'FREE',
-        dongName: '',
-        content: '',
-        introduction: '',
-        nickname: ''
-      });
-      setTitleImage(null);
-      setProfileImage(null);
-      setTitleImagePreview(null);
-      setProfileImagePreview(null);
-      
-      // 소모임 목록 페이지로 이동 (React Router 사용시)
-      // navigate('/gatherings');
+        await GatheringAPI.editGathering(gatheringId, editData);
+        alert('소모임이 성공적으로 수정되었습니다!');
+        
+        // 상세 페이지로 이동
+        navigate(`/gatherings/${gatheringId}`);
+        
+      } else {
+        // 생성 모드
+        const gatheringData = {
+          ...formData,
+          titleImage,
+          profileImage
+        };
+
+        await GatheringAPI.createGathering(gatheringData);
+        alert('소모임이 성공적으로 생성되었습니다!');
+        
+        // 폼 초기화
+        setFormData({
+          title: '',
+          category: '',
+          type: 'FREE',
+          dongName: '',
+          content: '',
+          introduction: '',
+          nickname: ''
+        });
+        setTitleImage(null);
+        setProfileImage(null);
+        setTitleImagePreview(null);
+        setProfileImagePreview(null);
+        
+        // 목록 페이지로 이동
+        navigate('/gatherings');
+      }
       
     } catch (error) {
-      console.error('소모임 생성 실패:', error);
-      setError(error.message || '소모임 생성에 실패했습니다.');
+      console.error('소모임 처리 실패:', error);
+      setError(error.message || `소모임 ${isEditMode ? '수정' : '생성'}에 실패했습니다.`);
     } finally {
       setIsLoading(false);
     }
@@ -162,7 +213,9 @@ const GatheringCreate = () => {
   return (
     <div className="gathering-create-container">
       <div className="create-form-wrapper">
-        <h1 className="create-title">새로운 소모임 만들기</h1>
+        <h1 className="create-title">
+          {isEditMode ? '소모임 수정하기' : '새로운 소모임 만들기'}
+        </h1>
         
         <form onSubmit={handleSubmit} className="create-form">
           {/* 기본 정보 섹션 */}
@@ -234,38 +287,40 @@ const GatheringCreate = () => {
             </div>
           </div>
 
-          {/* 리더 정보 섹션 */}
-          <div className="form-section">
-            <h2 className="section-title">리더 정보</h2>
-            
-            <div className="form-group">
-              <label htmlFor="nickname">소모임 닉네임 *</label>
-              <input
-                type="text"
-                id="nickname"
-                name="nickname"
-                value={formData.nickname}
-                onChange={handleInputChange}
-                placeholder="소모임에서 사용할 닉네임"
-                maxLength={20}
-              />
-              <span className="char-count">{formData.nickname.length}/20</span>
-            </div>
+          {/* 리더 정보 섹션 - 수정 모드일 때는 숨김 */}
+          {!isEditMode && (
+            <div className="form-section">
+              <h2 className="section-title">리더 정보</h2>
+              
+              <div className="form-group">
+                <label htmlFor="nickname">소모임 닉네임 *</label>
+                <input
+                  type="text"
+                  id="nickname"
+                  name="nickname"
+                  value={formData.nickname}
+                  onChange={handleInputChange}
+                  placeholder="소모임에서 사용할 닉네임"
+                  maxLength={20}
+                />
+                <span className="char-count">{formData.nickname.length}/20</span>
+              </div>
 
-            <div className="form-group">
-              <label htmlFor="introduction">한줄 소개 *</label>
-              <input
-                type="text"
-                id="introduction"
-                name="introduction"
-                value={formData.introduction}
-                onChange={handleInputChange}
-                placeholder="자신을 한줄로 소개해주세요"
-                maxLength={100}
-              />
-              <span className="char-count">{formData.introduction.length}/100</span>
+              <div className="form-group">
+                <label htmlFor="introduction">한줄 소개 *</label>
+                <input
+                  type="text"
+                  id="introduction"
+                  name="introduction"
+                  value={formData.introduction}
+                  onChange={handleInputChange}
+                  placeholder="자신을 한줄로 소개해주세요"
+                  maxLength={100}
+                />
+                <span className="char-count">{formData.introduction.length}/100</span>
+              </div>
             </div>
-          </div>
+          )}
 
           {/* 이미지 업로드 섹션 */}
           <div className="form-section">
@@ -304,38 +359,41 @@ const GatheringCreate = () => {
               </div>
             </div>
 
-            <div className="form-group">
-              <label htmlFor="profileImageInput">프로필 이미지</label>
-              <div className="image-upload-area profile">
-                {profileImagePreview ? (
-                  <div className="image-preview profile">
-                    <img src={profileImagePreview} alt="프로필 이미지 미리보기" />
-                    <button type="button" onClick={removeProfileImage} className="remove-image-btn">
-                      ✕
-                    </button>
-                  </div>
-                ) : (
-                  <div className="upload-placeholder profile">
-                    <span>👤</span>
-                    <p>프로필 이미지를 선택하세요</p>
-                  </div>
-                )}
-                <input
-                  type="file"
-                  id="profileImageInput"
-                  accept="image/*"
-                  onChange={handleProfileImageChange}
-                  hidden
-                />
-                <button 
-                  type="button" 
-                  onClick={() => document.getElementById('profileImageInput').click()}
-                  className="upload-btn"
-                >
-                  이미지 선택
-                </button>
+            {/* 프로필 이미지 - 수정 모드일 때는 숨김 */}
+            {!isEditMode && (
+              <div className="form-group">
+                <label htmlFor="profileImageInput">프로필 이미지</label>
+                <div className="image-upload-area profile">
+                  {profileImagePreview ? (
+                    <div className="image-preview profile">
+                      <img src={profileImagePreview} alt="프로필 이미지 미리보기" />
+                      <button type="button" onClick={removeProfileImage} className="remove-image-btn">
+                        ✕
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="upload-placeholder profile">
+                      <span>👤</span>
+                      <p>프로필 이미지를 선택하세요</p>
+                    </div>
+                  )}
+                  <input
+                    type="file"
+                    id="profileImageInput"
+                    accept="image/*"
+                    onChange={handleProfileImageChange}
+                    hidden
+                  />
+                  <button 
+                    type="button" 
+                    onClick={() => document.getElementById('profileImageInput').click()}
+                    className="upload-btn"
+                  >
+                    이미지 선택
+                  </button>
+                </div>
               </div>
-            </div>
+            )}
           </div>
 
           {/* 에러 메시지 */}
@@ -351,8 +409,11 @@ const GatheringCreate = () => {
               type="button" 
               className="cancel-btn"
               onClick={() => {
-                // 뒤로가기 또는 목록으로 이동
-                window.history.back();
+                if (isEditMode) {
+                  navigate(`/gatherings/${gatheringId}`);
+                } else {
+                  window.history.back();
+                }
               }}
             >
               취소
@@ -362,7 +423,10 @@ const GatheringCreate = () => {
               className="submit-btn"
               disabled={isLoading}
             >
-              {isLoading ? '생성 중...' : '소모임 만들기'}
+              {isLoading 
+                ? (isEditMode ? '수정 중...' : '생성 중...') 
+                : (isEditMode ? '소모임 수정하기' : '소모임 만들기')
+              }
             </button>
           </div>
         </form>
