@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import gatheringApi from './GatheringAPI';
 import './GatheringInfo.css';
 
 const GatheringInfo = () => {
@@ -13,28 +14,16 @@ const GatheringInfo = () => {
     fetchGatheringDetail();
   }, [gatheringId]);
 
+  
+
   const fetchGatheringDetail = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem('token');
-      
-      const response = await fetch(`/api/gatherings/free/detail/${gatheringId}`, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
-
-      if (!response.ok) {
-        throw new Error('소모임 정보를 불러오는데 실패했습니다.');
-      }
-
-      const data = await response.json();
+      const data = await gatheringApi.getGatheringDetail(gatheringId);
       setGathering(data);
     } catch (error) {
       console.error('Error fetching gathering detail:', error);
-      setError(error.message);
+      setError('소모임 정보를 불러오는데 실패했습니다.');
     } finally {
       setLoading(false);
     }
@@ -48,6 +37,38 @@ const GatheringInfo = () => {
   const handleJoin = () => {
     // 참여하기 버튼 클릭시 참여 페이지로 이동
     navigate(`/gatherings/${gatheringId}/join`);
+  };
+
+  const handleEdit = () => {
+    // 수정 페이지로 이동 - 기존 데이터를 state로 전달
+    navigate('/GatheringCreate', {
+      state: {
+        isEdit: true,
+        gatheringId: gatheringId,
+        gatheringData: {
+          title: gathering.title,
+          category: gathering.category,
+          dongName: gathering.dongName,
+          content: gathering.content,
+          titleImage: gathering.titleImage,
+          type: 'FREE' // 기본값
+        }
+      }
+    });
+  };
+
+
+  const handleDelete = async () => {
+    if (window.confirm('정말로 이 소모임을 삭제하시겠습니까?')) {
+      try {
+        await gatheringApi.deleteGathering(gatheringId);
+        alert('소모임이 삭제되었습니다.');
+        navigate('/gathering'); // 목록 페이지로 이동
+      } catch (error) {
+        console.error('Delete error:', error);
+        alert('삭제하는데 실패했습니다. 다시 시도해주세요.');
+      }
+    }
   };
 
   const handleBack = () => {
@@ -104,10 +125,20 @@ const GatheringInfo = () => {
       </div>
     );
   }
-
+  
   return (
     <div className="gathering-info-container">
       <div className="gathering-info-content">
+        <div className="header-actions">
+          <div className="owner-actions">
+            <button onClick={handleEdit} className="edit-button">
+              ✏️ 수정
+            </button>
+            <button onClick={handleDelete} className="delete-button">
+              🗑️ 삭제
+            </button>
+          </div>
+        </div>
         {gathering.titleImage && (
           <div className="title-image-container">
             <img 
@@ -161,9 +192,12 @@ const GatheringInfo = () => {
             >
               {gathering.liked ? '❤️' : '🤍'} 좋아요 ({gathering.likes})
             </button>
+            
+            {/* 로그인한 사용자에게 참여하기 버튼 표시 */}
             <button onClick={handleJoin} className="join-button">
               소모임 참여하기
             </button>
+            
           </div>
 
           <div className="update-info">
