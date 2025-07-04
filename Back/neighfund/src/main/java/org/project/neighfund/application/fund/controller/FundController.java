@@ -119,5 +119,28 @@ public class FundController {
         return ResponseEntity.ok("펀딩이 승인되었습니다.");
     }
 
+    // 미승인 펀딩 전체 목록 조회 (관리자 전용)
+    @GetMapping("/admin/unapproved")
+    public ResponseEntity<List<FundResponseDto>> getUnapprovedList(
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        Member loginUser = userDetails.getMember();
+        List<FundResponseDto> list = fundService.getUnapprovedFunds(loginUser);
+        return ResponseEntity.ok(list);
+    }
+
+
+    // 승인되지 않은 펀딩 목록 조회 (관리자 전용)
+    @GetMapping("/admin/unapproved/{id}")
+    public ResponseEntity<FundResponseDto> getUnapprovedDetail(
+            @PathVariable Long id,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        Member loginUser = userDetails.getMember();
+        FundResponseDto dto = fundService.getUnapprovedDetail(id, loginUser);
+        return ResponseEntity.ok(dto);
+    }
+
+
 
 }

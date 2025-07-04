@@ -10,6 +10,7 @@ const FundInfoPage = () => {
     const [activeTab, setActiveTab] = useState('intro');
     const [selectedReward, setSelectedReward] = useState(null);
     const [myOrderOptionIds, setMyOrderOptionIds] = useState([]);
+    const isClosed = fund && new Date(fund.deadline) < new Date(); // fund가 존재할 때만 isClosed계산
 
     // 리워드 선택 핸들러
     const handleSelectReward = (opt) => {
@@ -94,16 +95,28 @@ const FundInfoPage = () => {
                         <h3 className="fund-name">{fund.title}</h3>
                         <p className="fund-subtext">{fund.subTitle}</p>
 
-                        <div className="fund-stats">
-
-                            <p><strong>목표 금액:</strong> {fund.targetAmount != null ? fund.targetAmount.toLocaleString() : '0'}원</p>
-                            <p><strong>현재 금액:</strong> {fund.currentAmount != null ? fund.currentAmount.toLocaleString() : '0'}원</p>
-                            <p><strong>참여자 수:</strong> {fund.currentParticipants}명</p>
-                            <p><strong>마감일:</strong> {fund.deadline?.split("T")[0]}</p>
+                        <div className="fund-stats-box">
+                            <div className="fund-stat">
+                                <span>목표 금액</span>
+                                <strong>{fund.targetAmount?.toLocaleString() || 0}원</strong>
+                            </div>
+                            <div className="fund-stat">
+                                <span>현재 금액</span>
+                                <strong>{fund.currentAmount?.toLocaleString() || 0}원</strong>
+                            </div>
+                            <div className="fund-stat">
+                                <span>참여자 수</span>
+                                <strong>{fund.currentParticipants}명</strong>
+                            </div>
+                            <div className="fund-stat">
+                                <span>마감일</span>
+                                <strong>{fund.deadline?.split("T")[0]}</strong>
+                            </div>
                         </div>
 
 
-                        <p className="fund-likes">♡ {fund.likes}</p>
+
+
                     </div>
                 </div>
 
@@ -156,14 +169,19 @@ const FundInfoPage = () => {
                                 <label>
                                     <input
                                         type="checkbox"
-                                        checked={selectedReward?.title === opt.title}
+                                        disabled={isClosed || myOrderOptionIds.includes(opt.id)}
+                                        checked={selectedReward?.id === opt.id}
                                         onChange={() => handleSelectReward(opt)}
                                     />
+                                    {isClosed && <p className="reward-closed-msg">⚠️ 마감된 펀딩입니다.</p>}
+
                                     <span className="reward-title">
                                         {opt.title} - {opt.amount?.toLocaleString() || '금액없음'}원
                                     </span>
                                 </label>
                                 <p className="reward-desc">{opt.description}</p>
+                                <span className={`reward-quantity ${opt.quantity === 0 ? 'out-of-stock ' : ''}`}>재고 {opt.quantity}개 남음!</span>
+
                             </div>
                         ))}
 
@@ -173,7 +191,7 @@ const FundInfoPage = () => {
                             disabled={!selectedReward}
                             onClick={handleParticipateClick}
                         >
-                            선택한 리워드로 펀딩 신청하기
+                            {isClosed ? "마감된 펀딩입니다" : "선택한 리워드로 펀딩 신청하기"}
                         </button>
                     </div>
 

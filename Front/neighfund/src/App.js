@@ -24,6 +24,7 @@ import ClassCreationPage from './pages/gatheringpage/ClassCreationPage';
 import GatheringInfo from './pages/gatheringpage/GatheringInfo';
 import FundParticipatePage from './pages/fundparticipantpage/FundParticipatePage';
 import GatheringJoin from './pages/gatheringpage/GatheringJoin';
+import AdminPage from './pages/admin/AdminPage';
 
 
 function App() {
@@ -59,10 +60,13 @@ function App() {
               <Route path="/mypage" element={<MyPage />} />
               <Route path="/editProfile" element={<EditProfile />} />
 
+              
+
 
 
 
             </Route>
+            <Route path="/admin" element={<AdminPage />} />
           </Routes>
         </AuthProvider>
       </FundingProvider>

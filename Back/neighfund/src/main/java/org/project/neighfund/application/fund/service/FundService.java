@@ -9,7 +9,6 @@ import org.project.neighfund.application.fund.dto.FundResponseDto;
 import org.project.neighfund.domain.fund.*;
 import org.project.neighfund.domain.member.Member;
 import org.project.neighfund.domain.member.MemberRepository;
-import org.project.neighfund.domain.participation.Participation;
 import org.project.neighfund.enums.CommunityCategory;
 import org.project.neighfund.enums.FundStatus;
 import org.project.neighfund.enums.FundType;
@@ -339,6 +338,48 @@ public class FundService {
         fund.setIsApproved(true);
     }
 
+    @Transactional
+    public List<FundResponseDto> getUnapprovedFunds(Member loginUser) {
+        validateLogin(loginUser);
+        List<Fund> unapproved = fundRepository.findByIsApprovedFalse();
+
+        return unapproved.stream().map(f -> FundResponseDto.builder()
+                .id(f.getId())
+                .username(f.getMember().getUsername())
+                .title(f.getTitle())
+                .subTitle(f.getSubTitle())
+                .content(f.getContent())
+                .category(f.getCategory())
+                .fundType(f.getFundType())
+                .fundStatus(f.getFundStatus())
+                .targetAmount(f.getTargetAmount())
+                .currentAmount(f.getCurrentAmount())
+                .currentParticipants(f.getCurrentParticipants())
+                .progressRate(f.getProgressRate())
+                .deadline(f.getDeadline())
+                .hashTags(f.getHashTags())
+                .fundImages(f.getFundImages().stream()
+                        .map(FundImage::getImgUrl)
+                        .toList())
+                .contentImgUrls(f.getFundContentImages().stream()
+                        .map(FundContentImage::getImgUrl)
+                        .toList())
+                .options(f.getFundOptions().stream()
+                        .map(opt -> FundOptionDto.builder()
+                                .id(opt.getId())
+                                .title(opt.getTitle())
+                                .description(opt.getDescription())
+                                .price(opt.getPrice())
+                                .quantity(opt.getQuantity())
+                                .build())
+                        .toList())
+                .build()
+        ).toList();
+    }
+
+
+
+
     // 사용자 정보 확인
     public void validateMember (Member loginUser){
         Member foundMember = memberRepository.findById(loginUser.getId())
@@ -393,5 +434,65 @@ public class FundService {
     }
 
 
+    public FundResponseDto getUnapprovedDetail(Long id, Member loginUser) {
+        validateLogin(loginUser); // 관리자 확인
+        Fund fund  = validatePost(id); // isApproved 검사 X
+
+        List<FundOptionDto> options = fund.getFundOptions().stream()
+                .map(option -> FundOptionDto.builder()
+                        .id(option.getId())
+                        .title(option.getTitle())
+                        .description(option.getDescription())
+                        .amount(option.getPrice())
+                        .price(option.getPrice())
+                        .content(option.getContent())
+                        .quantity(option.getQuantity())
+                        .build())
+                .collect(Collectors.toList());
+
+        List<String> fundImageUrls = fund.getFundImages().stream()
+                .filter(img -> !img.getIsDeleted())
+                .map(FundImage::getImgUrl)
+                .collect(Collectors.toList());
+
+        List<Long> fundImageIds = fund.getFundImages().stream()
+                .filter(img -> !img.getIsDeleted())
+                .map(FundImage::getId)
+                .collect(Collectors.toList());
+
+        List<String> contentImgUrls = fund.getFundContentImages().stream()
+                .filter(img -> !img.getIsDeleted())
+                .map(FundContentImage::getImgUrl)
+                .collect(Collectors.toList());
+
+        List<Long> contentImgIds = fund.getFundContentImages().stream()
+                .filter(img -> !img.getIsDeleted())
+                .map(FundContentImage::getId)
+                .collect(Collectors.toList());
+
+        return FundResponseDto.builder()
+                .id(fund.getId())
+                .username(fund.getMember().getUsername())
+                .category(fund.getCategory())
+                .fundType(fund.getFundType())
+                .fundStatus(fund.getFundStatus())
+                .options(options)
+                .title(fund.getTitle())
+                .subTitle(fund.getSubTitle())
+                .content(fund.getContent())
+                .fundImages(fundImageUrls)
+                .imgIds(fundImageIds)
+                .contentImgUrls(contentImgUrls)
+                .contentImgIds(contentImgIds)
+                .progressRate(fund.getProgressRate())
+                .targetAmount(fund.getTargetAmount())
+                .currentAmount(fund.getCurrentAmount())
+                .currentParticipants(fund.getCurrentParticipants())
+                .deadline(fund.getDeadline())
+                .hashTags(fund.getHashTags())
+                .likes((long) fund.getLikes().size())
+                .liked(false) // 미승인 상태에서는 좋아요 의미 없음
+                .build();
+    }
 
 }

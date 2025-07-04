@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 const FundCreateRewardPage = () => {
   const navigate = useNavigate();
   const [rewards, setRewards] = useState([
-    { title: '', description: '', amount: '' },
+    { title: '', description: '', amount: '', quantity: '' },
   ]);
   const { setFundData, fundData } = useFunding();
 
@@ -18,7 +18,7 @@ const FundCreateRewardPage = () => {
   };
 
   const addReward = () => {
-    setRewards([...rewards, { title: '', description: '', amount: '' }]);
+    setRewards([...rewards, { title: '', description: '', amount: '', quantity: '' }]);
   };
 
   const removeReward = (index) => {
@@ -48,7 +48,7 @@ const FundCreateRewardPage = () => {
         title: r.title,
         description: r.description,
         price: Number(r.amount),
-        quantity: 1
+        quantity: Number(r.quantity),
       })),
     };
 
@@ -95,7 +95,7 @@ const FundCreateRewardPage = () => {
 
 
   const isValid = rewards.every(
-    (r) => r.title && r.description && r.amount
+    (r) => r.title && r.description && r.amount && r.quantity
   );
 
   return (
@@ -122,6 +122,16 @@ const FundCreateRewardPage = () => {
               value={reward.amount}
               onChange={(e) => handleChange(index, 'amount', e.target.value)}
             />
+
+
+            <input
+              type="number"
+              placeholder="재고 수량"
+              value={reward.quantity}
+              onChange={(e) => handleChange(index, 'quantity', e.target.value)}
+              min="1"
+            />
+
             <button className="remove-btn" onClick={() => removeReward(index)}>
               삭제
             </button>
