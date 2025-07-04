@@ -329,6 +329,8 @@ public class FundService {
         fund.setIsApproved(true);
     }
 
+    //예외처리메소드
+
     // 사용자 정보 확인
     public void validateMember (Member loginUser){
         Member foundMember = memberRepository.findById(loginUser.getId())
