@@ -15,6 +15,7 @@ import java.util.List;
 public class GroupPostDto {
     private long id;
     private String username;
+    private String memberNickname;
     private String title;
     private String content;
     private GatheringPostCategory category;

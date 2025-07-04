@@ -27,4 +27,5 @@ public class GatheringResponse {
     private Long likes;
     private boolean liked;  // 좋아요 여부
     private int memberCount;
+    private boolean isMember;
 }
