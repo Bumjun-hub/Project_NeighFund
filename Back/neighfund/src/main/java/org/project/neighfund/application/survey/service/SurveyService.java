@@ -82,6 +82,34 @@ public class SurveyService {
                         .totalVotes(surveyVoteRepository.countBySurveyId(survey.getId()))
                         .build())
                 .toList();
+
+       /* return surveyRepository.findAll().stream()
+                .map(survey -> {
+                    *//* 총 투표 수 *//*
+                    int total = survey.getOptions().stream()
+                            .mapToInt(SurveyOption::getVoteCount)
+                            .sum();
+
+                    *//* 옵션별 DTO *//*
+                    List<OptionResultDto> optDtos = survey.getOptions().stream()
+                            .map(opt -> OptionResultDto.builder()
+                                    .optionId(opt.getId())
+                                    .content(opt.getContent())
+                                    .voteCount(opt.getVoteCount())
+                                    .build())
+                            .toList();
+
+                    *//* 설문 DTO *//*
+                    return SurveyResponseDto.builder()
+                            .surveyId(survey.getId())
+                            .title(survey.getTitle())
+                            .createdAt(survey.getCreatedAt())
+                            .visible(survey.isVisible())
+                            .totalVotes(total)
+                            .options(optDtos)          // 추가
+                            .build();
+                })
+                .toList();*/
     }
 
     //설문보기(사용자)

@@ -17,5 +17,6 @@ public class SurveyResponseDto {  //설문목록보기(관리자)
     private LocalDateTime createdAt;
     private boolean visible;
     private int totalVotes;
+    //List<OptionResultDto> options;   // ← 항목별 투표 수까지 포함
 
 }
