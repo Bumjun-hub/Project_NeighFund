@@ -3,8 +3,6 @@ package org.project.neighfund.application.vendorGathering.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.project.neighfund.application.vendorGathering.dto.*;
-import org.project.neighfund.domain.Role.Role;
-import org.project.neighfund.domain.gathering.Gathering;
 import org.project.neighfund.domain.member.Member;
 import org.project.neighfund.domain.member.MemberRepository;
 import org.project.neighfund.domain.vendorGathering.VendorGathering;
