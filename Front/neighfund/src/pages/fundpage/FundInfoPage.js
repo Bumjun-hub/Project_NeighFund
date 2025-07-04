@@ -1,77 +1,207 @@
 import { useParams } from 'react-router-dom';
-import { useState } from 'react';
-import { dummyFunds } from '../../datas/dummydata';
+import { useEffect, useState } from 'react';
 import './FundInfoPage.css';
 import Section from '../../components/Section';
 
 const FundInfoPage = () => {
     const { id } = useParams();
-    const fund = dummyFunds.find((item) => item.id === Number(id));
+    console.log("✅ FundInfoPage - id from useParams():", id);
+    const [fund, setFund] = useState(null);
     const [activeTab, setActiveTab] = useState('intro');
+    const [selectedReward, setSelectedReward] = useState(null);
+    const [myOrderOptionIds, setMyOrderOptionIds] = useState([]);
+    const isClosed = fund && new Date(fund.deadline) < new Date(); // fund가 존재할 때만 isClosed계산
+
+    // 리워드 선택 핸들러
+    const handleSelectReward = (opt) => {
+        if (myOrderOptionIds.includes(opt.id)) {
+            alert("이미 신청한 리워드입니다.");
+            return;
+        }
+        setSelectedReward((prev) =>
+            prev?.id === opt.id ? null : opt
+        );
+    };
+
+    const handleParticipateClick = async () => {
+        if (!selectedReward) {
+            alert("리워드를 선택해주세요!");
+            return;
+        }
+
+        try {
+            const res = await fetch("/api/auth/roleinfo", {
+                method: "GET",
+                credentials: "include", //  쿠키 기반 인증에서는 꼭 필요!
+            });
+
+            if (!res.ok) {
+                alert("로그인이 필요한 기능입니다.");
+                window.location.href = "/login"; // 로그인 페이지로 이동
+                return;
+            }
+
+            // 로그인된 경우 → 참여 페이지 새 창 열기
+
+            const url = `/funding/participate?id=${fund.id}&optionId=${selectedReward.id}&title=${encodeURIComponent(selectedReward.title)}&amount=${selectedReward.amount}`;
+
+            window.open(url, "_blank", "width=700,height=800");
+        } catch (error) {
+            alert("서버 오류가 발생했습니다.");
+            console.error("참여 버튼 오류:", error);
+        }
+    };
+
+
+    // 로그인 사용자의 기존 주문 목록 불러오기
+    useEffect(() => {
+        fetch("/api/orders/myPage/order", {
+            method: "GET",
+            credentials: "include",
+        })
+            .then((res) => res.ok ? res.json() : [])
+            .then((data) => {
+                const optionIds = data.map(order => order.optionId);
+                setMyOrderOptionIds(optionIds);
+            })
+            .catch(() => setMyOrderOptionIds([]));
+    }, []);
+
+
+    useEffect(() => {
+        fetch(`/api/fund/view/${id}`)
+            .then((res) => res.json())
+            .then((data) => {
+                console.log("🔍 상세 데이터:", data);
+                setFund(data);
+            })
+            .catch((err) => console.error("❌ 상세 불러오기 실패:", err));
+    }, [id]);
 
     if (!fund) return <div className="not-found">해당 펀딩을 찾을 수 없습니다.</div>;
+
+
+
 
     return (
         <Section>
             <div className="fund-info-wrapper">
-                <h2 className="fund-title">펀딩 상세</h2>
+                <h2 className="fund-title">{fund.title}</h2>
 
                 <div className="fund-info-top">
-                    <img src={fund.imageUrl} alt={fund.title} className="fund-info-image" />
+                    <img src={fund.fundImages?.[0]} alt={fund.title} className="fund-info-image" />
                     <div className="fund-info-details">
-                        <span className="fund-tag">#{fund.tag}</span>
+                        <span className="fund-tag">#{fund.category}</span>
                         <h3 className="fund-name">{fund.title}</h3>
-                        <p className="fund-subtext">주민 제안에 의해 채택된 펀딩입니다</p>
-                        <div className="fund-stats">
-                            <p><strong>달성률:</strong> <span className="fund-highlight">{fund.fundingRate}%</span></p>
-                            <p><strong>목표 금액:</strong> {fund.goalAmount}</p>
-                            <p><strong>참여자 수:</strong> {fund.participants}명</p>
-                            <p><strong>남은 기간:</strong> D-{fund.remainDays}</p>
+                        <p className="fund-subtext">{fund.subTitle}</p>
+
+                        <div className="fund-stats-box">
+                            <div className="fund-stat">
+                                <span>목표 금액</span>
+                                <strong>{fund.targetAmount?.toLocaleString() || 0}원</strong>
+                            </div>
+                            <div className="fund-stat">
+                                <span>현재 금액</span>
+                                <strong>{fund.currentAmount?.toLocaleString() || 0}원</strong>
+                            </div>
+                            <div className="fund-stat">
+                                <span>참여자 수</span>
+                                <strong>{fund.currentParticipants}명</strong>
+                            </div>
+                            <div className="fund-stat">
+                                <span>마감일</span>
+                                <strong>{fund.deadline?.split("T")[0]}</strong>
+                            </div>
                         </div>
-                        <button className="fund-participate-btn">펀딩 참여</button>
-                        <p className="fund-likes">♡ {fund.likeCount}</p>
+
+
+
+
                     </div>
                 </div>
 
-                {/* 펀딩 요약 정보 박스 */}
-                <div className="fund-summary-box">
-                    <div><strong>목표 금액:</strong> {fund.goalAmount}</div>
-                    <div><strong>참여자 수:</strong> {fund.participants}명</div>
-                    <div><strong>남은 시간:</strong> D-{fund.remainDays}</div>
-                </div>
-
-                {/* 탭 영역 */}
+                {/* 탭 */}
                 <div className="fund-tabs">
                     <button className={activeTab === 'intro' ? 'active' : ''} onClick={() => setActiveTab('intro')}>소개</button>
                     <button className={activeTab === 'budget' ? 'active' : ''} onClick={() => setActiveTab('budget')}>예산</button>
-                    <button className={activeTab === 'schedule' ? 'active' : ''} onClick={() => setActiveTab('schedule')}>프로젝트 일정</button>
+                    <button className={activeTab === 'schedule' ? 'active' : ''} onClick={() => setActiveTab('schedule')}>일정</button>
                 </div>
 
-                <div className="fund-info-content">
-                    {activeTab === 'intro' && (
-                        <div className="fund-description-box">
-                            {fund.detailText.split('\n').map((line, idx) => (
-                                <p key={idx}>{line}</p>
-                            ))}
-                        </div>
-                    )}
+                <div className='fund-info-layout'>
+                    <div className='fund-info-content'>
+                        <div className='fund-main-left'>
+                            {activeTab === 'intro' && (
+                                <div className="fund-description-box">
+                                    {fund.content?.split('\n').map((line, idx) => (
+                                        <p key={idx}>{line}</p>
+                                    ))}
 
-                    {activeTab === 'budget' && (
-                        <div className="fund-description-box">
-                            <p>이 펀딩의 목표 금액은 <strong>{fund.goalAmount}</strong>이며, 펀딩 금액은 제작비, 홍보비, 기부금 등으로 사용됩니다.</p>
-                        </div>
-                    )}
+                                    {/* 본문 이미지 */}
+                                    {fund.contentImgUrls && fund.contentImgUrls.length > 0 && (
+                                        <div className="fund-content-images">
+                                            {fund.contentImgUrls.map((url, idx) => (
+                                                <img key={idx} src={url} alt={`본문 이미지 ${idx + 1}`} className="fund-content-image" />
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+                            {activeTab === 'budget' && (
+                                <div className="fund-description-box">
+                                    <p>이 펀딩의 목표 금액은 <strong>{fund.targetAmount.toLocaleString()}원</strong>이며, 펀딩 금액은 제작비, 홍보비, 기부금 등으로 사용됩니다.</p>
+                                </div>
+                            )}
+                            {activeTab === 'schedule' && (
+                                <div className="fund-description-box">
+                                    <p>📌 등록일: {fund.createdAt?.split("T")[0]}</p>
+                                    <p>📌 마감일: {fund.deadline?.split("T")[0]}</p>
+                                    <p>📦 리워드 발송 예정일: 추후 공지</p>
+                                </div>
 
-                    {activeTab === 'schedule' && (
-                        <div className="fund-description-box">
-                            <p>📌 펀딩 시작: 2025.06.20</p>
-                            <p>📌 펀딩 마감: 2025.07.10</p>
-                            <p>📦 리워드 발송 예정: 2025.07.25</p>
+                            )}
                         </div>
-                    )}
+                    </div>
+                    {/*  리워드 목록 렌더링 */}
+                    <div className='fund-reward-right'>
+                        <h3 style={{ marginBottom: '10px' }}>🎁 리워드</h3>
+                        {fund.options && fund.options.map((opt, idx) => (
+                            <div className="fund-reward-item" key={idx}>
+                                <label>
+                                    <input
+                                        type="checkbox"
+                                        disabled={isClosed || myOrderOptionIds.includes(opt.id)}
+                                        checked={selectedReward?.id === opt.id}
+                                        onChange={() => handleSelectReward(opt)}
+                                    />
+                                    {isClosed && <p className="reward-closed-msg">⚠️ 마감된 펀딩입니다.</p>}
+
+                                    <span className="reward-title">
+                                        {opt.title} - {opt.amount?.toLocaleString() || '금액없음'}원
+                                    </span>
+                                </label>
+                                <p className="reward-desc">{opt.description}</p>
+                                <span className={`reward-quantity ${opt.quantity === 0 ? 'out-of-stock ' : ''}`}>재고 {opt.quantity}개 남음!</span>
+
+                            </div>
+                        ))}
+
+                        {/*  리워드 선택 후 버튼 하나만 표시 */}
+                        <button
+                            className="fund-participate-btn"
+                            disabled={!selectedReward}
+                            onClick={handleParticipateClick}
+                        >
+                            {isClosed ? "마감된 펀딩입니다" : "선택한 리워드로 펀딩 신청하기"}
+                        </button>
+                    </div>
+
+
                 </div>
             </div>
-        </Section>
+
+
+
+        </Section >
     );
 };
 

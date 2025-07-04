@@ -10,6 +10,7 @@ import java.util.Optional;
 @Repository
 public interface FundRepository extends JpaRepository<Fund, Long> {
     List<Fund> findAllByIsApprovedTrue();
+    List<Fund> findByIsApprovedFalse();
 
     Optional<Fund>findByIdAndIsApprovedTrue(Long id);
 }

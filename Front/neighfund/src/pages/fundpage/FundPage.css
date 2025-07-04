@@ -5,6 +5,29 @@
     font-family: 'Pretendard', sans-serif;
 }
 
+.fund-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.write-btn {
+  background-color: #2d8cf0;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.write-btn:hover {
+  background-color: #1e6fd9;
+}
+
+
 .fund-title {
     font-size: 24px;
     font-weight: bold;
