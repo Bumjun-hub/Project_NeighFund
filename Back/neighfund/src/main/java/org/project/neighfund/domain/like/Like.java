@@ -31,28 +31,27 @@ public class Like {
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "fund_id", nullable = false)
+    @JoinColumn(name = "fund_id", nullable = true)
     private Fund fund;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "community_id", nullable = false)
+    @JoinColumn(name = "community_id", nullable = true)
     private Community community;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "gathering_id", nullable = false)
+    @JoinColumn(name = "gathering_id", nullable = true)
     private Gathering gathering;
 
     @CreatedDate
     @Column(updatable = false)
     private LocalDateTime createdAt; // 생성일
 
-
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "gathering_post_id", nullable = false)
+    @JoinColumn(name = "gathering_post_id", nullable = true)
     private GatheringPost gatheringPost;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "vendorGathering_id", nullable = false)
+    @JoinColumn(name = "vendorGathering_id", nullable = true)
     private VendorGathering vendorGathering;
 
 
