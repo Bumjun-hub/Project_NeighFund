@@ -10,7 +10,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class FundOptionDto {
+
     private Long id;
+    private String title;
+    private String description;
+    private Long amount;
     private Long price;
     private String content;
     private Integer quantity;

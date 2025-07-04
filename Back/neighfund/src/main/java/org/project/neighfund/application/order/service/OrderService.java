@@ -42,7 +42,7 @@ public class OrderService {
         }
 
         //중복신청여부
-        if (orderRepository.existsByFundOptionAndMember(fund, loginUser)) {
+        if (orderRepository.existsByFundOptionAndMember(option, loginUser)) {
             throw new IllegalArgumentException("이미 신청한 펀드 입니다");
         }
 
@@ -67,12 +67,18 @@ public class OrderService {
                 .phone(orderDto.getPhone())
                 .paymentName(orderDto.getPaymentName())
                 .paymentBank(orderDto.getPaymentBank())
+                .accountHolderName("neighFund") // ✅ 직접 넣기
+                .virtualAccount("1234-5678-9012") // 혹시 몰라 이것도 명시
+                .bankName("TestBank")
                 .status(OrderStatus.PENDING)
                 .build();
         orderRepository.save(order);
 
         //참여자
-        fund.setCurrentParticipants(fund.getCurrentParticipants() + 1);
+        boolean alreadyParticipated = orderRepository.existsByMemberAndFundOption_Fund(loginUser, fund);
+        if (!alreadyParticipated) {
+            fund.setCurrentParticipants(fund.getCurrentParticipants() + 1);
+        }
         //모인금액
         fund.setCurrentAmount(fund.getCurrentAmount() + amount);
         //달성률
@@ -91,12 +97,12 @@ public class OrderService {
             throw new AccessDeniedException("본인의 주문만 취소할 수 있습니다");
         }
         //이미취소되었는지
-        if (order.getStatus() == OrderStatus.CANCELLED){
+        if (order.getStatus() == OrderStatus.CANCELLED) {
             throw new IllegalArgumentException("이미 취소된 주문입니다");
         }
         //마감일이후엔안됨
         Fund fund = order.getFundOption().getFund();
-        if (fund.getDeadline().isBefore(LocalDateTime.now())){
+        if (fund.getDeadline().isBefore(LocalDateTime.now())) {
             throw new IllegalArgumentException("마감일 이후에는 취소할 수 없습니다");
         }
 
@@ -109,7 +115,7 @@ public class OrderService {
         option.setQuantity(option.getQuantity() + order.getQuantity());
 
         //참여자, 모금액 되돌리기
-        fund.setCurrentParticipants(fund.getCurrentParticipants() -1);
+        fund.setCurrentParticipants(fund.getCurrentParticipants() - 1);
         fund.setCurrentAmount(fund.getCurrentAmount() - order.getTotalAmount());
 
         //달성률
@@ -172,22 +178,23 @@ public class OrderService {
     public List<OrderResponseDto> getMyOrder(Member loginUser) {
         List<Order> orders = orderRepository.findByMember(loginUser);
 
-        return orders.stream().map(order -> {Fund fund = order.getFundOption().getFund();
-                        return OrderResponseDto.builder()
-                                .id(order.getId())
-                                .fundId(fund.getId())
-                                .fundTitle(fund.getTitle())
-                                .optionId(order.getFundOption().getId())
-                                .username(order.getMember().getUsername())
-                                .quantity(order.getQuantity())
-                                .totalAmount(order.getTotalAmount())
-                                .address(order.getAddress())
-                                .phone(order.getPhone())
-                                .paymentName(order.getPaymentName())
-                                .paymentBank(order.getPaymentBank())
-                                .status(order.getStatus())
-                                .build();
-        })
+        return orders.stream().map(order -> {
+                    Fund fund = order.getFundOption().getFund();
+                    return OrderResponseDto.builder()
+                            .id(order.getId())
+                            .fundId(fund.getId())
+                            .fundTitle(fund.getTitle())
+                            .optionId(order.getFundOption().getId())
+                            .username(order.getMember().getUsername())
+                            .quantity(order.getQuantity())
+                            .totalAmount(order.getTotalAmount())
+                            .address(order.getAddress())
+                            .phone(order.getPhone())
+                            .paymentName(order.getPaymentName())
+                            .paymentBank(order.getPaymentBank())
+                            .status(order.getStatus())
+                            .build();
+                })
                 .collect(Collectors.toList());
     }
 
@@ -195,7 +202,7 @@ public class OrderService {
     @Transactional
     public OrderResponseDto detailMyOrder(Long orderId, Member loginUser) {
         Order order = validateOrder(orderId);
-        if (!order.getMember().getId().equals(loginUser.getId())){
+        if (!order.getMember().getId().equals(loginUser.getId())) {
             throw new AccessDeniedException("본인의 주문만 조회할 수 있습니다");
         }
 
@@ -220,16 +227,16 @@ public class OrderService {
     // 주문수량변경
     public void updateQuantity(Long orderId, int newQuantity, Member loginUser) {
         Order order = validateOrder(orderId);
-       if (!order.getMember().equals(loginUser))
-           throw new AccessDeniedException("본인의 주문만 수정할 수 있습니다");
+        if (!order.getMember().equals(loginUser))
+            throw new AccessDeniedException("본인의 주문만 수정할 수 있습니다");
 
-       if (order.getStatus() != OrderStatus.PENDING)
-           throw new IllegalArgumentException("입금완료 후에는 수정할 수 없습니다");
+        if (order.getStatus() != OrderStatus.PENDING)
+            throw new IllegalArgumentException("입금완료 후에는 수정할 수 없습니다");
 
-       int diff = newQuantity - order.getQuantity();
-       FundOption opt = order.getFundOption();
+        int diff = newQuantity - order.getQuantity();
+        FundOption opt = order.getFundOption();
 
-       //수량 증가시 재고 확인
+        //수량 증가시 재고 확인
         if (diff > 0 && opt.getQuantity() < diff)
             throw new IllegalArgumentException("재고가 부족합니다");
 
@@ -276,7 +283,7 @@ public class OrderService {
     //펀드 - 옵션 매핑
     private FundOption validateOption(Long optionId) {
         FundOption option = fundOptionRepository.findById(optionId)
-                .orElseThrow(()-> new IllegalArgumentException("해당 옵션이 없습니다"));
+                .orElseThrow(() -> new IllegalArgumentException("해당 옵션이 없습니다"));
         Fund fund = option.getFund();
         if (fund == null) {
             throw new IllegalArgumentException("옵션이 펀드와 일치하지 않습니다. ");
@@ -285,11 +292,10 @@ public class OrderService {
     }
 
     //주문존재확인
-    private Order validateOrder(Long orderId){
-    return orderRepository.findById(orderId)
-            .orElseThrow(() -> new IllegalArgumentException("주문이 존재하지 않습니다"));
+    private Order validateOrder(Long orderId) {
+        return orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("주문이 존재하지 않습니다"));
     }
-
 
 
 }

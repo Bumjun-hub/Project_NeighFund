@@ -15,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class FundDto {
+public class  FundDto {
     private CommunityCategory category;
     private FundType fundType;
     private FundStatus fundStatus;

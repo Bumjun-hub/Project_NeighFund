@@ -14,15 +14,17 @@ import EditProfile from './pages/mypage/MyPageEditProfile';
 import Gathering from './pages/gatheringpage/Gathering';
 import GatheringCreate from './pages/gatheringpage/GatheringCreate';
 
-import ClassCreationPage from './pages/gatheringpage/ClassCreationPage';
-import GatheringInfo from './pages/gatheringpage/GatheringInfo';
-
 import FundCreateLayout from './pages/fundpage/FundCreateLayout';
 import FundCreateTermsPage from './pages/fundpage/FundCreateTermsPage';
 import FundCreateInfoPage from './pages/fundpage/FundCreateInfoPage';
 import FundCreateStoryPage from './pages/fundpage/FundCreateStoryPage';
 import FundCreateRewardPage from './pages/fundpage/FundCreateRewardPage';
 import { FundingProvider } from './pages/fundpage/FundingProvider';
+import ClassCreationPage from './pages/gatheringpage/ClassCreationPage';
+import GatheringInfo from './pages/gatheringpage/GatheringInfo';
+import FundParticipatePage from './pages/fundparticipantpage/FundParticipatePage';
+import GatheringJoin from './pages/gatheringpage/GatheringJoin';
+import AdminPage from './pages/admin/AdminPage';
 
 
 function App() {
@@ -45,26 +47,30 @@ function App() {
               <Route path="/funding/create/info" element={<FundCreateInfoPage />} />
               <Route path="/funding/create/story" element={<FundCreateStoryPage />} />
               <Route path="/funding/create/reward" element={<FundCreateRewardPage />} />
-
+              <Route path="/funding/participate" element={<FundParticipatePage />} />
 
               <Route path="/gathering" element={<Gathering />} />
               <Route path="/gatheringcreate" element={<GatheringCreate />} />
               <Route path="/classcreationpage" element={<ClassCreationPage />} />
               <Route path="/gatherings/:gatheringId" element={<GatheringInfo />} />
-
-
+              <Route path="/gatherings/:gatheringId/join" element={<GatheringJoin />} />
 
               <Route path="/login" element={<LoginPage />} />
               <Route path="/member" element={<MemberPage />} />
               <Route path="/mypage" element={<MyPage />} />
               <Route path="/editProfile" element={<EditProfile />} />
 
-              <Route path="/gathering" element={<Gathering />} />
-              <Route path="/gatheringcreate" element={<GatheringCreate />} />
+              
+
+
+
+
             </Route>
+            <Route path="/admin" element={<AdminPage />} />
           </Routes>
         </AuthProvider>
       </FundingProvider>
+
 
     </div>
   );

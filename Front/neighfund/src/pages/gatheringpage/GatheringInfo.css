@@ -1,27 +1,100 @@
+.header-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 0 10px;
+}
+
+/* 관리자 액션 버튼들 */
+.owner-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.edit-button {
+  padding: 8px 12px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+  margin-top: 20px;
+}
+
+.edit-button:hover {
+  background-color: #218838;
+}
+
+.delete-button {
+  padding: 8px 12px;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+  margin-top: 20px;
+}
+
+.delete-button:hover {
+  background-color: #c82333;
+}
+
+/* 액션 버튼들 스타일 조정 */
+.action-buttons {
+  display: flex;
+  gap: 12px;
+  margin-top: 30px;
+  flex-wrap: wrap;
+}
+
+.like-button {
+  padding: 12px 20px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  background-color: white;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.2s;
+}
+
+.like-button:hover {
+  border-color: #ff6b6b;
+  background-color: #fff5f5;
+}
+
+.like-button.liked {
+  border-color: #ff6b6b;
+  background-color: #ff6b6b;
+  color: white;
+}
+
+.join-button {
+  padding: 12px 24px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.join-button:hover {
+  background-color: #0056b3;
+}
+
 .gathering-info-container {
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
   background-color: #fff;
   min-height: 100vh;
-}
-
-.gathering-info-header {
-  margin-bottom: 20px;
-}
-
-.back-button {
-  background: none;
-  border: none;
-  color: #666;
-  font-size: 16px;
-  cursor: pointer;
-  padding: 8px 0;
-  transition: color 0.2s ease;
-}
-
-.back-button:hover {
-  color: #333;
 }
 
 .gathering-info-content {
