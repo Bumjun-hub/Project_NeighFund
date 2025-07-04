@@ -338,6 +338,7 @@ public class FundService {
         fund.setIsApproved(true);
     }
 
+    //예외처리메소드
     @Transactional
     public List<FundResponseDto> getUnapprovedFunds(Member loginUser) {
         validateLogin(loginUser);
@@ -376,8 +377,6 @@ public class FundService {
                 .build()
         ).toList();
     }
-
-
 
 
     // 사용자 정보 확인
