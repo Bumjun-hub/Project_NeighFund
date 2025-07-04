@@ -1,32 +1,101 @@
 .fund-admin {
-  padding: 20px;
+  padding: 30px;
+  font-family: 'Noto Sans KR', sans-serif;
+  color: #333;
 }
 
-.fund-list ul {
+.admin-tabs {
+  margin-bottom: 20px;
+  display: flex;
+  gap: 10px;
+}
+
+.admin-tabs button {
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: #f0f0f0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.admin-tabs button.active {
+  font-weight: bold;
+  color: #1976d2;
+  border-bottom: 2px solid #1976d2;
+  background: #fff;
+}
+
+.tab-buttons {
+  margin-bottom: 20px;
+  display: flex;
+  gap: 10px;
+}
+
+.tab-buttons button {
+  padding: 8px 16px;
+  font-size: 14px;
+  background: #e0e0e0;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.tab-buttons button.active {
+  background: #1976d2;
+  color: #fff;
+}
+
+.fund-list ul, .community-admin ul {
   list-style: none;
   padding: 0;
 }
 
-.fund-list li {
+.fund-list li, .community-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
   cursor: pointer;
-  padding: 5px;
-  border-bottom: 1px solid #ccc;
+  background: #f9f9f9;
+  padding: 10px;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+
+.fund-list li:hover, .community-item:hover {
+  background: #ececec;
+}
+
+.community-item select {
+  margin-left: auto;
+  padding: 4px 8px;
 }
 
 .fund-detail {
-  margin-top: 20px;
-  padding: 15px;
-  border: 1px solid #eee;
-  background-color: #f8f8f8;
+  margin-top: 30px;
+  padding: 20px;
+  background: #fafafa;
+  border-radius: 10px;
+  border: 1px solid #ddd;
 }
 
-table {
-  width: 100%;
+.fund-detail img {
+  border-radius: 8px;
   margin-top: 10px;
-  border-collapse: collapse;
 }
 
-td, th {
-  border: 1px solid #ccc;
-  padding: 6px;
+.fund-detail ul {
+  padding-left: 20px;
+}
+
+.fund-detail button {
+  margin-top: 20px;
+  background-color: #2e7d32;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 6px;
 }

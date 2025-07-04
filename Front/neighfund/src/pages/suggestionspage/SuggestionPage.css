@@ -56,7 +56,8 @@
 }
 
 .suggestion-card {
-  position: relative; /* 수정 버튼 절대 위치를 위한 기준 */
+  position: relative;
+  /* 수정 버튼 절대 위치를 위한 기준 */
   padding: 20px;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
@@ -71,74 +72,101 @@
 
 /* EDUCATION */
 .suggestion-card[data-category="EDUCATION"] {
-  background: linear-gradient(to right, #ffffff 65%, #bbdefb); /* 연파랑 */
+  background: linear-gradient(to right, #ffffff 65%, #bbdefb);
+  /* 연파랑 */
 }
+
 .suggestion-card[data-category="EDUCATION"] .suggestion-category {
-  background-color: #2196f3; /* 파랑 */
+  background-color: #2196f3;
+  /* 파랑 */
 }
 
 /* ENVIRONMENT */
 .suggestion-card[data-category="ENVIRONMENT"] {
-  background: linear-gradient(to right, #ffffff 65%, #b2dfdb); /* 연녹색 */
+  background: linear-gradient(to right, #ffffff 65%, #b2dfdb);
+  /* 연녹색 */
 }
+
 .suggestion-card[data-category="ENVIRONMENT"] .suggestion-category {
-  background-color: #4caf50; /* 녹색 */
+  background-color: #4caf50;
+  /* 녹색 */
 }
 
 /* CULTURE */
 .suggestion-card[data-category="CULTURE"] {
-  background: linear-gradient(to right, #ffffff 65%, #e1bee7); /* 연보라 */
+  background: linear-gradient(to right, #ffffff 65%, #e1bee7);
+  /* 연보라 */
 }
+
 .suggestion-card[data-category="CULTURE"] .suggestion-category {
-  background-color: #ab47bc; /* 보라 */
+  background-color: #ab47bc;
+  /* 보라 */
 }
 
 /* PET */
 .suggestion-card[data-category="PET"] {
-  background: linear-gradient(to right, #ffffff 65%, #ffe0b2); /* 연주황 */
+  background: linear-gradient(to right, #ffffff 65%, #ffe0b2);
+  /* 연주황 */
 }
+
 .suggestion-card[data-category="PET"] .suggestion-category {
-  background-color: #ff9800; /* 주황 */
+  background-color: #ff9800;
+  /* 주황 */
 }
 
 /* SPORTS */
 .suggestion-card[data-category="SPORTS"] {
-  background: linear-gradient(to right, #ffffff 65%, #c5e1a5); /* 연초록 */
+  background: linear-gradient(to right, #ffffff 65%, #c5e1a5);
+  /* 연초록 */
 }
+
 .suggestion-card[data-category="SPORTS"] .suggestion-category {
-  background-color: #8bc34a; /* 초록 */
+  background-color: #8bc34a;
+  /* 초록 */
 }
 
 /* FOOD */
 .suggestion-card[data-category="FOOD"] {
-  background: linear-gradient(to right, #ffffff 65%, #fff9c4); /* 연노랑 */
+  background: linear-gradient(to right, #ffffff 65%, #fff9c4);
+  /* 연노랑 */
 }
+
 .suggestion-card[data-category="FOOD"] .suggestion-category {
-  background-color: #fbc02d; /* 진노랑 */
+  background-color: #fbc02d;
+  /* 진노랑 */
 }
 
 /* HOBBY */
 .suggestion-card[data-category="HOBBY"] {
-  background: linear-gradient(to right, #ffffff 65%, #f8bbd0); /* 연핑크 */
+  background: linear-gradient(to right, #ffffff 65%, #f8bbd0);
+  /* 연핑크 */
 }
+
 .suggestion-card[data-category="HOBBY"] .suggestion-category {
-  background-color: #ec407a; /* 진핑크 */
+  background-color: #ec407a;
+  /* 진핑크 */
 }
 
 /* WELFARE */
 .suggestion-card[data-category="WELFARE"] {
-  background: linear-gradient(to right, #ffffff 65%, #c8e6c9); /* 연초록 */
+  background: linear-gradient(to right, #ffffff 65%, #c8e6c9);
+  /* 연초록 */
 }
+
 .suggestion-card[data-category="WELFARE"] .suggestion-category {
-  background-color: #66bb6a; /* 초록 */
+  background-color: #66bb6a;
+  /* 초록 */
 }
 
 /* ETC */
 .suggestion-card[data-category="ETC"] {
-  background: linear-gradient(to right, #ffffff 65%, #e0e0e0); /* 회색 */
+  background: linear-gradient(to right, #ffffff 65%, #e0e0e0);
+  /* 회색 */
 }
+
 .suggestion-card[data-category="ETC"] .suggestion-category {
-  background-color: #9e9e9e; /* 중간 회색 */
+  background-color: #9e9e9e;
+  /* 중간 회색 */
 }
 
 
@@ -181,6 +209,34 @@
   display: flex;
   justify-content: space-between;
   font-size: 14px;
+}
+
+.suggestion-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.suggestion-likes {
+  font-size: 14px;
+  font-weight: bold;
+  color: #555;
+  margin-right: auto;
+}
+
+.suggestion-like-button {
+  background-color: #f2f2f2;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.suggestion-like-button:hover {
+  background-color: #e0e0e0;
 }
 
 .suggestion-status {
