@@ -3,35 +3,25 @@ import React, { createContext, useContext, useState } from 'react';
 const FundingContext = createContext();
 
 export const FundingProvider = ({ children }) => {
-  const [info, setInfo] = useState({
-    category: '',
+  const [fundData, setFundData] = useState({
+    category: '',           // CommunityCategory
+    fundType: '',           // FundType
+    fundStatus: 'ONGOING',  // 기본값 지정
     title: '',
-    goalAmount: '',
-    startDate: '',
-    endDate: '',
+    subTitle: '',
+    content: '',
+    targetAmount: '',
+    deadline: '',
+    hashTags: '',
+    options: [              // FundOptionDto 리스트
+      { title: '', description: '', amount: '' }
+    ],
+    mainImage: null,        // 대표 이미지
+    contentImages: []       // 상세 본문 이미지 리스트
   });
-
-  const [story, setStory] = useState({
-    image: null,
-    intro: '',
-    details: '',
-  });
-
-  const [rewards, setRewards] = useState([
-    { title: '', description: '', amount: '' },
-  ]);
 
   return (
-    <FundingContext.Provider
-      value={{
-        info,
-        setInfo,
-        story,
-        setStory,
-        rewards,
-        setRewards,
-      }}
-    >
+    <FundingContext.Provider value={{ fundData, setFundData }}>
       {children}
     </FundingContext.Provider>
   );

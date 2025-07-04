@@ -22,11 +22,19 @@ public class FundOption extends BaseEntity {
     @Column(nullable = false)
     private Long price;
 
+    @Column(nullable = false)
+    private String title; // ✅ 리워드 이름
+
+    @Column(columnDefinition = "TEXT")
+    private String description; // ✅ 리워드 설명
+
+
     @Lob
     @Column(columnDefinition = "TEXT")
     private String content;
 
     @Column(nullable = false)
     private Integer quantity;
+
 
 }
