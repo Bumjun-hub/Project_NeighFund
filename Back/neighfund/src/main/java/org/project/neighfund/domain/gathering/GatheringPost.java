@@ -6,6 +6,7 @@ import org.project.neighfund.domain.comment.Comment;
 import org.project.neighfund.domain.common.BaseEntity;
 import org.project.neighfund.domain.like.Like;
 import org.project.neighfund.domain.member.Member;
+import org.project.neighfund.domain.websocket.Notification;
 import org.project.neighfund.enums.GatheringPostCategory;
 
 import java.util.List;
@@ -51,4 +52,7 @@ public class GatheringPost extends BaseEntity {
 
     @OneToMany(mappedBy = "gatheringPost", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments;
+
+    @OneToMany(mappedBy = "gatheringPost", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Notification> notifications;
 }
