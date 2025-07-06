@@ -3,10 +3,12 @@ package org.project.neighfund.domain.vendorGathering;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.project.neighfund.domain.comment.Comment;
 import org.project.neighfund.domain.common.BaseEntity;
 
 import org.project.neighfund.domain.like.Like;
 import org.project.neighfund.domain.member.Member;
+import org.project.neighfund.domain.websocket.Notification;
 import org.project.neighfund.enums.GatheringCategory;
 import org.project.neighfund.enums.GatheringType;
 
@@ -72,4 +74,12 @@ public class VendorGathering extends BaseEntity {
 
     @OneToMany(mappedBy = "vendorGathering", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Like> likes; // 원데이클래스 게시글
+
+    @OneToMany(mappedBy = "vendorGathering", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments; // 원데이클래스 게시글
+
+    @OneToMany(mappedBy = "vendorGathering", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Notification> notifications; //
+
+
 }

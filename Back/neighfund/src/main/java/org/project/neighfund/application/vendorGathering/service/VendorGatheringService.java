@@ -3,6 +3,7 @@ package org.project.neighfund.application.vendorGathering.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.project.neighfund.application.vendorGathering.dto.*;
+import org.project.neighfund.domain.gathering.Gathering;
 import org.project.neighfund.domain.member.Member;
 import org.project.neighfund.domain.member.MemberRepository;
 import org.project.neighfund.domain.vendorGathering.VendorGathering;
@@ -99,6 +100,17 @@ public class VendorGatheringService {
         vendorGatheringRepository.save(gathering);
     }
 
+    public void deleteGathering(Long id, Member m) {
+        validateMember(m);
+        VendorGathering vendorGathering = vendorGatheringRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 원데이 클래스입니다."));
+
+        if (!vendorGathering.getMember().getId().equals(m.getId())) {
+            throw new IllegalArgumentException("원데이클래스 작성자만 원데이클래스를 삭제할 수 있습니다.");
+        }
+
+        vendorGatheringRepository.delete(vendorGathering);
+    }
 
     // 사용자 정보 확인
     public void validateMember (Member m){
