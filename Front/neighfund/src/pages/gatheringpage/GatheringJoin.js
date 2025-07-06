@@ -120,9 +120,6 @@ const GatheringJoin = () => {
     <div className="gathering-join-container">
       <div className="join-form-wrapper">
         <div className="gathering-info-header">
-          <button onClick={handleBack} className="back-button">
-            ← 뒤로가기
-          </button>
           <h1 className="join-title">소모임 참여하기</h1>
         </div>
 

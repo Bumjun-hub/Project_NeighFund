@@ -349,6 +349,7 @@ public class FundService {
         fund.setIsApproved(true);
     }
 
+    //예외처리메소드
     @Transactional
     public List<FundResponseDto> getUnapprovedFunds(Member loginUser) {
         validateLogin(loginUser);
@@ -397,7 +398,7 @@ public class FundService {
             log.warn("펀드 {}는 이미 마감되었습니다.", fundId);
             return;
         }
-        
+
         fund.setFundStatus(FundStatus.CLOSED);
         fundRepository.save(fund);
 

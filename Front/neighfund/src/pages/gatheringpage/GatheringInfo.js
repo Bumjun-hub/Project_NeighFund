@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import gatheringApi from './GatheringAPI';
+import GatheringBoard from './GatheringBoard'; // 게시판 컴포넌트
 import './GatheringInfo.css';
 
 const GatheringInfo = () => {
@@ -9,18 +10,26 @@ const GatheringInfo = () => {
   const [gathering, setGathering] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isMember, setIsMember] = useState(false); // 멤버 여부 상태
+  const [activeTab, setActiveTab] = useState('intro'); // 활성 탭 상태
 
   useEffect(() => {
     fetchGatheringDetail();
   }, [gatheringId]);
-
-  
 
   const fetchGatheringDetail = async () => {
     try {
       setLoading(true);
       const data = await gatheringApi.getGatheringDetail(gatheringId);
       setGathering(data);
+      
+      // 멤버 여부 확인 - API에서 받은 데이터 사용
+      setIsMember(data.isMember || false);
+      
+      // 디버깅용 로그
+      console.log('Gathering data:', data);
+      console.log('Is member:', data.isMember);
+      
     } catch (error) {
       console.error('Error fetching gathering detail:', error);
       setError('소모임 정보를 불러오는데 실패했습니다.');
@@ -56,7 +65,6 @@ const GatheringInfo = () => {
       }
     });
   };
-
 
   const handleDelete = async () => {
     if (window.confirm('정말로 이 소모임을 삭제하시겠습니까?')) {
@@ -96,6 +104,41 @@ const GatheringInfo = () => {
       'OTHER': '#DDA0DD'
     };
     return colors[category] || '#DDA0DD';
+  };
+
+  // 탭 메뉴 렌더링
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case 'intro':
+        return (
+          <div className="tab-content">
+            <div className="content-text">
+              {gathering.content.split('\n').map((line, index) => (
+                <p key={index}>{line}</p>
+              ))}
+            </div>
+          </div>
+        );
+      case 'board':
+        return (
+          <div className="tab-content">
+            <GatheringBoard 
+              gatheringId={gatheringId} 
+              isMember={isMember} 
+            />
+          </div>
+        );
+      case 'photos':
+        return (
+          <div className="tab-content">
+            <div className="photos-placeholder">
+              <p>📷 사진첩 </p>
+            </div>
+          </div>
+        );
+      default:
+        return null;
+    }
   };
 
   if (loading) {
@@ -139,6 +182,7 @@ const GatheringInfo = () => {
             </button>
           </div>
         </div>
+        
         {gathering.titleImage && (
           <div className="title-image-container">
             <img 
@@ -176,13 +220,33 @@ const GatheringInfo = () => {
             </div>
           </div>
 
-          <div className="gathering-content">
-            <h3>소모임 소개</h3>
-            <div className="content-text">
-              {gathering.content.split('\n').map((line, index) => (
-                <p key={index}>{line}</p>
-              ))}
+          {/* 탭 메뉴 */}
+          <div className="gathering-tabs">
+            <div className="tab-menu">
+              <button
+                className={`tab-button ${activeTab === 'intro' ? 'active' : ''}`}
+                onClick={() => setActiveTab('intro')}
+              >
+                📝 소모임 소개
+              </button>
+              <button
+                className={`tab-button ${activeTab === 'board' ? 'active' : ''}`}
+                onClick={() => setActiveTab('board')}
+              >
+                💬 게시판
+                {!isMember && <span className="member-only-indicator">🔒</span>}
+              </button>
+              <button
+                className={`tab-button ${activeTab === 'photos' ? 'active' : ''}`}
+                onClick={() => setActiveTab('photos')}
+              >
+                📷 사진첩
+                {!isMember && <span className="member-only-indicator">🔒</span>}
+              </button>
             </div>
+
+            {/* 탭 컨텐츠 */}
+            {renderTabContent()}
           </div>
 
           <div className="action-buttons">
@@ -194,10 +258,11 @@ const GatheringInfo = () => {
             </button>
             
             {/* 로그인한 사용자에게 참여하기 버튼 표시 */}
-            <button onClick={handleJoin} className="join-button">
-              소모임 참여하기
-            </button>
-            
+            {!isMember && (
+              <button onClick={handleJoin} className="join-button">
+                소모임 참여하기
+              </button>
+            )}
           </div>
 
           <div className="update-info">

@@ -170,7 +170,7 @@ const GatheringCreate = () => {
         alert('소모임이 성공적으로 수정되었습니다!');
         
         // 상세 페이지로 이동
-        navigate(`/gatherings/${gatheringId}`);
+        navigate(`/gathering/${gatheringId}`);
         
       } else {
         // 생성 모드
@@ -199,7 +199,7 @@ const GatheringCreate = () => {
         setProfileImagePreview(null);
         
         // 목록 페이지로 이동
-        navigate('/gatherings');
+        navigate('/gathering');
       }
       
     } catch (error) {
@@ -410,7 +410,7 @@ const GatheringCreate = () => {
               className="cancel-btn"
               onClick={() => {
                 if (isEditMode) {
-                  navigate(`/gatherings/${gatheringId}`);
+                  navigate(`/gathering/${gatheringId}`);
                 } else {
                   window.history.back();
                 }

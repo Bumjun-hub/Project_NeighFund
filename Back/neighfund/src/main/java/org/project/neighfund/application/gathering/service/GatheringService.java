@@ -75,10 +75,14 @@ public class GatheringService {
 
         // ⭐ 로그인 여부에 따라 추천 상태 처리
         boolean liked = false;
+        boolean isMember = false; // 🆕 멤버 여부 변수 선언
+
         if (m != null && m.getId() != null) {
             liked = gathering.getLikes().stream()
                     .filter(like -> like.getGathering() != null && like.getMember() != null)
                     .anyMatch(like -> like.getMember().getId().equals(m.getId()));
+
+            isMember = gatheringMemberRepository.findByGatheringIdAndMemberId(gatheringId, m.getId()).isPresent();
         }
 
         return GatheringResponse.builder()
@@ -93,6 +97,7 @@ public class GatheringService {
                 .likes((long) gathering.getLikes().stream().filter(like -> like.getGathering() != null).count())
                 .liked(liked)
                 .memberCount(gathering.getMemberCount())
+                .isMember(isMember)
                 .build();
     }
 
