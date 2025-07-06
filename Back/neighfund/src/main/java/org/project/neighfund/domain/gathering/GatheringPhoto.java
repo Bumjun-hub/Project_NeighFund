@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.project.neighfund.domain.member.Member;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
@@ -25,4 +27,5 @@ public class GatheringPhoto {
 
     @Column(nullable = false)
     private String imageUrl;
+    
 }

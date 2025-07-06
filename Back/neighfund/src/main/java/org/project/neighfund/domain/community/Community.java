@@ -6,6 +6,7 @@ import org.project.neighfund.domain.comment.Comment;
 import org.project.neighfund.domain.common.BaseEntity;
 import org.project.neighfund.domain.like.Like;
 import org.project.neighfund.domain.member.Member;
+import org.project.neighfund.domain.websocket.Notification;
 import org.project.neighfund.enums.CommunityCategory;
 import org.project.neighfund.enums.CommunityStatus;
 
@@ -46,6 +47,12 @@ public class Community extends BaseEntity {
 
     @OneToMany(mappedBy = "community", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Like> likes;
+
+    @OneToMany(mappedBy = "community", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments;
+
+    @OneToMany(mappedBy = "community", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Notification> notifications;
 
 
 }

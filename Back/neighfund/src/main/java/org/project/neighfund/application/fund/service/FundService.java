@@ -2,10 +2,12 @@ package org.project.neighfund.application.fund.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.project.neighfund.application.fund.dto.FundDto;
 import org.project.neighfund.application.fund.dto.FundListDto;
 import org.project.neighfund.application.fund.dto.FundOptionDto;
 import org.project.neighfund.application.fund.dto.FundResponseDto;
+import org.project.neighfund.application.websocket.service.NotificationService;
 import org.project.neighfund.domain.fund.*;
 import org.project.neighfund.domain.member.Member;
 import org.project.neighfund.domain.member.MemberRepository;
@@ -25,6 +27,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class FundService {
 
     private final FundRepository fundRepository;
@@ -33,6 +36,7 @@ public class FundService {
     private final FundContentImageRepository fundContentImageRepository;
     private final FundOptionRepository fundOptionRepository;
     private final ImageService imageService;
+    private final NotificationService notificationService;
 
     //작성
     @Transactional
@@ -101,7 +105,14 @@ public class FundService {
                     fundContentImageRepository.save(image);
                 }
             }
+
+        // 공동구매 오픈 알림
+        String content = "🔔 \"" + fund.getTitle() + "\" 새로운 펀드가 OPEN 되었습니다!";
+        notificationService.sendFundOpenToAll(
+                fund, content
+        );
     }
+
     //수정  글을 수정하면 다시 검수 받아야 함
     @Transactional
     public void editPost(Long id, FundDto fundDto, List<MultipartFile> imageFiles,List<MultipartFile>contentImages,
@@ -376,6 +387,25 @@ public class FundService {
                         .toList())
                 .build()
         ).toList();
+    }
+
+    @Transactional
+    public void completedFund(Long fundId) {
+        Fund fund = fundRepository.findById(fundId)
+                .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 펀드 게시글 번호입니다."));
+
+        if (fund.getFundStatus() == FundStatus.CLOSED) {
+            log.warn("펀드 {}는 이미 마감되었습니다.", fundId);
+            return;
+        }
+
+        fund.setFundStatus(FundStatus.CLOSED);
+        fundRepository.save(fund);
+
+        String content = "🔔 \"" + fund.getTitle() + "\" 펀드가 마감 되었습니다. 구매 신청을 진행해주세요!";
+        notificationService.sendGruopBuyCompletedToParticipants(fundId, content);
+
+        log.info("공동구매 {} 마감 완료 및 알림 전송", fundId);
     }
 
 
