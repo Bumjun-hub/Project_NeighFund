@@ -66,7 +66,7 @@ const AdminPage = () => {
 
   const handleCommunityStatusChange = async (id, newStatus) => {
     try {
-      const res = await fetch(`/api/community/admin/status/${id}`, {
+      const res = await fetch(`/api/community/admin/edit/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: newStatus }),
@@ -178,7 +178,11 @@ const AdminPage = () => {
           <ul>
             {communityPosts.map((post) => (
               <li key={post.id} className="community-item">
-                <span><strong>{post.title}</strong> - 상태: {post.status}</span>
+                <span>
+                  <strong>{post.title}</strong>
+                  {" "} - 상태: {post.status}
+                  {" "} - 💗 공감 수: {post.likes}
+                </span>
                 <select
                   value={post.status}
                   onChange={(e) => handleCommunityStatusChange(post.id, e.target.value)}
@@ -188,6 +192,7 @@ const AdminPage = () => {
                   <option value="ON_HOLD">보류 중</option>
                 </select>
               </li>
+
             ))}
           </ul>
         </div>
