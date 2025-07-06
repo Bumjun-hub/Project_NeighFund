@@ -44,6 +44,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/auth/signup", "/api/auth/login").permitAll()
                         .requestMatchers("api/auth/**").authenticated()
                         .requestMatchers("/api/community/view/**","/api/fund/view","/api/fund/view/**", "api/gathering/free/**", "api/gathering/vendor/**").permitAll()
+                        .requestMatchers("/api/comment/**", "/api/likes/**").authenticated()
+                        .requestMatchers("/api/notifications/**").authenticated()
                         .requestMatchers("/uploads/**").permitAll() // 이미지 경로
                         .requestMatchers("/login/oauth2/**", "/api/Oauth/**", "/oauth2/**").permitAll() // social login api 허용
                         .requestMatchers("/api/auth/refresh", "/api/auth/mypage/**", "/api/likes/**").authenticated()

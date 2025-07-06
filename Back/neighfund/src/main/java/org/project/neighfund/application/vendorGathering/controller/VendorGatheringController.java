@@ -2,6 +2,7 @@ package org.project.neighfund.application.vendorGathering.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.project.neighfund.application.gathering.dto.DeleteResponse;
 import org.project.neighfund.application.vendorGathering.dto.*;
 import org.project.neighfund.application.vendorGathering.service.VendorGatheringService;
 import org.project.neighfund.config.CustomUserDetails;
@@ -93,5 +94,15 @@ public class VendorGatheringController {
         vendorGatheringService.confirmVendorGathering(gatheringId, dto, admin);
         return ResponseEntity.ok().build();
     }
+
+    // 원데이클래스 삭제
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<DeleteResponse> deleteGathering(@PathVariable Long id,
+                                                          @AuthenticationPrincipal CustomUserDetails userDetails) {
+        Member m = userDetails.getMember();
+        vendorGatheringService.deleteGathering(id, m);
+        return ResponseEntity.ok(new DeleteResponse("원데이클래스가 삭제되었습니다."));
+    }
+
 
 }
