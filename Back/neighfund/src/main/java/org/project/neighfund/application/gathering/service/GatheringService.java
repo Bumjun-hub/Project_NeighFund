@@ -78,11 +78,59 @@ public class GatheringService {
         boolean isMember = false; // 🆕 멤버 여부 변수 선언
 
         if (m != null && m.getId() != null) {
+            System.out.println("=== 멤버십 확인 디버그 ===");
+            System.out.println("현재 사용자 ID: " + m.getId());
+            System.out.println("현재 사용자 Username: " + m.getUsername());
+            System.out.println("현재 사용자 Email: " + m.getEmail());
+            System.out.println("소모임 ID: " + gatheringId);
+            System.out.println("소모임 제목: " + gathering.getTitle());
+
             liked = gathering.getLikes().stream()
                     .filter(like -> like.getGathering() != null && like.getMember() != null)
                     .anyMatch(like -> like.getMember().getId().equals(m.getId()));
 
-            isMember = gatheringMemberRepository.findByGatheringIdAndMemberId(gatheringId, m.getId()).isPresent();
+            // 멤버십 확인 - try-catch로 안전하게 처리
+            try {
+                boolean memberExists = gatheringMemberRepository.findByGatheringIdAndMemberId(gatheringId, m.getId()).isPresent();
+                System.out.println("gathering_member 테이블에서 멤버 존재 여부: " + memberExists);
+                isMember = memberExists;
+            } catch (Exception e) {
+                System.out.println("멤버십 확인 중 에러: " + e.getMessage());
+                e.printStackTrace();
+                isMember = false;
+            }
+
+            // 추가 디버깅: 해당 소모임의 모든 멤버 출력
+            try {
+                List<GatheringMember> allMembers = gatheringMemberRepository.findByGatheringId(gatheringId);
+                System.out.println("소모임의 전체 멤버 수: " + allMembers.size());
+                for (GatheringMember member : allMembers) {
+                    System.out.println("- 멤버 ID: " + member.getMember().getId() +
+                            ", Username: " + member.getMember().getUsername() +
+                            ", Role: " + member.getRole());
+                }
+
+                // 현재 사용자가 목록에 있는지 직접 확인
+                boolean foundInList = allMembers.stream()
+                        .anyMatch(gm -> gm.getMember().getId().equals(m.getId()));
+                System.out.println("멤버 목록에서 현재 사용자 발견: " + foundInList);
+
+            } catch (Exception e) {
+                System.out.println("전체 멤버 조회 중 에러: " + e.getMessage());
+                e.printStackTrace();
+            }
+
+            System.out.println("최종 isMember 결과: " + isMember);
+            System.out.println("========================");
+
+        } else {
+            System.out.println("=== 멤버십 확인 디버그 ===");
+            System.out.println("사용자가 null이거나 ID가 null입니다.");
+            System.out.println("m: " + m);
+            if (m != null) {
+                System.out.println("m.getId(): " + m.getId());
+            }
+            System.out.println("========================");
         }
 
         return GatheringResponse.builder()
@@ -133,10 +181,15 @@ public class GatheringService {
 
         // ⭐ 로그인 여부에 따라 추천 상태 처리
         boolean liked = false;
+        boolean isMember = false; // 🆕 멤버 여부 변수 추가
+
         if (m != null && m.getId() != null) {
             liked = gathering.getLikes().stream()
                     .filter(like -> like.getGathering() != null && like.getMember() != null)
                     .anyMatch(like -> like.getMember().getId().equals(m.getId()));
+
+            // 🆕 멤버십 확인 로직 추가
+            isMember = gatheringMemberRepository.findByGatheringIdAndMemberId(id, m.getId()).isPresent();
         }
 
         gatheringRepository.save(gathering);
@@ -153,6 +206,7 @@ public class GatheringService {
                 .likes((long)gathering.getLikes().stream().filter(like -> like.getGathering() != null).count())
                 .liked(liked)
                 .memberCount(gathering.getMemberCount())
+                .isMember(isMember) // 🔧 isMember 필드 추가
                 .build();
     }
 
@@ -316,9 +370,9 @@ public class GatheringService {
         if (!post.getMember().getId().equals(m.getId())) {
             throw new IllegalArgumentException("작성자만 게시글을 수정할 수 있습니다.");
         }
-            post.setTitle(title);
-            post.setContent(content);
-            gatheringPostRepository.save(post);
+        post.setTitle(title);
+        post.setContent(content);
+        gatheringPostRepository.save(post);
 
         if (imageFiles != null && !imageFiles.isEmpty()){
             for (MultipartFile imageFile  : imageFiles) {
@@ -347,10 +401,6 @@ public class GatheringService {
                 .imgUrls(post.getPostImages().stream().map(PostImage::getImgUrl).collect(Collectors.toList()))
                 .build();
     }
-
-
-
-
 
     @Transactional
     public void createPhoto(Long gatheringId, MultipartFile image, Member member) throws IOException {
@@ -404,7 +454,7 @@ public class GatheringService {
                 .likes((long) g.getLikes().stream().filter(l -> l.getGathering() != null).count())
                 .liked(liked)
                 .memberCount(g.getMemberCount())
+                .isMember(false) // 🔧 비로그인 조회이므로 항상 false
                 .build();
     }
-
 }

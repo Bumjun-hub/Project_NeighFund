@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.project.neighfund.enums.GatheringCategory;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.LocalDateTime;
 
@@ -25,7 +26,9 @@ public class GatheringResponse {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private Long likes;
-    private boolean liked;  // 좋아요 여부
+    private boolean liked;
     private int memberCount;
+
+    @JsonProperty("isMember") // 🔧 이 줄 추가
     private boolean isMember;
 }
