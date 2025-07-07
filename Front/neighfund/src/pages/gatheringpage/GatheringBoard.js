@@ -91,16 +91,16 @@ const GatheringBoard = ({ gatheringId, isMember }) => {
             className="post-item"
             onClick={() => handlePostClick(post.id)}
           >
-            <div className="post-header">
-              <span className="post-category">{getCategoryText(post.category)}</span>
-              <span className="post-date">{formatDate(post.createdAt)}</span>
+            <div className="post-header-gathering">
+              <span className="post-category-gathering">{getCategoryText(post.category)}</span>
+              <span className="post-date-gathering">{formatDate(post.createdAt)}</span>
             </div>
-            <h4 className="post-title">{post.title}</h4>
-            <p className="post-content-preview">{post.content.substring(0, 100)}...</p>
-            <div className="post-meta">
-              <span className="post-author">👤 {post.memberNickname}</span>
+            <h4 className="post-title-gathering">{post.title}</h4>
+            <p className="post-content-preview-gathering">{post.content.substring(0, 100)}...</p>
+            <div className="post-meta-gathering">
+              <span className="post-author-gathering">👤 {post.memberNickname}</span>
               {post.images && post.images.length > 0 && (
-                <span className="post-images">📷 {post.images.length}</span>
+                <span className="post-images-gathering">📷 {post.images.length}</span>
               )}
             </div>
           </div>
