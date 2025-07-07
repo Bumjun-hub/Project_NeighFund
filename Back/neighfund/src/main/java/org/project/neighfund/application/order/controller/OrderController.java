@@ -114,10 +114,17 @@ public class OrderController {
         return ResponseEntity.ok(orders);
     }
 
+    // 10. 특정 펀딩 ID로 주문 조회
     @GetMapping("/admin/byFund/{fundId}")
-    public ResponseEntity<List<OrderResponseDto>> getOrdersByFund(@PathVariable Long fundId) {
+    public ResponseEntity<List<OrderResponseDto>> getOrdersByFundId(
+            @PathVariable Long fundId
+    ) {
         List<OrderResponseDto> orders = orderService.getOrdersByFundId(fundId);
         return ResponseEntity.ok(orders);
     }
 
+
+
+
 }
+

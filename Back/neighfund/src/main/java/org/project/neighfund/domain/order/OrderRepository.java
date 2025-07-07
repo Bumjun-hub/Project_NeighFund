@@ -23,6 +23,6 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     List<Order> findByMember(Member loginUser);
 
-    List<Order> findByFundOption_Fund_Id(Long fundId); // ✅ 이렇게!
 
+    List<Order> findByFundOption_Fund_Id(Long fundId);
 }

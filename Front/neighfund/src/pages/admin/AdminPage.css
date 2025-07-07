@@ -4,6 +4,7 @@
   color: #333;
 }
 
+/* 상단 탭 (펀딩, 커뮤니티, 설문 등) */
 .admin-tabs {
   margin-bottom: 20px;
   display: flex;
@@ -27,6 +28,7 @@
   background: #fff;
 }
 
+/* 서브 탭 버튼 (승인됨/대기중/전체 등) */
 .tab-buttons {
   margin-bottom: 20px;
   display: flex;
@@ -47,60 +49,7 @@
   color: #fff;
 }
 
-.fund-list ul, .community-admin ul {
-  list-style: none;
-  padding: 0;
-}
-
-.fund-list li, .community-item {
-  display: flex;
-  align-items: center;
-  margin-bottom: 12px;
-  cursor: pointer;
-  background: #f9f9f9;
-  padding: 10px;
-  border-radius: 8px;
-  transition: background 0.2s;
-}
-
-.fund-list li:hover, .community-item:hover {
-  background: #ececec;
-}
-
-.community-item select {
-  margin-left: auto;
-  padding: 4px 8px;
-}
-
-.fund-detail {
-  margin-top: 30px;
-  padding: 20px;
-  background: #fafafa;
-  border-radius: 10px;
-  border: 1px solid #ddd;
-}
-
-.fund-detail img {
-  border-radius: 8px;
-  margin-top: 10px;
-}
-
-.fund-detail ul {
-  padding-left: 20px;
-}
-
-.fund-detail button {
-  margin-top: 20px;
-  background-color: #2e7d32;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  font-weight: bold;
-  cursor: pointer;
-  border-radius: 6px;
-}
-
-
+/* 주문 테이블 스타일 */
 .order-table {
   width: 100%;
   border-collapse: collapse;

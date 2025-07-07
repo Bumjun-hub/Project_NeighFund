@@ -354,12 +354,6 @@ public class OrderService {
     }
 
 
-    public List<OrderResponseDto> getOrdersByFundId(Long fundId) {
-        return orderRepository.findByFundId(fundId).stream()
-                .map(this::toResponseDto)
-                .collect(Collectors.toList());
-    }
-
     private OrderResponseDto toResponseDto(Order order) {
         FundOption option = order.getFundOption();
 
@@ -379,6 +373,14 @@ public class OrderService {
                 .paymentBank(order.getPaymentBank())
                 .status(order.getStatus())
                 .build();
+    }
+
+
+    public List<OrderResponseDto> getOrdersByFundId(Long fundId) {
+        List<Order> orders = orderRepository.findByFundOption_Fund_Id(fundId);
+        return orders.stream()
+                .map(this::toResponseDto)
+                .collect(Collectors.toList());
     }
 
 
