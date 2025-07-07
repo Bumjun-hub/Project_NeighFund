@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import gatheringApi from './GatheringAPI';
-import GatheringBoard from './GatheringBoard'; // 게시판 컴포넌트
+import GatheringBoard from './GatheringBoard'; 
+import GatheringPhotos from './GatheringPhotos'; 
 import './GatheringInfo.css';
 
 const GatheringInfo = () => {
@@ -10,8 +11,8 @@ const GatheringInfo = () => {
   const [gathering, setGathering] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [isMember, setIsMember] = useState(false); // 멤버 여부 상태
-  const [activeTab, setActiveTab] = useState('intro'); // 활성 탭 상태
+  const [isMember, setIsMember] = useState(false);
+  const [activeTab, setActiveTab] = useState('intro');
 
   useEffect(() => {
     fetchGatheringDetail();
@@ -20,15 +21,11 @@ const GatheringInfo = () => {
   const fetchGatheringDetail = async () => {
     try {
       setLoading(true);
+      
       const data = await gatheringApi.getGatheringDetail(gatheringId);
       setGathering(data);
       
-      // 멤버 여부 확인 - API에서 받은 데이터 사용
       setIsMember(data.isMember || false);
-      
-      // 디버깅용 로그
-      console.log('Gathering data:', data);
-      console.log('Is member:', data.isMember);
       
     } catch (error) {
       console.error('Error fetching gathering detail:', error);
@@ -40,7 +37,6 @@ const GatheringInfo = () => {
 
   const handleLike = async () => {
     // 좋아요 기능 구현 (API 엔드포인트가 있다면)
-    console.log('좋아요 클릭');
   };
 
   const handleJoin = () => {
@@ -122,18 +118,29 @@ const GatheringInfo = () => {
       case 'board':
         return (
           <div className="tab-content">
-            <GatheringBoard 
-              gatheringId={gatheringId} 
-              isMember={isMember} 
-            />
+            {isMember ? (
+              <GatheringBoard 
+                gatheringId={gatheringId} 
+                isMember={isMember} 
+              />
+            ) : (
+              <div className="member-only-content">
+                <div className="lock-icon">🔒</div>
+                <p>소모임 멤버만 게시판을 볼 수 있습니다.</p>
+                <button onClick={handleJoin} className="join-button-inline">
+                  소모임 참여하기
+                </button>
+              </div>
+            )}
           </div>
         );
       case 'photos':
         return (
           <div className="tab-content">
-            <div className="photos-placeholder">
-              <p>📷 사진첩 </p>
-            </div>
+            <GatheringPhotos 
+              gatheringId={gatheringId} 
+              isMember={isMember}
+            />
           </div>
         );
       default:
@@ -241,7 +248,6 @@ const GatheringInfo = () => {
                 onClick={() => setActiveTab('photos')}
               >
                 📷 사진첩
-                {!isMember && <span className="member-only-indicator">🔒</span>}
               </button>
             </div>
 
