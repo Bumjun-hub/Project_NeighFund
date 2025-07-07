@@ -53,37 +53,51 @@ class GatheringAPI {
 
   // 소모임 상세 조회 (인증된 사용자는 authenticatedFetch, 비인증 사용자는 일반 fetch)
   async getGatheringDetail(id) {
+  try {
+    console.log('🔍 getGatheringDetail 호출, ID:', id);
+    
+    // 캐시 방지를 위한 타임스탬프 추가
+    const timestamp = new Date().getTime();
+    const urlWithTimestamp = `${API_BASE_URL}/gatherings/free/detail/${id}?_t=${timestamp}`;
+    
+    // authenticatedFetch를 먼저 시도 (인증된 사용자 정보 포함)
+    let response;
+    let isAuthenticated = true;
+    
     try {
-      console.log('🔍 getGatheringDetail 호출, ID:', id);
+      response = await authenticatedFetch(urlWithTimestamp, {
+        method: 'GET'
+      });
+      console.log('✅ authenticatedFetch 성공');
+    } catch (authError) {
+      console.log('🔄 인증 실패 - 일반 fetch로 폴백');
+      isAuthenticated = false;
       
-      // 먼저 일반 fetch로 시도 (비회원도 기본 정보 조회 가능)
-      let response = await fetch(`${API_BASE_URL}/gatherings/free/detail/${id}`, {
+      // 인증 실패 시 일반 fetch로 폴백 (비회원 조회)
+      response = await fetch(urlWithTimestamp, {
         method: 'GET',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' }
       });
-      
-      // 401 에러가 나면 authenticatedFetch로 재시도 (인증 필요한 정보 포함)
-      if (response.status === 401) {
-        console.log('🔄 인증 필요 - authenticatedFetch로 재시도');
-        response = await authenticatedFetch(`${API_BASE_URL}/gatherings/free/detail/${id}`, {
-          method: 'GET'
-        });
-      }
-      
-      if (!response.ok) {
-        throw new Error(`Error: ${response.status}`);
-      }
-      
-      const data = await response.json();
-      console.log('✅ getGatheringDetail 성공, 데이터:', data);
-      return data;
-      
-    } catch (error) {
-      console.error('❌ getGatheringDetail 에러:', error);
-      throw error;
     }
+    
+    if (!response.ok) {
+      throw new Error(`Error: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    console.log('✅ getGatheringDetail 성공');
+    console.log('인증 상태:', isAuthenticated);
+    console.log('응답 데이터:', data);
+    console.log('isMember 값:', data.isMember);
+    
+    return data;
+    
+  } catch (error) {
+    console.error('❌ getGatheringDetail 에러:', error);
+    throw error;
   }
+}
 
   // 소모임 생성 (🔧 authenticatedFetch 사용)
   async createGathering(data) {
@@ -252,7 +266,62 @@ class GatheringAPI {
     }
   }
 
-  // ==================== 사진첩 관련 메서드 ====================
+  
+
+  async getCurrentUser() {
+    try {
+      const response = await authenticatedFetch(`${API_BASE_URL}/auth/mypage`, {
+        method: 'GET'
+      });
+      
+      if (!response.ok) {
+        throw new Error(`사용자 정보를 가져올 수 없습니다. (${response.status})`);
+      }
+      
+      return await response.json();
+    } catch (error) {
+      console.error('getCurrentUser error:', error);
+      throw error;
+    }
+  }
+
+  // 소모임 멤버십 확인 (프론트엔드에서 계산)
+  async checkMembership(gatheringId) {
+    try {
+      const [gathering, currentUser] = await Promise.all([
+        this.getGatheringDetail(gatheringId),
+        this.getCurrentUser()
+      ]);
+
+      if (!currentUser || !gathering) {
+        return false;
+      }
+
+      // 1. 소모임 생성자인지 확인
+      if (gathering.creator && gathering.creator.username === currentUser.username) {
+        return true;
+      }
+
+      // 2. 소모임 멤버 목록에 있는지 확인
+      if (gathering.members && gathering.members.length > 0) {
+        return gathering.members.some(member => 
+          member.username === currentUser.username
+        );
+      }
+
+      // 3. 참여자 목록이 있다면 확인 (API 응답 구조에 따라 조정)
+      if (gathering.participants && gathering.participants.length > 0) {
+        return gathering.participants.some(participant => 
+          participant.username === currentUser.username
+        );
+      }
+
+      return false;
+    } catch (error) {
+      console.error('checkMembership error:', error);
+      return false; // 에러 시 false 반환
+    }
+  }
 
   // 사진 업로드 (🔧 authenticatedFetch 사용)
   async uploadPhoto(gatheringId, image) {
@@ -295,5 +364,6 @@ class GatheringAPI {
     }
   }
 }
+
 
 export default new GatheringAPI();
