@@ -14,6 +14,24 @@ const AdminPage = () => {
     fetchCommunityPosts();
   }, []);
 
+
+  useEffect(() => {
+    fetch("/api/auth/roleinfo", { credentials: "include" })
+      .then(res => res.json())
+      .then(data => {
+        console.log("🔍 roleinfo 응답 확인:", data);
+        if (data.roleName !== "ROLE_ADMIN") {
+          alert("관리자만 접근 가능합니다.");
+          window.location.href = "/";
+        }
+      })
+      .catch(err => {
+        alert("로그인이 필요합니다.");
+        window.location.href = "/login";
+      });
+  }, []);
+
+
   const fetchFunds = async () => {
     try {
       const [res1, res2] = await Promise.all([
