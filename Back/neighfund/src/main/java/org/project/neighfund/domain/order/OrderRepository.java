@@ -7,6 +7,7 @@ import org.project.neighfund.enums.OrderStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Repository
@@ -21,4 +22,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     List<Order> findByFundOptionAndStatus(FundOption option, OrderStatus status);
 
     List<Order> findByMember(Member loginUser);
+
+    List<Order> findByFundOption_Fund_Id(Long fundId); // ✅ 이렇게!
+
 }

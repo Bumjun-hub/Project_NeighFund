@@ -8,10 +8,18 @@ const AdminPage = () => {
   const [communityPosts, setCommunityPosts] = useState([]);
   const [activeTab, setActiveTab] = useState('fund'); // 'fund' | 'community'
   const [fundMode, setFundMode] = useState('unapproved'); // 'unapproved' | 'approved'
+  const [surveys, setSurveys] = useState([]);
+  const [orders, setOrders] = useState([]);
+
+  // 관리자 페이지에서 제목 검색
+  const [funds, setFunds] = useState([]);
+  const [selectedFundId, setSelectedFundId] = useState("");
+
 
   useEffect(() => {
     fetchFunds();
     fetchCommunityPosts();
+    fetchSurveys();
   }, []);
 
 
@@ -30,6 +38,21 @@ const AdminPage = () => {
         window.location.href = "/login";
       });
   }, []);
+
+  useEffect(() => {
+    fetch("/api/fund/titles")
+      .then(res => res.json())
+      .then(data => setFunds(data));
+  }, []);
+
+  // 드롭다운 바뀔때 주문 목록 다시 불러오기 
+  useEffect(() => {
+    if (activeTab === 'orders' && selectedFundId) {
+      fetchOrdersByFund(selectedFundId);
+    }
+  }, [selectedFundId, activeTab]);
+
+
 
 
   const fetchFunds = async () => {
@@ -97,6 +120,77 @@ const AdminPage = () => {
     }
   };
 
+
+
+
+
+  //설문 데이터 불러오기
+  const fetchSurveys = async () => {
+    try {
+      const res = await fetch("/api/survey/admin/view", { credentials: "include" });
+      if (!res.ok) throw new Error();
+      const data = await res.json();
+      setSurveys(data);
+    } catch (err) {
+      alert("설문 목록 조회 실패");
+    }
+  };
+
+  // 설문조사 상태 관리 
+  const handleSurveyVisibleChange = async (id, newVisible) => {
+    try {
+      const res = await fetch(`/api/survey/admin/status/${id}?visible=${newVisible}`, {
+        method: 'PUT',
+        credentials: 'include',
+      });
+      if (!res.ok) throw new Error();
+      alert('설문 상태 변경 완료!');
+      fetchSurveys();
+    } catch (err) {
+      alert('설문 상태 변경 실패');
+    }
+  };
+
+  //주문자 데이터
+  const fetchOrders = async () => {
+    try {
+      const res = await fetch('/api/orders/admin/order', { credentials: 'include' }); // ✅ 경로 수정
+      if (!res.ok) throw new Error();
+      const data = await res.json();
+      setOrders(data);
+    } catch (err) {
+      alert('주문 목록 조회 실패');
+    }
+  };
+
+  // 주문자 상태 변경
+  const handleOrderStatusChange = async (orderId, newStatus) => {
+    try {
+      const res = await fetch(`/api/orders/admin/${orderId}/status?status=${newStatus}`, {
+        method: 'PUT',
+        credentials: 'include',
+      });
+      if (!res.ok) throw new Error();
+      alert('주문 상태 변경 완료!');
+      fetchOrders(); // ✅ 변경 후 새로고침
+    } catch (err) {
+      alert('주문 상태 변경 실패');
+    }
+  };
+
+  // 펀드 제목으로 필터링
+  const fetchOrdersByFund = async (fundId) => {
+    try {
+      const res = await fetch(`/api/orders/admin/byFund/${fundId}`, { credentials: 'include' });
+      if (!res.ok) throw new Error();
+      const data = await res.json();
+      setOrders(data);
+    } catch (err) {
+      alert('선택한 펀딩의 주문 목록 조회 실패');
+    }
+  };
+
+
   const fundsToShow = fundMode === 'unapproved' ? unapprovedFunds : approvedFunds;
 
   return (
@@ -116,7 +210,35 @@ const AdminPage = () => {
         >
           🗂 제안 게시판 관리
         </button>
+
+        <button className={activeTab === 'survey' ? 'active' : ''}
+          onClick={() => setActiveTab('survey')}
+        >설문관리</button>
+
+        <button
+          className={activeTab === 'orders' ? 'active' : ''}
+          onClick={() => {
+            setActiveTab('orders');
+            fetchOrders(); // 🔄 탭 클릭 시 주문 목록 불러오기
+          }}
+        >
+          📦 주문 관리
+        </button>
+        <select
+          value={selectedFundId}
+          onChange={(e) => setSelectedFundId(e.target.value)}
+        >
+          <option value="">펀딩 선택</option>
+          {funds.map(fund => (
+            <option key={fund.id} value={fund.id}>
+              {fund.title}
+            </option>
+          ))}
+        </select>
+
       </div>
+
+
 
       {activeTab === 'fund' && (
         <>
@@ -215,6 +337,99 @@ const AdminPage = () => {
           </ul>
         </div>
       )}
+
+      {activeTab === 'survey' && (
+        <div className="survey-admin">
+          <h2>📊 설문 관리</h2>
+          <ul>
+            {surveys.map((survey) => {
+              const total = survey.totalVotes || 0;
+
+              return (
+                <li key={survey.surveyId} className="survey-item">
+                  <div style={{ marginBottom: '5px' }}>
+                    <strong>📌 질문: </strong> {survey.title}
+                    <br />
+                    <strong>상태: </strong> {survey.visible ? '공개' : '비공개'} | 총 투표수: {total}
+                    <br />
+                    <label>설문 공개 상태 변경: </label>
+                    <select
+                      value={survey.visible ? 'true' : 'false'}
+                      onChange={(e) => handleSurveyVisibleChange(survey.surveyId, e.target.value)}
+                    >d
+                      <option value="true">공개</option>
+                      <option value="false">비공개</option>
+                    </select>
+                  </div>
+
+                  {/* 선택지 표시 */}
+                  <ul style={{ marginTop: '10px', marginBottom: '20px' }}>
+                    {survey.options && survey.options.map((opt) => {
+                      const percentage = total === 0 ? 0 : ((opt.voteCount / total) * 100).toFixed(1);
+                      return (
+                        <li key={opt.optionId}>
+                          🟢 {opt.content} - {opt.voteCount}표 ({percentage}%)
+                        </li>
+                      );
+                    })}
+                  </ul>
+
+                  <hr />
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      )}
+
+
+      {activeTab === 'orders' && (
+        <div className="order-admin">
+          <h2>📦 주문 관리</h2>
+          <table className="order-table">
+            <thead>
+              <tr>
+                <th>펀딩명</th>
+                <th>리워드명</th>
+                <th>수량</th>
+                <th>총금액</th>
+                <th>입금자명</th>
+                <th>은행</th>
+                <th>전화번호</th>
+                <th>상태</th>
+                <th>변경</th>
+              </tr>
+            </thead>
+            <tbody>
+              {orders.map(order => (
+                <tr key={order.id}>
+                  <td>{order.fundTitle}</td>
+                  <td>{order.optionTitle}</td>
+                  <td>{order.quantity}</td>
+                  <td>{order.totalAmount?.toLocaleString()}원</td>
+                  <td>{order.paymentName}</td>
+                  <td>{order.paymentBank}</td>
+                  <td>{order.phone}</td>
+                  <td>{order.status}</td>
+                  <td>
+                    <select
+                      value={order.status}
+                      onChange={(e) => handleOrderStatusChange(order.id, e.target.value)}
+                    >
+                      <option value="PENDING">결제 대기</option>
+                      <option value="PAID">입금 완료</option>
+                      <option value="COMPLETED">배송 완료</option>
+                      <option value="CANCELLED">취소</option>
+                    </select>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+
     </div>
   );
 };

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import './SurveyWritePage.css';
 import { useNavigate } from 'react-router-dom';
 import Section from '../../components/Section';
 import { refreshToken } from '../../utils/authUtils';

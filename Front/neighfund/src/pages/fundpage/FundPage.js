@@ -80,57 +80,58 @@ const FundPage = () => {
   }, []);
 
 
-useEffect(() => {
-  fetch("/api/survey/view", { credentials: 'include' })
-    .then(res => res.json())
-    .then(data => {
-      console.log("🧪 설문 목록:", data);  // 🔥 확인용
-      if (Array.isArray(data)) setSurveys(data);
-    })
-    .catch(err => console.error("설문조사 목록 불러오기 실패", err));
-}, []);
+  useEffect(() => {
+    fetch("/api/survey/view", { credentials: 'include' })
+      .then(res => res.json())
+      .then(data => {
+        console.log("🧪 설문 목록:", data);  // 🔥 확인용
+        if (Array.isArray(data)) setSurveys(data);
+      })
+      .catch(err => console.error("설문조사 목록 불러오기 실패", err));
+  }, []);
 
-return (
-  <Section>
-    <div className="fund-page-wrapper">
-      <div className='fund-header'>
-        <h2 className="fund-title">펀딩</h2>
-        <div style={{ display: 'flex', gap: '10px' }}>
-          <button className="write-btn" onClick={handleWriteClick}>+ 펀딩 글쓰기</button>
-          {isAdmin && (
-            <button className="write-btn" onClick={handleSurveyWriteClick}>+ 설문조사 글쓰기</button>
-          )}
+  return (
+    <Section>
+      <div className="fund-page-wrapper">
+        <div className='fund-header'>
+          <h2 className="fund-title">펀딩</h2>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <button className="write-btn" onClick={handleWriteClick}>+ 펀딩 글쓰기</button>
+            {isAdmin && (
+              <button className="write-btn" onClick={handleSurveyWriteClick}>+ 설문조사 글쓰기</button>
+            )}
+          </div>
         </div>
-      </div>
-      {/* 설문조사 목록 */}
-      <div className="fund-surveys">
-        {surveys.map((survey) => (
-          <SurveyBox
-            key={survey.surveyId}
-            question={survey.title}
-            options={survey.options}
-            surveyId={survey.surveyId}
-            voted={survey.voted}
-            showResult={survey.showResult}
-            totalCount={survey.totalCount}
-          />
-        ))}
-      </div>
+        {/* 설문조사 목록 */}
+        <div className="fund-surveys">
+          {surveys.map((survey) => (
+            <SurveyBox
+              key={survey.surveyId}
+              question={survey.title}
+              options={survey.options}
+              surveyId={survey.surveyId}
+              voted={survey.voted}
+              totalCount={survey.totalCount}
+              setSurveys={setSurveys}
+              surveys={surveys}
+            />
+          ))}
+        </div>
 
-      {/* 펀딩 카드 목록  */}
-      <div className="fund-grid">
-        {Array.isArray(funds) &&
-          funds.slice(0, visibleCount).map((fund) => {
-            console.log("펀딩 항목:", fund);
-            return <FundCard key={fund.id} fund={fund} />;
-          })}
-      </div>
+        {/* 펀딩 카드 목록  */}
+        <div className="fund-grid">
+          {Array.isArray(funds) &&
+            funds.slice(0, visibleCount).map((fund) => {
+              console.log("펀딩 항목:", fund);
+              return <FundCard key={fund.id} fund={fund} />;
+            })}
+        </div>
 
-      {/* 무한 스크롤 */}
-      <div ref={observerRef} style={{ height: 1 }}></div>
-    </div>
-  </Section>
-);
+        {/* 무한 스크롤 */}
+        <div ref={observerRef} style={{ height: 1 }}></div>
+      </div>
+    </Section>
+  );
 };
 
 export default FundPage;

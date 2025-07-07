@@ -3,10 +3,7 @@ package org.project.neighfund.application.fund.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.project.neighfund.application.fund.dto.FundDto;
-import org.project.neighfund.application.fund.dto.FundListDto;
-import org.project.neighfund.application.fund.dto.FundOptionDto;
-import org.project.neighfund.application.fund.dto.FundResponseDto;
+import org.project.neighfund.application.fund.dto.*;
 import org.project.neighfund.application.websocket.service.NotificationService;
 import org.project.neighfund.domain.fund.*;
 import org.project.neighfund.domain.member.Member;
@@ -522,6 +519,13 @@ public class FundService {
                 .likes((long) fund.getLikes().size())
                 .liked(false) // 미승인 상태에서는 좋아요 의미 없음
                 .build();
+    }
+
+    public List<FundSimpleDto> getAllFundTitles() {
+        List<Fund> funds = fundRepository.findAll();
+        return funds.stream()
+                .map(f -> new FundSimpleDto(f.getId(), f.getTitle()))
+                .collect(Collectors.toList());
     }
 
 }

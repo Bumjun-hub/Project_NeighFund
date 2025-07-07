@@ -1,5 +1,7 @@
 import AddressInput from "../memberpage/AddressInput";
 import { useState } from "react";
+import './FundParticipatePage.css';
+
 
 const FundParticipateInfoStep = ({ form, setForm, onNext, onPrev, optionId, salePrice }) => {
   const [loading, setLoading] = useState(false);

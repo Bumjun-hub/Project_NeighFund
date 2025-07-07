@@ -27,10 +27,10 @@ public class OrderController {
             @PathVariable Long optionId,
             @RequestBody OrderDto orderDto,
             @AuthenticationPrincipal CustomUserDetails userDetails
-            ){
+    ) {
         Member loginUser = userDetails.getMember();
         orderService.createOrder(optionId, orderDto, loginUser);
-        return  ResponseEntity.ok("주문(참여)이 완료되었습니다.");
+        return ResponseEntity.ok("주문(참여)이 완료되었습니다.");
     }
 
     //2. 주문취소
@@ -38,28 +38,28 @@ public class OrderController {
     public ResponseEntity<String> cancelOrder(
             @PathVariable Long orderId,
             @AuthenticationPrincipal CustomUserDetails userDetails
-    ){
-      Member loginUser = userDetails.getMember();
-      orderService.cancelOrder(orderId, loginUser);
-      return ResponseEntity.ok("주문(참여)이 취소되었습니다.");
+    ) {
+        Member loginUser = userDetails.getMember();
+        orderService.cancelOrder(orderId, loginUser);
+        return ResponseEntity.ok("주문(참여)이 취소되었습니다.");
     }
 
     //3. 전체 주문(참여자)조회 - 관리자
-    @GetMapping("/admin/{optionId}/order")
-    public ResponseEntity<List<OrderResponseDto>> getOrders(
-            @PathVariable Long fundId,
+
+    @GetMapping("/admin/option/{optionId}/orders")
+    public ResponseEntity<List<OrderResponseDto>> getOrdersByOption(
             @PathVariable Long optionId,
-            @RequestParam(required = false)OrderStatus status
-            ){
-        List<OrderResponseDto> orderList = orderService.getOrders(fundId,optionId, status);
-        return ResponseEntity.ok(orderList);
+            @RequestParam(required = false) OrderStatus status) {
+        List<OrderResponseDto> orders = orderService.getOrdersByOption(optionId, status);
+        return ResponseEntity.ok(orders);
     }
+
 
     //4. 단일주문상세조회 - 관리자
     @GetMapping("/admin/order/{orderId}")
     public ResponseEntity<OrderResponseDto> detailOrders(
             @PathVariable Long orderId
-    ){
+    ) {
         OrderResponseDto dto = orderService.detailOrders(orderId);
         return ResponseEntity.ok(dto);
     }
@@ -68,7 +68,7 @@ public class OrderController {
     @GetMapping("/myPage/order")
     public ResponseEntity<List<OrderResponseDto>> getMyOrder(
             @AuthenticationPrincipal CustomUserDetails userDetails
-    ){
+    ) {
         Member loginUser = userDetails.getMember();
         List<OrderResponseDto> orders = orderService.getMyOrder(loginUser);
         return ResponseEntity.ok(orders);
@@ -76,10 +76,10 @@ public class OrderController {
 
     //6. 내 주문 내역 상세 조회
     @GetMapping("/myPage/order/{orderId}")
-    public  ResponseEntity<OrderResponseDto> detailMyOrders(
+    public ResponseEntity<OrderResponseDto> detailMyOrders(
             @PathVariable Long orderId,
             @AuthenticationPrincipal CustomUserDetails userDetails
-    ){
+    ) {
         Member loginUser = userDetails.getMember();
         OrderResponseDto dto = orderService.detailMyOrder(orderId, loginUser);
         return ResponseEntity.ok(dto);
@@ -91,7 +91,7 @@ public class OrderController {
             @PathVariable Long orderId,
             @RequestParam int newQuantity,
             @AuthenticationPrincipal CustomUserDetails userDetails
-    ){
+    ) {
         Member loginUser = userDetails.getMember();
         orderService.updateQuantity(orderId, newQuantity, loginUser);
         return ResponseEntity.ok("수량이 변경되었습니다");
@@ -102,9 +102,22 @@ public class OrderController {
     public ResponseEntity<String> updateStatus(
             @PathVariable Long orderId,
             @RequestParam OrderStatus status
-    ){
+    ) {
         orderService.updateStatus(orderId, status);
         return ResponseEntity.ok("주문상태가 변경되었습니다.");
+    }
+
+    // 9. 전체 주문 조회 (옵션 없이)
+    @GetMapping("/admin/order")
+    public ResponseEntity<List<OrderResponseDto>> getAllOrders() {
+        List<OrderResponseDto> orders = orderService.getAllOrders(); // 서비스에 이거 추가
+        return ResponseEntity.ok(orders);
+    }
+
+    @GetMapping("/admin/byFund/{fundId}")
+    public ResponseEntity<List<OrderResponseDto>> getOrdersByFund(@PathVariable Long fundId) {
+        List<OrderResponseDto> orders = orderService.getOrdersByFundId(fundId);
+        return ResponseEntity.ok(orders);
     }
 
 }
