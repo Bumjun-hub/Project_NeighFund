@@ -139,6 +139,7 @@ public class OrderService {
                         .fundId(fund.getId())
                         .fundTitle(fund.getTitle())
                         .optionId(order.getFundOption().getId())
+                        .optionTitle(order.getFundOption().getTitle())
                         .username(order.getMember().getUsername())
                         .quantity(order.getQuantity())
                         .totalAmount(order.getTotalAmount())
@@ -162,6 +163,7 @@ public class OrderService {
                 .fundId(fund.getId())
                 .fundTitle(fund.getTitle())
                 .optionId(order.getFundOption().getId())
+                .optionTitle(order.getFundOption().getTitle())
                 .username(order.getMember().getUsername())
                 .quantity(order.getQuantity())
                 .totalAmount(order.getTotalAmount())
@@ -185,6 +187,7 @@ public class OrderService {
                             .fundId(fund.getId())
                             .fundTitle(fund.getTitle())
                             .optionId(order.getFundOption().getId())
+                            .optionTitle(order.getFundOption().getTitle())
                             .username(order.getMember().getUsername())
                             .quantity(order.getQuantity())
                             .totalAmount(order.getTotalAmount())
@@ -213,6 +216,7 @@ public class OrderService {
                 .fundId(fund.getId())
                 .fundTitle(fund.getTitle())
                 .optionId(order.getFundOption().getId())
+                .optionTitle(order.getFundOption().getTitle())
                 .username(order.getMember().getUsername())
                 .quantity(order.getQuantity())
                 .totalAmount(order.getTotalAmount())
@@ -296,6 +300,89 @@ public class OrderService {
         return orderRepository.findById(orderId)
                 .orElseThrow(() -> new IllegalArgumentException("주문이 존재하지 않습니다"));
     }
+
+
+    @Transactional
+    public List<OrderResponseDto> getOrdersByOption(Long optionId, OrderStatus status) {
+        FundOption option = validateOption(optionId); // 옵션 존재 여부 및 펀드 연결 검증
+
+        List<Order> orders = (status == null)
+                ? orderRepository.findByFundOption(option)
+                : orderRepository.findByFundOptionAndStatus(option, status);
+
+        return orders.stream().map(order -> {
+            Fund fund = order.getFundOption().getFund();
+            return OrderResponseDto.builder()
+                    .id(order.getId())
+                    .fundId(fund.getId())
+                    .fundTitle(fund.getTitle())
+                    .optionId(option.getId())
+                    .optionTitle(order.getFundOption().getTitle())
+                    .username(order.getMember().getUsername())
+                    .quantity(order.getQuantity())
+                    .totalAmount(order.getTotalAmount())
+                    .address(order.getAddress())
+                    .phone(order.getPhone())
+                    .paymentName(order.getPaymentName())
+                    .paymentBank(order.getPaymentBank())
+                    .status(order.getStatus())
+                    .build();
+        }).collect(Collectors.toList());
+    }
+
+    public List<OrderResponseDto> getAllOrders() {
+        return orderRepository.findAll().stream()
+                .map(order -> {
+                    Fund fund = order.getFundOption().getFund();
+                    return OrderResponseDto.builder()
+                            .id(order.getId())
+                            .fundId(fund.getId())
+                            .fundTitle(fund.getTitle())
+                            .optionId(order.getFundOption().getId())
+                            .optionTitle(order.getFundOption().getTitle())
+                            .username(order.getMember().getUsername())
+                            .quantity(order.getQuantity())
+                            .totalAmount(order.getTotalAmount())
+                            .address(order.getAddress())
+                            .phone(order.getPhone())
+                            .paymentName(order.getPaymentName())
+                            .paymentBank(order.getPaymentBank())
+                            .status(order.getStatus())
+                            .build();
+                })
+                .collect(Collectors.toList());
+    }
+
+
+    private OrderResponseDto toResponseDto(Order order) {
+        FundOption option = order.getFundOption();
+
+        return OrderResponseDto.builder()
+                .id(order.getId())
+                .fundId(option.getFund().getId())
+                .fundTitle(option.getFund().getTitle())
+                .optionId(option.getId())
+                .optionTitle(option.getTitle())
+                .optionPrice(option.getPrice())
+                .username(order.getMember().getUsername())
+                .quantity(order.getQuantity())
+                .totalAmount(order.getTotalAmount())
+                .address(order.getAddress())
+                .phone(order.getPhone())
+                .paymentName(order.getPaymentName())
+                .paymentBank(order.getPaymentBank())
+                .status(order.getStatus())
+                .build();
+    }
+
+
+    public List<OrderResponseDto> getOrdersByFundId(Long fundId) {
+        List<Order> orders = orderRepository.findByFundOption_Fund_Id(fundId);
+        return orders.stream()
+                .map(this::toResponseDto)
+                .collect(Collectors.toList());
+    }
+
 
 
 }

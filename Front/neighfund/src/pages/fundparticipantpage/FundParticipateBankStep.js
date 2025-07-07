@@ -1,3 +1,5 @@
+import './FundParticipatePage.css';
+
 const FundParticipateBankStep = ({ form }) => {
   const handleClose = () => {
     if (window.opener && !window.opener.closed) {

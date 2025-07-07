@@ -1,19 +1,10 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
 import FundParticipateBankStep from "./FundParticipateBankStep";
 import FundParticipateInfoStep from "./FundParticipateInfoStep";
 import FundParticipateNoticeStep from "./FundParticipateNoticeStep";
+import './FundParticipatePage.css';
 
-const FundParticipatePage = () => {
-
-
-  // ✅ URL 파라미터에서 리워드 정보 가져오기
-  const queryParams = new URLSearchParams(window.location.search);
-  const fundId = Number(queryParams.get("id"));
-  const optionId = Number(queryParams.get("optionId"));
-  const rewardTitle = queryParams.get("title");
-  const rewardAmount = Number(queryParams.get("amount"));
-
+const FundParticipatePage = ({ fundId, optionId, rewardTitle, rewardAmount }) => {
   const [step, setStep] = useState(1);
   const [form, setForm] = useState({
     name: "",
@@ -23,12 +14,12 @@ const FundParticipatePage = () => {
     phone: "",
     paymentName: "",
     paymentBank: "",
-    rewardTitle: rewardTitle || "", // 리워드명 UI에 표시용
+    rewardTitle: rewardTitle || "",
   });
   const [fund, setFund] = useState(null);
 
   useEffect(() => {
-    if (!fundId || isNaN(fundId)) return; // 보호코드
+    if (!fundId || isNaN(fundId)) return;
     fetch(`/api/fund/view/${fundId}`)
       .then(res => res.json())
       .then(data => setFund(data));
@@ -51,14 +42,12 @@ const FundParticipatePage = () => {
           onNext={() => setStep(3)}
           onPrev={() => setStep(1)}
           fund={fund}
-          optionId={optionId}       //  ParticipationDto 전송에 사용
-          salePrice={rewardAmount}  //  총 금액 계산용
+          optionId={optionId}
+          salePrice={rewardAmount}
         />
       )}
       {step === 3 && (
-        <FundParticipateBankStep
-          form={form}
-        />
+        <FundParticipateBankStep form={form} />
       )}
     </div>
   );

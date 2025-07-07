@@ -25,6 +25,7 @@ import GatheringInfo from './pages/gatheringpage/GatheringInfo';
 import FundParticipatePage from './pages/fundparticipantpage/FundParticipatePage';
 import GatheringJoin from './pages/gatheringpage/GatheringJoin';
 import AdminPage from './pages/admin/AdminPage';
+import SurveyWritePage from './pages/surveypage/SurveyWritePage';
 
 
 function App() {
@@ -60,7 +61,8 @@ function App() {
               <Route path="/mypage" element={<MyPage />} />
               <Route path="/editProfile" element={<EditProfile />} />
 
-              
+              <Route path="/survey/write" element={<SurveyWritePage />} />
+
 
 
 

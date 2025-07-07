@@ -81,7 +81,7 @@
 .fund-card-badges {
     position: absolute;
     top: 12px;
-    right:12px;
+    right: 12px;
     display: flex;
     flex-direction: column;
     gap: 6px;
@@ -104,6 +104,12 @@
 }
 
 .badge.dday {
-    background-color: #f44336;
+    background-color: grey;
     /* 빨강: 마감 임박 */
+}
+
+.badge.status.closed {
+    background-color: #f44336;
+    /* 진한 빨강 */
+    color: white;
 }

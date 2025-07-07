@@ -177,6 +177,8 @@
     background-color: #388e3c;
 }
 
+
+
 /* 반응형 대응 */
 @media (max-width: 768px) {
     .fund-section {

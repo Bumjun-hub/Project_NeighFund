@@ -1,32 +1,64 @@
 .fund-admin {
-  padding: 20px;
+  padding: 30px;
+  font-family: 'Noto Sans KR', sans-serif;
+  color: #333;
 }
 
-.fund-list ul {
-  list-style: none;
-  padding: 0;
+/* 상단 탭 (펀딩, 커뮤니티, 설문 등) */
+.admin-tabs {
+  margin-bottom: 20px;
+  display: flex;
+  gap: 10px;
 }
 
-.fund-list li {
+.admin-tabs button {
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: #f0f0f0;
   cursor: pointer;
-  padding: 5px;
-  border-bottom: 1px solid #ccc;
+  transition: all 0.3s ease;
 }
 
-.fund-detail {
-  margin-top: 20px;
-  padding: 15px;
-  border: 1px solid #eee;
-  background-color: #f8f8f8;
+.admin-tabs button.active {
+  font-weight: bold;
+  color: #1976d2;
+  border-bottom: 2px solid #1976d2;
+  background: #fff;
 }
 
-table {
+/* 서브 탭 버튼 (승인됨/대기중/전체 등) */
+.tab-buttons {
+  margin-bottom: 20px;
+  display: flex;
+  gap: 10px;
+}
+
+.tab-buttons button {
+  padding: 8px 16px;
+  font-size: 14px;
+  background: #e0e0e0;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.tab-buttons button.active {
+  background: #1976d2;
+  color: #fff;
+}
+
+/* 주문 테이블 스타일 */
+.order-table {
   width: 100%;
-  margin-top: 10px;
   border-collapse: collapse;
+  margin-top: 20px;
 }
 
-td, th {
+.order-table th,
+.order-table td {
   border: 1px solid #ccc;
-  padding: 6px;
+  padding: 8px 12px;
+  text-align: center;
 }

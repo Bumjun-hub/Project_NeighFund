@@ -1,10 +1,7 @@
 package org.project.neighfund.application.fund.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.project.neighfund.application.fund.dto.FundDto;
-import org.project.neighfund.application.fund.dto.FundListDto;
-import org.project.neighfund.application.fund.dto.FundOptionDto;
-import org.project.neighfund.application.fund.dto.FundResponseDto;
+import org.project.neighfund.application.fund.dto.*;
 import org.project.neighfund.application.fund.service.FundService;
 import org.project.neighfund.config.CustomUserDetails;
 import org.project.neighfund.domain.member.Member;
@@ -140,6 +137,14 @@ public class FundController {
         FundResponseDto dto = fundService.getUnapprovedDetail(id, loginUser);
         return ResponseEntity.ok(dto);
     }
+
+    // 전체 펀딩 id + 제목만 조회 (드롭다운용)
+    @GetMapping("/titles")
+    public ResponseEntity<List<FundSimpleDto>> getAllFundTitles() {
+        List<FundSimpleDto> list = fundService.getAllFundTitles();
+        return ResponseEntity.ok(list);
+    }
+
 
 
 
