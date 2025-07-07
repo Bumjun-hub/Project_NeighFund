@@ -58,6 +58,9 @@ public class VendorGathering extends BaseEntity {
     @Column(nullable = false)
     private String productName; // 상품 이름
 
+    @Column(nullable = false)
+    private int maxParticipants; // 해당 상품의 최대 예약 가능 인원
+
     private String freeParking; // 주차 무료 여부
 
     private String durationHours; // 총 시간 (시간 단위)
