@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -17,5 +18,6 @@ public class SurveyResponseDto {  //설문목록보기(관리자)
     private LocalDateTime createdAt;
     private boolean visible;
     private int totalVotes;
+    List<SurveyOptionResponseDto> options;   // ← 항목별 투표 수까지 포함
 
 }

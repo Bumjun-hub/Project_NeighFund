@@ -74,6 +74,34 @@ public class SurveyService {
     public List<SurveyResponseDto> viewAll(Member loginUser) {
         validateAdmin(loginUser);
         return surveyRepository.findAll().stream()
+                .map(survey -> {
+                    //* 총 투표 수
+                    int total = survey.getOptions().stream()
+                            .mapToInt(SurveyOption::getVoteCount)
+                            .sum();
+
+                    //* 옵션별 DTO
+                    List<SurveyOptionResponseDto> optDtos = survey.getOptions().stream()
+                            .map(opt -> SurveyOptionResponseDto.builder()
+                                    .optionId(opt.getId())
+                                    .content(opt.getContent())
+                                    .voteCount(opt.getVoteCount())
+                                    .build())
+                            .toList();
+
+                    //* 설문 DTO
+                    return SurveyResponseDto.builder()
+                            .surveyId(survey.getId())
+                            .title(survey.getTitle())
+                            .createdAt(survey.getCreatedAt())
+                            .visible(survey.isVisible())
+                            .totalVotes(total)
+                            .options(optDtos)          // 추가
+                            .build();
+                })
+                .toList();
+
+     /*   return surveyRepository.findAll().stream()
                 .map(survey -> SurveyResponseDto.builder()
                         .surveyId(survey.getId())
                         .title(survey.getTitle())
@@ -81,7 +109,7 @@ public class SurveyService {
                         .visible(survey.isVisible())
                         .totalVotes(surveyVoteRepository.countBySurveyId(survey.getId()))
                         .build())
-                .toList();
+                .toList();*/
     }
 
     //설문보기(사용자)
