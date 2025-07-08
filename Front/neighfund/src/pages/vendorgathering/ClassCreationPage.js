@@ -27,11 +27,10 @@ const ClassCreationPage = () => {
 
   // 다음 버튼 클릭 핸들러
   const handleNext = () => {
-    if (isNextEnabled) {
-      alert('다음 단계로 이동합니다!');
-      // 실제로는 페이지 라우팅이나 상태 변경 로직
-    }
-  };
+  if (isNextEnabled) {
+    window.location.href = '/classinfoinputpage'; 
+  }
+};
 
   // 전체 동의 핸들러
   const handleSelectAll = () => {
