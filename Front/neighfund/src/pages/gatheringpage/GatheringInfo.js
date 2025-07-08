@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import gatheringApi from './GatheringAPI';
+import gatheringApi from './GatheringAPI'; // 기존 API 경로 사용
 import GatheringBoard from './GatheringBoard'; 
 import GatheringPhotos from './GatheringPhotos'; 
 import './GatheringInfo.css';
@@ -13,6 +13,7 @@ const GatheringInfo = () => {
   const [error, setError] = useState(null);
   const [isMember, setIsMember] = useState(false);
   const [activeTab, setActiveTab] = useState('intro');
+  const [members, setMembers] = useState([]); // 참여자 정보 상태 추가
 
   useEffect(() => {
     fetchGatheringDetail();
@@ -25,7 +26,13 @@ const GatheringInfo = () => {
       const data = await gatheringApi.getGatheringDetail(gatheringId);
       setGathering(data);
       
+      // 백엔드에서 이미 isMember를 계산해서 보내줌!
       setIsMember(data.isMember || false);
+      
+      // 참여자 정보도 함께 가져오기
+      if (data.members) {
+        setMembers(data.members);
+      }
       
     } catch (error) {
       console.error('Error fetching gathering detail:', error);
@@ -40,7 +47,7 @@ const GatheringInfo = () => {
   };
 
   const handleJoin = () => {
-    // 참여하기 버튼 클릭시 참여 페이지로 이동
+    // 참여하기 버튼 클릭시 GatheringJoin 페이지로 이동
     navigate(`/gatherings/${gatheringId}/join`);
   };
 
@@ -92,14 +99,122 @@ const GatheringInfo = () => {
 
   const getCategoryColor = (category) => {
     const colors = {
-      'HOBBY': '#FF6B6B',
-      'EXERCISE': '#4ECDC4',
-      'STUDY': '#45B7D1',
-      'FOOD': '#FFA07A',
-      'TRAVEL': '#98D8C8',
-      'OTHER': '#DDA0DD'
+      'SPORTS': '#FF6B6B',          
+      'SOCIAL': '#4ECDC4',           
+      'LITERATURE': '#9B59B6',      
+      'OUTDOOR': '#2ECC71',         
+      'MUSIC': '#E74C3C',            
+      'JOB': '#34495E',              
+      'CULTURE': '#8E44AD',          
+      'LANGUAGE': '#3498DB',        
+      'GAME': '#F39C12',            
+      'CRAFT': '#D35400',           
+      'DANCE': '#E91E63',            
+      'VOLUNTEER': '#27AE60',        
+      'PHOTO': '#95A5A6',            
+      'SELF_IMPROVEMENT': '#16A085',
+      'SPORTS_WATCHING': '#FF8C94',  
+      'PET': '#FFB347',              
+      'COOKING': '#FFA07A',          
+      'CAR_BIKE': '#708090',         
+      'STUDY': '#45B7D1'            
     };
-    return colors[category] || '#DDA0DD';
+    return colors[category] || '#DDA0DD'; 
+  };
+
+  const getCategoryText = (category) => {
+    const categoryMap = {
+      'SPORTS': '스포츠',
+      'SOCIAL': '친목',
+      'LITERATURE': '문학',
+      'OUTDOOR': '아웃도어',
+      'MUSIC': '음악',
+      'JOB': '직업/취업',
+      'CULTURE': '문화',
+      'LANGUAGE': '언어',
+      'GAME': '게임',
+      'CRAFT': '공예/만들기',
+      'DANCE': '댄스',
+      'VOLUNTEER': '봉사',
+      'PHOTO': '사진',
+      'SELF_IMPROVEMENT': '자기계발',
+      'SPORTS_WATCHING': '스포츠 관람',
+      'PET': '반려동물',
+      'COOKING': '요리',
+      'CAR_BIKE': '자동차/바이크',
+      'STUDY': '스터디'
+    };
+    return categoryMap[category] || category;
+  };
+
+  // 참여자 목록 렌더링
+  const renderMembersList = () => {
+    if (!members || members.length === 0) {
+      return <p className="no-members">아직 참여자가 없습니다.</p>;
+    }
+
+    return (
+      <div className="members-list">
+        {members.map((member, index) => {
+          console.log(`👤 멤버 ${index + 1}:`, {
+            nickname: member.nickname,
+            imageUrl: member.imageUrl, // 올바른 필드명
+            role: member.role
+          });
+          
+          return (
+            <div key={member.id || index} className={`member-item ${member.role === 'LEADER' ? 'leader' : ''}`}>
+              <div className="member-avatar">
+                {member.imageUrl ? (
+                  <img 
+                    src={member.imageUrl} 
+                    alt={member.nickname}
+                    onLoad={() => console.log('✅ 이미지 로드 성공:', member.imageUrl)}
+                    onError={(e) => {
+                      console.log('❌ 이미지 로드 실패:', member.imageUrl);
+                      e.target.style.display = 'none';
+                      e.target.nextSibling.style.display = 'flex';
+                    }}
+                  />
+                ) : null}
+                <div 
+                  className="default-avatar" 
+                  style={{ 
+                    display: member.imageUrl ? 'none' : 'flex' 
+                  }}
+                >
+                  {member.nickname ? member.nickname.charAt(0).toUpperCase() : '?'}
+                </div>
+              </div>
+              <div className="member-info">
+                <div className="member-name">
+                  {member.nickname || '알 수 없음'}
+                  {member.role === 'LEADER' && (
+                    <span className="leader-badge">👑 리더</span>
+                  )}
+                </div>
+                {member.introduction && (
+                  <div className="member-introduction">
+                    {member.introduction}
+                  </div>
+                )}
+                <div className="member-join-date">
+                  {member.joinedAt ? 
+                    formatDate(member.joinedAt) + ' 참여' : 
+                    '참여일 불명'
+                  }
+                </div>
+              </div>
+              <div className="member-role">
+                <span className={`role-badge ${(member.role || 'USER').toLowerCase()}`}>
+                  {member.role === 'LEADER' ? '리더' : '멤버'}
+                </span>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    );
   };
 
   // 탭 메뉴 렌더링
@@ -112,6 +227,15 @@ const GatheringInfo = () => {
               {gathering.content.split('\n').map((line, index) => (
                 <p key={index}>{line}</p>
               ))}
+            </div>
+          </div>
+        );
+      case 'members':
+        return (
+          <div className="tab-content">
+            <div className="members-section">
+              <h3>참여자 목록 ({members.length}명)</h3>
+              {renderMembersList()}
             </div>
           </div>
         );
@@ -206,7 +330,7 @@ const GatheringInfo = () => {
               className="category-badge"
               style={{ backgroundColor: getCategoryColor(gathering.category) }}
             >
-              {gathering.category}
+              {getCategoryText(gathering.category)}
             </span>
             <h1 className="gathering-title">{gathering.title}</h1>
             <p className="dong-name">📍 {gathering.dongName}</p>
@@ -235,6 +359,12 @@ const GatheringInfo = () => {
                 onClick={() => setActiveTab('intro')}
               >
                 📝 소모임 소개
+              </button>
+              <button
+                className={`tab-button ${activeTab === 'members' ? 'active' : ''}`}
+                onClick={() => setActiveTab('members')}
+              >
+                👥 참여자 ({members.length})
               </button>
               <button
                 className={`tab-button ${activeTab === 'board' ? 'active' : ''}`}

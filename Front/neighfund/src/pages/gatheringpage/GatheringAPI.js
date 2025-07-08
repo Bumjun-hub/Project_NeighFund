@@ -354,7 +354,7 @@ class GatheringAPI {
       });
       
       if (!response.ok) {
-        throw new Error(`사진 목록을 불러오는데 실패했습니다. (${response.status})`);
+        throw new Error(`사진 목록을 불러오는데 실패했습니다 (${response.status})`);
       }
       
       return await response.json();

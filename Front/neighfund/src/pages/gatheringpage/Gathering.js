@@ -119,16 +119,29 @@ const Gathering = () => {
 
   // 카테고리 한글 변환
   const getCategoryText = (category) => {
-    const categoryMap = {
-      'SPORTS': '스포츠',
-      'HOBBY': '취미',
-      'STUDY': '스터디',
-      'SOCIAL': '친목',
-      'CULTURE': '문화',
-      'VOLUNTEER': '봉사'
-    };
-    return categoryMap[category] || category;
+  const categoryMap = {
+    'SPORTS': '스포츠',
+    'SOCIAL': '친목',
+    'LITERATURE': '문학',
+    'OUTDOOR': '아웃도어',
+    'MUSIC': '음악',
+    'JOB': '직업/취업',
+    'CULTURE': '문화',
+    'LANGUAGE': '언어',
+    'GAME': '게임',
+    'CRAFT': '공예/만들기',
+    'DANCE': '댄스',
+    'VOLUNTEER': '봉사',
+    'PHOTO': '사진',
+    'SELF_IMPROVEMENT': '자기계발',
+    'SPORTS_WATCHING': '스포츠 관람',
+    'PET': '반려동물',
+    'COOKING': '요리',
+    'CAR_BIKE': '자동차/바이크',
+    'STUDY': '스터디'
   };
+  return categoryMap[category] || category;
+};
 
   // 날짜 포맷팅
   const formatDate = (dateString) => {

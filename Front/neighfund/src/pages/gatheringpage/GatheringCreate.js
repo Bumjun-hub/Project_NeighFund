@@ -51,13 +51,26 @@ const GatheringCreate = () => {
 
   // 카테고리 옵션
   const categories = [
-    { value: 'SPORTS', label: '스포츠' },
-    { value: 'HOBBY', label: '취미' },
-    { value: 'STUDY', label: '스터디' },
-    { value: 'SOCIAL', label: '친목' },
-    { value: 'CULTURE', label: '문화' },
-    { value: 'VOLUNTEER', label: '봉사' }
-  ];
+  { value: 'SPORTS', label: '스포츠' },
+  { value: 'SOCIAL', label: '친목' },
+  { value: 'LITERATURE', label: '문학' },
+  { value: 'OUTDOOR', label: '아웃도어' },
+  { value: 'MUSIC', label: '음악' },
+  { value: 'JOB', label: '직업/취업' },
+  { value: 'CULTURE', label: '문화' },
+  { value: 'LANGUAGE', label: '언어' },
+  { value: 'GAME', label: '게임' },
+  { value: 'CRAFT', label: '공예/만들기' },
+  { value: 'DANCE', label: '댄스' },
+  { value: 'VOLUNTEER', label: '봉사' },
+  { value: 'PHOTO', label: '사진' },
+  { value: 'SELF_IMPROVEMENT', label: '자기계발' },
+  { value: 'SPORTS_WATCHING', label: '스포츠 관람' },
+  { value: 'PET', label: '반려동물' },
+  { value: 'COOKING', label: '요리' },
+  { value: 'CAR_BIKE', label: '자동차/바이크' },
+  { value: 'STUDY', label: '스터디' }
+];
 
   // 입력값 변경 핸들러
   const handleInputChange = (e) => {
