@@ -1,3 +1,6 @@
+import './FundParticipatePage.css';
+
+
 import { useState } from 'react';
 
 const FundParticipateNoticeStep = ({ onNext, deadline }) => {

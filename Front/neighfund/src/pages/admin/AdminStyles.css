@@ -1,0 +1,233 @@
+.community-admin {
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  margin-top: 20px;
+  font-family: 'Noto Sans KR', sans-serif;
+}
+
+.community-admin h2 {
+  font-size: 20px;
+  margin-bottom: 16px;
+}
+
+.community-admin ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.community-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f9f9f9;
+  padding: 12px 16px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+
+.community-item:hover {
+  background: #ececec;
+}
+
+.community-item select {
+  padding: 6px 10px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+
+/* 🧩 탭 버튼 스타일 (공통) */
+.tab-buttons {
+  margin-bottom: 20px;
+  display: flex;
+  gap: 10px;
+}
+
+.tab-buttons button {
+  padding: 8px 16px;
+  font-size: 14px;
+  background: #e0e0e0;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.tab-buttons button.active {
+  background: #1976d2;
+  color: #fff;
+}
+
+/* 📋 펀딩 리스트 */
+.fund-list h3 {
+  margin-bottom: 12px;
+}
+
+.fund-list ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.fund-list li {
+  display: flex;
+  align-items: center;
+  background: #f9f9f9;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.fund-list li:hover {
+  background: #ececec;
+}
+
+/* 📌 상세 정보 */
+.fund-detail {
+  margin-top: 30px;
+  padding: 20px;
+  background: #fafafa;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+}
+
+.fund-detail h3, .fund-detail h4 {
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+.fund-detail img {
+  border-radius: 6px;
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+.fund-detail ul {
+  list-style: none;
+  padding-left: 20px;
+}
+
+.fund-detail ul li {
+  margin-bottom: 8px;
+}
+
+.fund-detail button {
+  margin-top: 20px;
+  background-color: #2e7d32;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background 0.3s;
+}
+
+.fund-detail button:hover {
+  background-color: #1b5e20;
+}
+
+
+/* 📊 설문 관리 영역 */
+.survey-admin {
+  font-family: 'Noto Sans KR', sans-serif;
+  margin-top: 20px;
+  padding: 20px;
+}
+
+.survey-admin h2 {
+  font-size: 20px;
+  margin-bottom: 15px;
+}
+
+/* 🗂 설문 항목 */
+.survey-item {
+  background: #f9f9f9;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+}
+
+/* 질문 및 선택 */
+.survey-item label {
+  display: inline-block;
+  margin-top: 8px;
+  margin-right: 6px;
+  font-weight: bold;
+}
+
+.survey-item select {
+  padding: 5px 10px;
+  font-size: 14px;
+  border-radius: 5px;
+  border: 1px solid #aaa;
+  margin-left: 6px;
+}
+
+/* 옵션 리스트 */
+.survey-item ul {
+  margin-top: 10px;
+  padding-left: 20px;
+}
+
+.survey-item ul li {
+  margin-bottom: 6px;
+}
+
+/* 구분선 */
+.survey-item hr {
+  margin-top: 20px;
+  border: 0;
+  height: 1px;
+  background-color: #ddd;
+}
+
+
+/* 📦 주문 관리 영역 */
+.order-admin {
+  font-family: 'Noto Sans KR', sans-serif;
+  padding: 20px;
+}
+
+.order-admin h3 {
+  font-size: 20px;
+  margin-bottom: 15px;
+}
+
+/* 주문 항목 리스트 */
+.order-admin ul {
+  list-style: none;
+  padding: 0;
+}
+
+.order-admin li {
+  background: #f9f9f9;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+}
+
+/* 주문 항목 내부 텍스트 */
+.order-admin li p {
+  margin: 4px 0;
+}
+
+/* 상태 셀렉트 */
+.order-admin li select {
+  padding: 5px 10px;
+  font-size: 14px;
+  border-radius: 5px;
+  border: 1px solid #aaa;
+  margin-top: 6px;
+}

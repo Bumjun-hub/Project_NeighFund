@@ -163,9 +163,10 @@ public class CommunityService {
     @Transactional
     public void updateStatus(Long id, CommunityStatusDto statusDto, Member loginUser) {
         Community post = validatePost(id);
-        if (!loginUser.getRole().equals(RoleName.ROLE_ADMIN)) {
+        if (loginUser.getRole().getName() != RoleName.ROLE_ADMIN) {
             throw new AccessDeniedException("관리자만 상태를 변경할 수 있습니다.");
         }
+
         post.setStatus(statusDto.getStatus());
     }
 

@@ -20,7 +20,11 @@ const FundCard = ({ fund }) => {
         <img src={imageUrl} alt={title} className="fund-card-image" />
 
         <div className="fund-card-badges">
-          <span className="badge status">{fundStatus || '진행중'}</span>
+          {fundStatus === "CLOSED" ? (
+            <span className="badge status closed">마감됨</span>
+          ) : (
+            <span className="badge status ongoing">모집중</span>
+          )}
           <span className="badge dday">{calcDday(deadline)}</span>
         </div>
       </div>

@@ -2,10 +2,7 @@ package org.project.neighfund.application.survey.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.project.neighfund.application.survey.dto.SurveyDto;
-import org.project.neighfund.application.survey.dto.SurveyOptionResponseDto;
-import org.project.neighfund.application.survey.dto.SurveyResponseDto;
-import org.project.neighfund.application.survey.dto.SurveyUserResponseDto;
+import org.project.neighfund.application.survey.dto.*;
 import org.project.neighfund.domain.member.Member;
 import org.project.neighfund.domain.member.MemberRepository;
 import org.project.neighfund.domain.survey.Survey;
@@ -43,9 +40,9 @@ public class SurveyService {
 
         List<SurveyOption> options = surveyDto.getOptions().stream()
                 .map(content -> SurveyOption.builder()
-                                .content(content)
-                                .survey(survey)
-                                .build())
+                        .content(content)
+                        .survey(survey)
+                        .build())
                 .toList();
         survey.setOptions(options);
         surveyRepository.save(survey);
@@ -86,6 +83,7 @@ public class SurveyService {
                                     .optionId(opt.getId())
                                     .content(opt.getContent())
                                     .voteCount(opt.getVoteCount())
+
                                     .build())
                             .toList();
 
@@ -122,45 +120,45 @@ public class SurveyService {
                 .stream().collect(Collectors.toMap(surveyVote -> surveyVote.getSurvey().getId(),
                         v -> v.getOption().getId()));
 
-        return surveys.stream().map(survey ->{
-                Long picked = myVotes.get(survey.getId());
-                boolean voted = (picked != null);
+        return surveys.stream().map(survey -> {
+            Long picked = myVotes.get(survey.getId());
+            boolean voted = (picked != null);
 
-                //총투표자
-                int total = survey.getOptions().stream()
-                        .mapToInt(SurveyOption::getVoteCount)
-                        .sum();
+            //총투표자
+            int total = survey.getOptions().stream()
+                    .mapToInt(SurveyOption::getVoteCount)
+                    .sum();
 
-                //옵션
-                List<SurveyOptionResponseDto> optionDtos =
-                        survey.getOptions().stream()
-                                .map(options -> SurveyOptionResponseDto.builder()
-                                        .optionId(options.getId())
-                                        .content(options.getContent())
-                                        .voteCount(voted ? options.getVoteCount() : 0)
-                                        .selected(voted && options.getId().equals(picked))
-                                        .build())
-                                .toList();
+            //옵션
+            List<SurveyOptionResponseDto> optionDtos =
+                    survey.getOptions().stream()
+                            .map(options -> SurveyOptionResponseDto.builder()
+                                    .optionId(options.getId())
+                                    .content(options.getContent())
+                                    .voteCount(voted ? options.getVoteCount() : 0)
+                                    .selected(voted && options.getId().equals(picked))
+                                    .build())
+                            .toList();
 
-                //설문
-                return SurveyUserResponseDto.builder()
-                        .surveyId(survey.getId())
-                        .title(survey.getTitle())
-                        .options(optionDtos)
-                        .totalCount(voted ? total : 0)
-                        .voted(voted)
-                        .build();
-                }).toList();
+            //설문
+            return SurveyUserResponseDto.builder()
+                    .surveyId(survey.getId())
+                    .title(survey.getTitle())
+                    .options(optionDtos)
+                    .totalCount(voted ? total : 0)
+                    .voted(voted)
+                    .build();
+        }).toList();
     }
 
     //투표하기(id당 1개)
     @Transactional
-    public void votePost(Long surveyId, Long optionId, Member loginUser) {
+    public VoteResultResponseDto votePost(Long surveyId, Long optionId, Member loginUser) {
         validateMember(loginUser);
 
-        //중복투표확잉ㄴ
+        //중복투표확인
         boolean already = surveyVoteRepository.existsBySurveyIdAndMemberId(surveyId, loginUser.getId());
-        if (already){
+        if (already) {
             throw new IllegalArgumentException("이미 참여한 설문입니다");
         }
         //옵션조회, 매칭확인
@@ -184,7 +182,29 @@ public class SurveyService {
                 .member(loginUser)
                 .build();
         surveyVoteRepository.save(vote);
+
+        // 🔥 득표 비율 계산
+        List<SurveyOption> options = option.getSurvey().getOptions();
+        int totalVotes = options.stream().mapToInt(SurveyOption::getVoteCount).sum();
+
+        // 응답용 DTO 리스트 생성
+        List<SurveyOptionResponseDto> optionDtos = options.stream()
+                .map(opt -> SurveyOptionResponseDto.builder()
+                        .optionId(opt.getId())
+                        .content(opt.getContent())
+                        .voteCount(opt.getVoteCount())
+                        .selected(opt.getId().equals(optionId)) // 내가 고른 거 true
+                        .percentage(totalVotes == 0 ? 0 : (int) ((opt.getVoteCount() * 100.0) / totalVotes))
+                        .build())
+                .toList();
+
+        // 결과 리턴
+        return VoteResultResponseDto.builder()
+                .options(optionDtos)
+                .totalParticipants(totalVotes)
+                .build();
     }
+
 
     //관리자확인
     public void validateAdmin(Member loginUser) {
@@ -210,11 +230,10 @@ public class SurveyService {
     }
 
     //글존재유무확인
-    public Survey validatePost (Long id){
+    public Survey validatePost(Long id) {
         return surveyRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다"));
     }
 
-
-
 }
+

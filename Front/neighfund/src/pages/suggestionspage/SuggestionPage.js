@@ -11,6 +11,7 @@ const SuggestionPage = () => {
     const [suggestions, setSuggestions] = useState([]);
     const navigate = useNavigate();
 
+
     const categoryMap = {
         EDUCATION: '교육',
         ENVIRONMENT: '환경',
@@ -56,19 +57,20 @@ const SuggestionPage = () => {
         });
 
     const handleLike = async (id) => {
+
         try {
-            const result = await SuggestionAPI.toggleLike(id); // API 호출
-            const liked = result.liked;
+
+            const { liked, likeCount } = await SuggestionAPI.toggleLike(id);
 
             setSuggestions(prev =>
                 prev.map(item => {
                     if (item.id === id) {
-                        const likes = liked ? item.likes + 1 : item.likes - 1;
-                        return { ...item, liked, likes };
+                        return { ...item, liked, likes: likeCount };
                     }
                     return item;
                 })
             );
+
         } catch (err) {
             console.error("공감 실패:", err);
             alert("공감 처리 중 오류가 발생했습니다.");
@@ -118,29 +120,24 @@ const SuggestionPage = () => {
                             <div className="suggestion-category">#{categoryMap[item.category]}</div>
                             <div className="title">{item.title}</div>
                             <div className="suggestion-content">{item.content}</div>
-                            <div className="suggestion-meta">
-                                <span
-                                    style={{ cursor: 'pointer' }}
-                                    onClick={() => handleLike(item.id)}
-                                >
-                                    ♡ {item.likes}
-                                </span>
 
-                                <span>
-                                    {item.status === 'RECRUITING' ? (
-                                        <button
-                                            onClick={() => handleLike(item.id)}
-                                            className="suggestion-like-button"
-                                        >
-                                            {item.liked ? '💔 공감 취소' : '♡ 공감하기'}
-                                        </button>
-                                    ) : (
-                                        <span className="suggestion-status">
-                                            {status[item.status]}
-                                        </span>
-                                    )}
-                                </span>
+                            <div className="suggestion-meta">
+                                <span className="suggestion-likes">♡ {item.likes}</span>
+
+                                {item.status === 'RECRUITING' ? (
+                                    <button
+                                        onClick={() => handleLike(item.id)}
+                                        className="suggestion-like-button"
+                                    >
+                                        {item.liked ? '💔 공감 취소' : '♡ 공감하기'}
+                                    </button>
+                                ) : (
+                                    <span className="suggestion-status">
+                                        {status[item.status]}
+                                    </span>
+                                )}
                             </div>
+
 
 
                         </div>

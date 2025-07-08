@@ -17,6 +17,8 @@ public class OrderResponseDto {
     private String fundTitle;
 
     private Long optionId;         //옵션
+    private String optionTitle;
+    private Long optionPrice;
 
     private String username;
     private Integer quantity;

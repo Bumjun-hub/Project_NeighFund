@@ -80,7 +80,7 @@ class SuggestionAPI {
 
     // 좋아요 토글
     async toggleLike(id) {
-        const res = await fetch(`/api/community/${id}/like`, {
+        const res = await fetch(`/api/likes/COMMUNITY/${id}`, {
             method: 'POST',
             credentials: 'include',
         });

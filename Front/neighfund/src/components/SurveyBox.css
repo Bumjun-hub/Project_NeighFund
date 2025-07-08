@@ -8,21 +8,23 @@
     flex-direction: column;
     justify-content: center;
     min-height: 180px;
-    /* ↓ 줄였음 */
 }
 
+/* 질문 텍스트 */
 .survey-question {
     font-weight: bold;
     font-size: 16px;
     margin-bottom: 10px;
 }
 
+/* 항목 리스트 */
 .survey-options {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
+/* 기본 항목 스타일 */
 .survey-option {
     padding: 10px 14px;
     border: 1px solid #ccc;
@@ -32,14 +34,46 @@
     cursor: pointer;
     transition: background-color 0.2s, border 0.2s;
     text-align: left;
+    position: relative;
+    overflow: hidden;
 }
 
+/* 호버 효과 */
 .survey-option:hover {
     background-color: #e3f2fd;
 }
 
+/* 선택된 항목 스타일 */
 .survey-option.selected {
+    color: #000000;
     border: 2px solid #2196f3;
     background-color: #e3f2fd;
     font-weight: bold;
+}
+
+.vote-bar-container {
+    position: relative;
+    height: 20px;
+    background-color: #f0f0f0;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 5px;
+}
+
+.vote-bar {
+    height: 100%;
+    background-color: #2196f3;
+    transition: width 0.3s ease;
+}
+
+.vote-percent {
+    position: absolute;
+    right: 10px;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    font-size: 12px;
+    font-weight: bold;
+    color: #000;
 }

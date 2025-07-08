@@ -5,17 +5,17 @@ import Section from '../../components/Section';
 import { refreshToken } from '../../utils/authUtils';
 
 const SuggestionWritePage = () => {
-
   const [currentUser, setCurrentUser] = useState("");
-  const navigate = useNavigate();
-  const { id } = useParams();
-  const isEdit = !!id;
-
+  const [currentUserLoaded, setCurrentUserLoaded] = useState(false);
   const [formData, setFormData] = useState({
     title: '',
     content: '',
     category: 'EDUCATION',
   });
+
+  const navigate = useNavigate();
+  const { id } = useParams();
+  const isEdit = !!id;
 
   const categoryMap = {
     EDUCATION: '교육',
@@ -29,46 +29,23 @@ const SuggestionWritePage = () => {
     ETC: '기타',
   };
 
-  // 수정 모드일 경우 기존 데이터 불러오기
-  useEffect(() => {
-    if (isEdit) {
-      fetch(`/api/community/detail/${id}`, {
-        credentials: 'include',
-      })
-        .then(res => res.json())
-        .then(post => {
-          if (post.username !== currentUser) {
-            alert("작성자만 수정할 수 있습니다.")
-            navigate("/suggestion");
-            return;
-          }
-          setFormData({
-            title: post.title,
-            content: post.content,
-            category: post.category,
-          });
-        })
-        .catch(err => console.error('수정글 로딩 실패:', err));
-    }
-  }, [id, isEdit]);
-
-
-  //사용자 권한 읽기
+  // ✅ 현재 로그인 사용자 정보 로딩
   useEffect(() => {
     const fetchCurrentUser = async () => {
       try {
-        let res = await fetch("/api/roleinfo", { credentials: "include" });
+        let res = await fetch("/api/auth/roleinfo", { credentials: "include" });
 
         if (res.status === 401) {
-          const refreshed = await refreshToken(); // 토큰 갱신 함수
+          const refreshed = await refreshToken();
           if (refreshed) {
-            res = await fetch("/api/roleinfo", { credentials: "include" });
+            res = await fetch("/api/auth/roleinfo", { credentials: "include" });
           }
         }
 
         if (res.ok) {
-          const data = await res.json(); // 👈 username을 포함하고 있어야 함
+          const data = await res.json();
           setCurrentUser(data.username);
+          setCurrentUserLoaded(true); // ✅ 로딩 완료 표시
         } else {
           throw new Error("로그인 필요");
         }
@@ -82,7 +59,32 @@ const SuggestionWritePage = () => {
     fetchCurrentUser();
   }, [navigate]);
 
-
+  // ✅ 수정 모드일 때 기존 글 불러오기
+  useEffect(() => {
+    if (isEdit && currentUserLoaded) {
+      fetch(`/api/community/detail/${id}`, {
+        credentials: 'include',
+      })
+        .then(res => res.json())
+        .then(post => {
+          console.log("✅ 수정 대상 게시글:", post);
+          if (post.wtiterId !== currentUser) {
+            alert("작성자만 수정할 수 있습니다.");
+            navigate("/suggestion");
+            return;
+          }
+          setFormData({
+            title: post.title,
+            content: post.content,
+            category: post.category,
+          });
+        })
+        .catch(err => {
+          console.error('수정글 로딩 실패:', err);
+          alert('게시글 데이터를 불러오지 못했습니다.');
+        });
+    }
+  }, [id, isEdit, currentUser, currentUserLoaded, navigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -94,7 +96,7 @@ const SuggestionWritePage = () => {
 
     const payload = {
       ...formData,
-      status: 'RECRUITING', // 작성 시 기본 상태
+      status: 'RECRUITING',
     };
 
     const url = isEdit
@@ -125,8 +127,6 @@ const SuggestionWritePage = () => {
     }
   };
 
-
-  // 🔴 삭제 요청 핸들러 추가
   const handleDelete = async () => {
     if (!window.confirm('정말로 삭제하시겠습니까?')) return;
 
@@ -148,6 +148,7 @@ const SuggestionWritePage = () => {
       alert('서버 오류');
     }
   };
+
   return (
     <Section>
       <div className="suggestion-write-wrapper">
@@ -199,7 +200,6 @@ const SuggestionWritePage = () => {
               </button>
             )}
           </div>
-
         </form>
       </div>
     </Section>

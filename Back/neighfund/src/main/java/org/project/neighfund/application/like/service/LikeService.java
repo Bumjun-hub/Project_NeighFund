@@ -27,66 +27,64 @@ public class LikeService {
     private final VendorGatheringRepository vendorGatheringRepository;
 
     @Transactional
-    public void toggleLike(Member m, String type, Long postId) {
+    public boolean toggleLike(Member m, String type, Long postId) {
         Member member = memberRepository.findByEmail(m.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("유저 정보를 찾을 수 없습니다."));
 
         switch (type.toUpperCase()) {
             case "COMMUNITY":
                 Community community = communityRepository.findById(postId)
-                        .orElseThrow(() -> new IllegalArgumentException("없는 커뮤니티 글 번호 입니다."));
-                if (likeRepository.existsByMember_IdAndCommunity_Id(m.getId(), community.getId())) {
-                    likeRepository.deleteByMember_IdAndCommunity_Id(m.getId(), community.getId());
-                }  else {
-                    Like like = Like.builder()
-                            .member(m)
-                            .community(community)
-                            .build();
+                        .orElseThrow(() -> new IllegalArgumentException("없는 커뮤니티 글 번호입니다."));
+                if (likeRepository.existsByMember_IdAndCommunity_Id(member.getId(), community.getId())) {
+                    likeRepository.deleteByMember_IdAndCommunity_Id(member.getId(), community.getId());
+                    return false; // ❗️좋아요 취소됨
+                } else {
+                    Like like = Like.builder().member(member).community(community).build();
                     likeRepository.save(like);
+                    return true; // ❗️좋아요 등록됨
                 }
-                break;
-            case "FUND" :
+
+            case "FUND":
                 Fund fund = fundRepository.findById(postId)
-                        .orElseThrow(() -> new IllegalArgumentException("없는 Fund 글 번호 입니다."));
-                if(likeRepository.existsByMember_IdAndFund_Id(m.getId(), fund.getId())) {
-                    likeRepository.deleteByMember_IdAndFund_Id(m.getId(), fund.getId());
+                        .orElseThrow(() -> new IllegalArgumentException("없는 Fund 글 번호입니다."));
+                if (likeRepository.existsByMember_IdAndFund_Id(member.getId(), fund.getId())) {
+                    likeRepository.deleteByMember_IdAndFund_Id(member.getId(), fund.getId());
+                    return false;
                 } else {
-                    Like like = Like.builder()
-                            .member(m)
-                            .fund(fund)
-                            .build();
+                    Like like = Like.builder().member(member).fund(fund).build();
                     likeRepository.save(like);
+                    return true;
                 }
-                break;
-            case "GATHERING" :
+
+            case "GATHERING":
                 Gathering gathering = gatheringRepository.findById(postId)
-                        .orElseThrow(() -> new IllegalArgumentException("없는 소모임 글 번호 입니다."));
-                if(likeRepository.existsByMember_IdAndGathering_Id(m.getId(), gathering.getId())) {
-                    likeRepository.deleteByMember_IdAndGathering_Id(m.getId(), gathering.getId());
+                        .orElseThrow(() -> new IllegalArgumentException("없는 소모임 글 번호입니다."));
+                if (likeRepository.existsByMember_IdAndGathering_Id(member.getId(), gathering.getId())) {
+                    likeRepository.deleteByMember_IdAndGathering_Id(member.getId(), gathering.getId());
+                    return false;
                 } else {
-                    Like like = Like.builder()
-                            .member(m)
-                            .gathering(gathering)
-                            .build();
+                    Like like = Like.builder().member(member).gathering(gathering).build();
                     likeRepository.save(like);
+                    return true;
                 }
-                break;
-            case "VENDOR" :
+
+            case "VENDOR":
                 VendorGathering vendor = vendorGatheringRepository.findById(postId)
-                        .orElseThrow(() -> new IllegalArgumentException("없는 소모임 글 번호 입니다."));
-                if(likeRepository.existsByMember_IdAndVendorGathering_Id(m.getId(), vendor.getId())) {
-                    likeRepository.deleteByMember_IdAndVendorGathering_Id(m.getId(), vendor.getId());
+                        .orElseThrow(() -> new IllegalArgumentException("없는 벤더 소모임 글 번호입니다."));
+                if (likeRepository.existsByMember_IdAndVendorGathering_Id(member.getId(), vendor.getId())) {
+                    likeRepository.deleteByMember_IdAndVendorGathering_Id(member.getId(), vendor.getId());
+                    return false;
                 } else {
-                    Like like = Like.builder()
-                            .member(m)
-                            .vendorGathering(vendor)
-                            .build();
+                    Like like = Like.builder().member(member).vendorGathering(vendor).build();
                     likeRepository.save(like);
+                    return true;
                 }
-                break;
-            default: throw new IllegalArgumentException("Invalid entityType: " + type);
+
+            default:
+                throw new IllegalArgumentException("Invalid entityType: " + type);
         }
     }
+
 
     @Transactional
     public long getLikeCount(String type, Long postId) {
