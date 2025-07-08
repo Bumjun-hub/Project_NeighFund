@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import gatheringApi from './GatheringAPI';
+import gatheringApi from './GatheringAPI'; // 기존 API 경로 사용
 import './GatheringJoin.css';
 
 const GatheringJoin = () => {
@@ -9,7 +9,8 @@ const GatheringJoin = () => {
   const [gathering, setGathering] = useState(null);
   const [formData, setFormData] = useState({
     introduction: '',
-    nickname: ''
+    nickname: '',
+    imageUrl: '' // imageUrl 필드 추가
   });
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
@@ -38,6 +39,19 @@ const GatheringJoin = () => {
     }));
   };
 
+  const handleImageUrlChange = (e) => {
+    const url = e.target.value;
+    setFormData(prev => ({
+      ...prev,
+      imageUrl: url
+    }));
+    
+    if (url) {
+      setImagePreview(url);
+      setImage(null); // 파일 업로드 초기화
+    }
+  };
+
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -45,7 +59,10 @@ const GatheringJoin = () => {
       
       // 이미지 미리보기 생성
       const reader = new FileReader();
-      reader.onload = (e) => setImagePreview(e.target.result);
+      reader.onload = (e) => {
+        setImagePreview(e.target.result);
+        setFormData(prev => ({ ...prev, imageUrl: '' })); // URL 필드 초기화
+      };
       reader.readAsDataURL(file);
     }
   };
@@ -53,7 +70,9 @@ const GatheringJoin = () => {
   const removeImage = () => {
     setImage(null);
     setImagePreview(null);
+    setFormData(prev => ({ ...prev, imageUrl: '' }));
     document.getElementById('imageInput').value = '';
+    document.getElementById('imageUrl').value = '';
   };
 
   const validateForm = () => {
@@ -79,11 +98,21 @@ const GatheringJoin = () => {
     setError(null);
 
     try {
-      await gatheringApi.joinGathering(gatheringId, {
-        introduction: formData.introduction,
-        nickname: formData.nickname,
-        image: image
-      });
+      // 기존 GatheringAPI.joinGathering 메서드 사용
+      // FormData 형태로 전송 (기존 API 구조 유지)
+      const joinData = {
+        introduction: formData.introduction.trim(),
+        nickname: formData.nickname.trim()
+      };
+
+      // 이미지가 있으면 추가 (파일 또는 URL)
+      if (image) {
+        joinData.image = image; // 파일 객체
+      } else if (formData.imageUrl) {
+        joinData.imageUrl = formData.imageUrl; // URL 문자열
+      }
+      
+      await gatheringApi.joinGathering(gatheringId, joinData);
       
       alert('소모임 참여가 완료되었습니다!');
       navigate(`/gatherings/${gatheringId}`);
@@ -174,7 +203,26 @@ const GatheringJoin = () => {
             </div>
 
             <div className="form-group">
-              <label htmlFor="imageInput">프로필 이미지 (선택)</label>
+              <label>프로필 이미지 (선택)</label>
+              
+              {/* 이미지 URL 입력 */}
+              <div className="image-url-section">
+                <label htmlFor="imageUrl">이미지 URL:</label>
+                <input
+                  type="url"
+                  id="imageUrl"
+                  name="imageUrl"
+                  value={formData.imageUrl}
+                  onChange={handleImageUrlChange}
+                  placeholder="https://example.com/image.jpg"
+                />
+              </div>
+
+              <div className="or-divider">
+                <span>또는</span>
+              </div>
+
+              {/* 파일 업로드 */}
               <div className="image-upload-area">
                 {imagePreview ? (
                   <div className="image-preview">
@@ -201,7 +249,7 @@ const GatheringJoin = () => {
                   onClick={() => document.getElementById('imageInput').click()}
                   className="upload-btn"
                 >
-                  이미지 선택
+                  파일 선택
                 </button>
               </div>
               <p className="field-hint">소모임에서 사용할 프로필 이미지를 설정해주세요.</p>

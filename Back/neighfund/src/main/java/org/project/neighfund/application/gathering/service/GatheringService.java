@@ -133,6 +133,27 @@ public class GatheringService {
             System.out.println("========================");
         }
 
+        // 🆕 참여자 정보 조회 및 DTO 변환 추가
+        List<GatheringMember> gatheringMembers = gatheringMemberRepository.findByGatheringId(gatheringId);
+        List<MemberInfo> memberInfos = gatheringMembers.stream()
+                .map(gm -> MemberInfo.builder()
+                        .id(gm.getId())
+                        .nickname(gm.getNickname())
+                        .introduction(gm.getIntroduction())
+                        .imageUrl(gm.getImageUrl())
+                        .role(gm.getRole().toString()) // GatheringRole enum을 String으로
+                        .joinedAt(gm.getCreatedAt())
+                        .build())
+                .sorted((a, b) -> {
+                    // 리더를 먼저 정렬
+                    if ("LEADER".equals(a.getRole()) && !"LEADER".equals(b.getRole())) return -1;
+                    if (!"LEADER".equals(a.getRole()) && "LEADER".equals(b.getRole())) return 1;
+                    return a.getJoinedAt().compareTo(b.getJoinedAt());
+                })
+                .collect(Collectors.toList());
+
+        System.out.println("🔍 참여자 정보 변환 완료: " + memberInfos.size() + "명");
+
         return GatheringResponse.builder()
                 .id(gathering.getId())
                 .title(gathering.getTitle())
@@ -146,6 +167,7 @@ public class GatheringService {
                 .liked(liked)
                 .memberCount(gathering.getMemberCount())
                 .isMember(isMember)
+                .members(memberInfos) // 🆕 참여자 정보 추가
                 .build();
     }
 
@@ -442,6 +464,26 @@ public class GatheringService {
 
     private GatheringResponse convertToDto(Gathering g) {
         boolean liked = false; // 비로그인 조회이므로 기본 false
+
+        // 🆕 참여자 정보 조회 (목록에서도 참여자 정보를 보여주고 싶다면)
+        List<GatheringMember> gatheringMembers = gatheringMemberRepository.findByGatheringId(g.getId());
+        List<MemberInfo> memberInfos = gatheringMembers.stream()
+                .map(gm -> MemberInfo.builder()
+                        .id(gm.getId())
+                        .nickname(gm.getNickname())
+                        .introduction(gm.getIntroduction())
+                        .imageUrl(gm.getImageUrl())
+                        .role(gm.getRole().toString())
+                        .joinedAt(gm.getCreatedAt())
+                        .build())
+                .sorted((a, b) -> {
+                    // 리더를 먼저 정렬
+                    if ("LEADER".equals(a.getRole()) && !"LEADER".equals(b.getRole())) return -1;
+                    if (!"LEADER".equals(a.getRole()) && "LEADER".equals(b.getRole())) return 1;
+                    return a.getJoinedAt().compareTo(b.getJoinedAt());
+                })
+                .collect(Collectors.toList());
+
         return GatheringResponse.builder()
                 .id(g.getId())
                 .title(g.getTitle())
@@ -455,6 +497,7 @@ public class GatheringService {
                 .liked(liked)
                 .memberCount(g.getMemberCount())
                 .isMember(false) // 🔧 비로그인 조회이므로 항상 false
+                .members(memberInfos) // 🆕 참여자 정보 추가
                 .build();
     }
 }
