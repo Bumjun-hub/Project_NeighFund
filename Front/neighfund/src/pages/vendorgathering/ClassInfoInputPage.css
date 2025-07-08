@@ -1,0 +1,362 @@
+/* ===== 정보 입력 페이지 CSS (간소화 버전) ===== */
+.agreement-class-creation-container-vendor {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  padding: 20px;
+}
+/* 폼 기본 구조 */
+.info-form-container-vendor { 
+  margin-bottom: 2rem;
+  min-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.info-section-vendor {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  animation: agreementFadeInUp 0.5s ease forwards;
+  opacity: 0;
+  transform: translateY(20px);
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 1.5rem;
+}
+
+.info-section-vendor:hover {
+  border-color: #3b82f6;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.info-section-title-vendor {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: center;
+}
+
+/* 필드 및 입력 */
+.info-field-vendor {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1.5rem;
+}
+
+.info-label-vendor {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 0.5rem;
+}
+
+.info-required-vendor {
+  color: #ef4444;
+  margin-left: 0.25rem;
+}
+
+.info-input-vendor, .info-textarea-vendor {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background: white;
+}
+
+.info-input-vendor:focus, .info-textarea-vendor:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.info-error-vendor {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
+}
+
+.info-textarea-vendor {
+  resize: vertical;
+  min-height: 100px;
+  font-family: inherit;
+}
+
+/* 단위 입력 필드 */
+.info-price-input-vendor, 
+.info-participants-input-vendor, 
+.info-duration-input-vendor {
+  position: relative;
+}
+
+.info-price-unit-vendor, 
+.info-participants-unit-vendor, 
+.info-duration-unit-vendor {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6b7280;
+  font-weight: 500;
+  pointer-events: none;
+}
+
+.info-price-input-vendor .info-input-vendor,
+.info-participants-input-vendor .info-input-vendor,
+.info-duration-input-vendor .info-input-vendor {
+  padding-right: 3rem;
+}
+
+/* 파일 업로드 */
+.info-upload-area-vendor {
+  position: relative;
+  margin-bottom: 0.5rem;
+}
+
+.info-file-input-vendor {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.info-upload-label-vendor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 120px;
+  border: 2px dashed #d1d5db;
+  border-radius: 0.5rem;
+  background: #f9fafb;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 1.5rem;
+  overflow: hidden;
+}
+
+.info-upload-label-vendor:hover {
+  border-color: #3b82f6;
+  background: #eff6ff;
+}
+
+.info-upload-icon-vendor {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  color: #9ca3af;
+}
+
+.info-upload-text-vendor {
+  font-size: 0.875rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+/* 이미지 미리보기 */
+.info-image-preview-vendor {
+  position: relative;
+  width: 100%;
+  height: 120px;
+  border-radius: 0.375rem;
+  overflow: hidden;
+}
+
+.info-image-preview-vendor img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.info-image-overlay-vendor {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.info-image-preview-vendor:hover .info-image-overlay-vendor {
+  opacity: 1;
+}
+
+.info-image-overlay-vendor .info-upload-icon-vendor,
+.info-image-overlay-vendor .info-upload-text-vendor {
+  color: white;
+}
+
+/* 이미지 그리드 */
+.info-image-grid-vendor {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+  padding: 1rem;
+  background: #f9fafb;
+  border-radius: 0.5rem;
+  border: 1px solid #e5e7eb;
+}
+
+.info-image-grid-item-vendor {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  border: 2px solid #e5e7eb;
+  transition: all 0.3s ease;
+}
+
+.info-image-grid-item-vendor:hover {
+  border-color: #3b82f6;
+  transform: scale(1.02);
+}
+
+.info-image-grid-item-vendor img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.info-image-remove-vendor {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 24px;
+  height: 24px;
+  background: rgba(239, 68, 68, 0.9);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  font-size: 0.75rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.info-image-remove-vendor:hover {
+  background: rgba(220, 38, 38, 0.9);
+  transform: scale(1.1);
+}
+
+/* 파일 미리보기 및 에러 */
+.info-file-preview-vendor {
+  margin-top: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: #dcfce7;
+  color: #166534;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-left: 3px solid #22c55e;
+}
+
+.info-error-text-vendor {
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+  color: #ef4444;
+  font-weight: 500;
+}
+
+.info-error-text-vendor::before {
+  content: '⚠️ ';
+}
+
+/* 버튼 */
+.info-button-container-vendor {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e5e7eb;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.info-prev-btn-vendor {
+  padding: 0.75rem 1.5rem;
+  background: #6b7280;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.info-prev-btn-vendor:hover {
+  background: #4b5563;
+  transform: translateY(-1px);
+}
+
+.info-button-container-vendor {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e5e7eb;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.info-prev-btn-vendor,
+.agreement-next-btn-vendor {
+  padding: 0.75rem 1.5rem;
+  background: #6b7280;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.info-prev-btn-vendor:hover,
+.agreement-next-btn-vendor:hover:not(:disabled) {
+  background: #4b5563;
+  transform: translateY(-1px);
+}
+
+.agreement-next-btn-vendor:disabled {
+  background: #d1d5db;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* 애니메이션 */
+.info-section-vendor:nth-child(2) { animation-delay: 0.1s; }
+.info-section-vendor:nth-child(3) { animation-delay: 0.2s; }
+.info-section-vendor:nth-child(4) { animation-delay: 0.3s; }
+
+/* 반응형 */
+@media (max-width: 768px) {
+  .info-section-vendor { padding: 1.25rem; }
+  .info-button-container-vendor { flex-direction: column; }
+  .info-image-grid-vendor { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
+}
+
+@media (max-width: 480px) {
+  .info-section-vendor { padding: 1rem; }
+  .info-image-grid-vendor { grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); }
+  .info-image-preview-vendor { height: 100px; }
+}
