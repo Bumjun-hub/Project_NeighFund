@@ -20,6 +20,7 @@ public class VendorGatheringCreateDto {
     private String content;
     private String dongName;
     private String productName;
+    private int maxParticipants;
     private Long productPrice;
 
 }

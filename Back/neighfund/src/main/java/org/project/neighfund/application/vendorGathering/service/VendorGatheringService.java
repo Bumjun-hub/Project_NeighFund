@@ -47,6 +47,7 @@ public class VendorGatheringService {
                 .businessLicenseUrl(businessLicenseUrl)
                 .productPrice(dto.getProductPrice())
                 .productName(dto.getProductName())
+                .maxParticipants(dto.getMaxParticipants())
                 .build();
         vendorGatheringRepository.save(vendorG);
     }

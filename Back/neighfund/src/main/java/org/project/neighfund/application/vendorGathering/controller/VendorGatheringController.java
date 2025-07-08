@@ -33,6 +33,7 @@ public class VendorGatheringController {
             @RequestPart("dongName") String dongName,
             @RequestPart("productPrice") String productPrice,
             @RequestPart("productName") String productName,
+            @RequestPart("maxParticipants") int maxParticipants,
             @RequestPart(value = "titleImage", required = false) MultipartFile titleImage,
             @RequestPart(value = "businessLicense", required = false) MultipartFile businessLicense) throws IOException {
 
@@ -43,6 +44,7 @@ public class VendorGatheringController {
                 .content(content)
                 .category(GatheringCategory.valueOf(category.toUpperCase()))
                 .productPrice(Long.parseLong(productPrice))
+                .maxParticipants(maxParticipants)
                 .productName(productName)
                 .build();
 
