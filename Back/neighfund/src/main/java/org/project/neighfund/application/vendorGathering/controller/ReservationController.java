@@ -1,6 +1,7 @@
 package org.project.neighfund.application.vendorGathering.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.project.neighfund.application.vendorGathering.dto.ReservationAdminResponseDto;
 import org.project.neighfund.application.vendorGathering.dto.ReservationDto;
 import org.project.neighfund.application.vendorGathering.dto.ReservationResponseDto;
 import org.project.neighfund.application.vendorGathering.service.ReservationService;
@@ -48,18 +49,30 @@ public class ReservationController {
     public ResponseEntity<List<ReservationResponseDto>> viewReservation(
             @AuthenticationPrincipal CustomUserDetails userDetails
     ){
-        Member loginUSer = userDetails.getMember();
-        List<ReservationResponseDto> reservations = reservationService.viewReservation(loginUSer);
+        Member loginUser = userDetails.getMember();
+        List<ReservationResponseDto> reservations = reservationService.viewReservation(loginUser);
         return ResponseEntity.ok(reservations);
+    }
+
+    //신청목록보기(관리자)
+    @GetMapping("/admin/reservations")
+    public ResponseEntity<List<ReservationAdminResponseDto>> adminView(
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ){
+        Member loginUser = userDetails.getMember();
+        List<ReservationAdminResponseDto> reservation = reservationService.adminView(loginUser);
+        return ResponseEntity.ok(reservation);
     }
 
     //입금상태변경(관리자)
     @PutMapping("/admin/{reservationId}/status")
     public ResponseEntity<String> updateStatus(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
             @PathVariable Long reservationId,
             @RequestParam OrderStatus status
     ){
-        reservationService.updateStatus(reservationId, status);
+        Member loginUser = userDetails.getMember();
+        reservationService.updateStatus(reservationId, status, loginUser);
         return ResponseEntity.ok("주문상태가 변경되었습니다.");
     }
 

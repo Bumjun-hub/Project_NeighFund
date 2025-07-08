@@ -3,12 +3,15 @@ package org.project.neighfund.application.vendorGathering.service;
 import jakarta.persistence.Id;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.project.neighfund.application.vendorGathering.dto.ReservationAdminResponseDto;
 import org.project.neighfund.application.vendorGathering.dto.ReservationDto;
 import org.project.neighfund.application.vendorGathering.dto.ReservationResponseDto;
 import org.project.neighfund.domain.fund.Fund;
 import org.project.neighfund.domain.member.Member;
 import org.project.neighfund.domain.vendorGathering.*;
 import org.project.neighfund.enums.OrderStatus;
+import org.project.neighfund.enums.RoleName;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -80,10 +83,10 @@ public class ReservationService {
 
     //마이페이지에서 조회
     @Transactional
-    public List<ReservationResponseDto> viewReservation(Member loginUSer) {
-        validateLogin(loginUSer);
+    public List<ReservationResponseDto> viewReservation(Member loginUser) {
+        validateLogin(loginUser);
 
-        List<Reservation> reservationList = reservationRepository.findByMember(loginUSer);
+        List<Reservation> reservationList = reservationRepository.findByMember(loginUser);
 
         return reservationList.stream()
                 .map(reservation -> ReservationResponseDto.builder()
@@ -99,16 +102,54 @@ public class ReservationService {
                 .toList();
     }
 
+    //신청목록보기(관리자)
+    public List<ReservationAdminResponseDto> adminView(Member loginUser) {
+        validateAdmin(loginUser);
+
+        List<Reservation> reservationList = reservationRepository.findAll();
+
+        return reservationList.stream()
+                .map(reservation -> ReservationAdminResponseDto.builder()
+                        .reservationId(reservation.getId())
+                        .classTitle(reservation.getReservationSlot().getVendorGathering().getTitle())
+                        .date(reservation.getReservationSlot().getStartTime().toLocalDate())
+                        .startTime(reservation.getReservationSlot().getStartTime().toLocalTime())
+                        .participantCount(reservation.getParticipantCount())
+                        .paymentBank(reservation.getPaymentBank())
+                        .paymentName(reservation.getPaymentName())
+                        .status(reservation.getStatus())
+                        .build())
+                .toList();
+    }
+
     //입금상태변경
     @Transactional
-    public void updateStatus(Long reservationId, OrderStatus status) {
+    public void updateStatus(Long reservationId, OrderStatus status, Member loginUser) {
+        validateAdmin(loginUser);
+        Reservation reservation = reservationRepository.findById(reservationId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 예약이 없습니다."));
+        reservation.setStatus(status);
 
     }
 
+
+
+    //공통메서드
     //로그인여부
     public void validateLogin(Member member) {
         if (member == null) {
             throw new IllegalArgumentException("로그인이 필요한 기능입니다.");
+        }
+    }
+
+    //관리자용
+    //관리자확인
+    public void validateAdmin(Member loginUser) {
+        if (loginUser == null) {
+            throw new AccessDeniedException("로그인이 필요합니다");
+        }
+        if (loginUser.getRole().getName() != RoleName.ROLE_ADMIN) {
+            throw new AccessDeniedException("관리자만 접근 가능합니다.");
         }
     }
 
