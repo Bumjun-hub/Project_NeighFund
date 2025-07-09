@@ -101,3 +101,26 @@ DB 계정, 포트, 스키마 이름 등은 환경에 맞게 수정 필요
 | **김태형** | Frontend | - 메인 페이지 구현<br>- 마이페이지, 로그인/로그아웃 UI 구현<br>- 소모임 페이지 UI 개발 |
 | **이승빈** | Backend  | - DB 설계 및 회원관리<br>- 로그인/로그아웃 (JWT, 프로필 이미지, 구글 소셜 로그인)<br>- 소모임 게시글 CRUD, 이미지 연동<br>- 실시간 알림 / 실시간 채팅 구현 |
 | **안순화** | Backend  | - 제안 및 펀딩 기능 API 구현<br>- CRUD 기반 게시글 및 이미지 연동<br>- 신청자 관리 및 구매 페이지 기능 개발 |
+
+
+
+## 📸 주요 화면 예시
+
+### 💬 제안 게시판
+![제안 목록](./screenshots/suggestion.png)
+![제안 작성](./screenshots/suggestionwrite.png)
+![제안 수정](./screenshots/suggestionedit.png)
+![좋아요 기능](./screenshots/suggestionlike.png)
+
+### 💰 펀딩 기능
+![펀딩 메인](./screenshots/fund.png)
+![펀딩 작성 - Step 1](./screenshots/fundcreate1.png)
+![펀딩 작성 - Step 2](./screenshots/fundcreate2.png)
+![펀딩 작성 - Step 3](./screenshots/fundcreate3.png)
+![펀딩 작성 - Step 4](./screenshots/fundcreate4.png)
+![펀딩 상세 1](./screenshots/fundinfo1.png)
+![펀딩 상세 2](./screenshots/fundinfo2.png)
+
+### 📊 설문조사
+![설문조사 화면](./screenshots/fundsurvey.png)
+
