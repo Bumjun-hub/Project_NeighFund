@@ -73,7 +73,7 @@
 cd frontend
 npm install       # 패키지(의존성) 설치
 npm start         # 개발 서버 실행 (기본 주소: http://localhost:3000)
-
+```
 
 ### 🔹 Backend 실행 (IntelliJ 기준)
 
@@ -86,7 +86,7 @@ cd backend
 ./gradlew bootRun       # macOS / Linux
 gradlew.bat bootRun     # Windows
 백엔드 서버가 실행되면 기본 주소는 http://localhost:8080 입니다.
-
+```
 ⚠️ 실행 전 확인사항:
 
 MySQL이 실행 중이어야 하며, 해당 DB 설정이 application.yml 또는 application.properties에 올바르게 입력되어 있어야 합니다.
