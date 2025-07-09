@@ -29,13 +29,13 @@ public class VendorGatheringService {
     private final ImageService imageService;
 
     @Transactional
-    public void createVendorGathering(VendorGatheringCreateDto dto, MultipartFile titleImage, Member member, MultipartFile businessLicense) throws IOException {
+    public Long createVendorGathering(VendorGatheringCreateDto dto, MultipartFile titleImage, Member member, MultipartFile businessLicense) throws IOException {
         validateMember(member);
         if (businessLicense == null) throw new IllegalArgumentException("사업자 등록증은 필수입니다.");
 
         String imageUrl = titleImage != null ? imageService.saveGatheringImage(titleImage, member.getEmail()) : null;
-
         String businessLicenseUrl = imageService.saveGatheringImage(businessLicense, member.getEmail());
+
         VendorGathering vendorG = VendorGathering.builder()
                 .title(dto.getTitle())
                 .category(dto.getCategory())
@@ -49,7 +49,9 @@ public class VendorGatheringService {
                 .productName(dto.getProductName())
                 .maxParticipants(dto.getMaxParticipants())
                 .build();
-        vendorGatheringRepository.save(vendorG);
+
+        VendorGathering saved = vendorGatheringRepository.save(vendorG);
+        return saved.getId(); // ID 반환
     }
 
     @Transactional

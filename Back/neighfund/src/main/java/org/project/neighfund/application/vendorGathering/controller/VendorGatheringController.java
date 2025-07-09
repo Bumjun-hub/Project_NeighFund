@@ -33,25 +33,27 @@ public class VendorGatheringController {
             @RequestPart("dongName") String dongName,
             @RequestPart("productPrice") String productPrice,
             @RequestPart("productName") String productName,
-            @RequestPart("maxParticipants") int maxParticipants,
+            @RequestPart("maxParticipants") String  maxParticipants,
             @RequestPart(value = "titleImage", required = false) MultipartFile titleImage,
             @RequestPart(value = "businessLicense", required = false) MultipartFile businessLicense) throws IOException {
 
         if (businessLicense == null) throw new IllegalArgumentException("사업자 등록증은 필수입니다.");
+
         VendorGatheringCreateDto dto = VendorGatheringCreateDto.builder()
                 .title(title)
                 .dongName(dongName)
                 .content(content)
                 .category(GatheringCategory.valueOf(category.toUpperCase()))
                 .productPrice(Long.parseLong(productPrice))
-                .maxParticipants(maxParticipants)
+                .maxParticipants(Integer.parseInt(maxParticipants))
                 .productName(productName)
                 .build();
 
         Member member = userDetails.getMember();
-        vendorGatheringService.createVendorGathering(dto, titleImage, member, businessLicense);
+        Long gatheringId = vendorGatheringService.createVendorGathering(dto, titleImage, member, businessLicense);
+
         String message = "원데이클래스가 제출되었습니다. 관리자 검수를 기다려주세요.";
-        return ResponseEntity.ok(new VendorGatheringCreateResponse(dto.getTitle(), message));
+        return ResponseEntity.ok(new VendorGatheringCreateResponse(dto.getTitle(), message, gatheringId));
     }
     
     // 무료주차여부, 수업시간, 상세사진들 업로드
