@@ -73,3 +73,31 @@
 cd frontend
 npm install       # 패키지(의존성) 설치
 npm start         # 개발 서버 실행 (기본 주소: http://localhost:3000)
+
+
+### 🔹 Backend 실행 (IntelliJ 기준)
+
+1. IntelliJ로 `backend` 디렉토리를 엽니다.
+2. Gradle 프로젝트로 불러온 후, `build.gradle` 파일이 정상 인식되었는지 확인합니다.
+3. Gradle 탭에서 `bootRun` 실행 또는 터미널에서 아래 명령어 입력:
+
+```bash
+cd backend
+./gradlew bootRun       # macOS / Linux
+gradlew.bat bootRun     # Windows
+백엔드 서버가 실행되면 기본 주소는 http://localhost:8080 입니다.
+
+⚠️ 실행 전 확인사항:
+
+MySQL이 실행 중이어야 하며, 해당 DB 설정이 application.yml 또는 application.properties에 올바르게 입력되어 있어야 합니다.
+
+DB 계정, 포트, 스키마 이름 등은 환경에 맞게 수정 필요
+
+## 👥 팀원 소개 (Team Members)
+
+| 이름     | 담당 역할 | 주요 작업 내용 |
+|----------|-----------|----------------|
+| **정범준** | Frontend | - 전체 레이아웃 설계<br>- 펀딩 페이지 구현<br>- 제안 게시판 UI 개발 |
+| **김태형** | Frontend | - 메인 페이지 구현<br>- 마이페이지, 로그인/로그아웃 UI 구현<br>- 소모임 페이지 UI 개발 |
+| **이승빈** | Backend  | - DB 설계 및 회원관리<br>- 로그인/로그아웃 (JWT, 프로필 이미지, 구글 소셜 로그인)<br>- 소모임 게시글 CRUD, 이미지 연동<br>- 실시간 알림 / 실시간 채팅 구현 |
+| **안순화** | Backend  | - 제안 및 펀딩 기능 API 구현<br>- CRUD 기반 게시글 및 이미지 연동<br>- 신청자 관리 및 구매 페이지 기능 개발 |
