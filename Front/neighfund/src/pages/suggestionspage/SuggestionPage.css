@@ -204,6 +204,14 @@
   line-height: 1.4;
 }
 
+.suggestion-username {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #666;
+  font-weight: 500;
+}
+
+
 .suggestion-card .suggestion-meta {
   margin-top: 10px;
   display: flex;

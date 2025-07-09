@@ -176,7 +176,7 @@ const Header = () => {
 
             <nav className="header-center">
                 <Link to="/funding">펀딩</Link>
-                <Link to="/suggestion">프리오더</Link>
+                <Link to="/suggestion">제안</Link>
                 <Link to="/gathering">모임</Link>
                 <Link to="/classcreationpage">원데이클래스</Link>
             </nav>

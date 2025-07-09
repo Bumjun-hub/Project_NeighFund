@@ -120,7 +120,7 @@ const SuggestionPage = () => {
                             <div className="suggestion-category">#{categoryMap[item.category]}</div>
                             <div className="title">{item.title}</div>
                             <div className="suggestion-content">{item.content}</div>
-
+                            <div className="suggestion-username">작성자: {item.username}</div>
                             <div className="suggestion-meta">
                                 <span className="suggestion-likes">♡ {item.likes}</span>
 
