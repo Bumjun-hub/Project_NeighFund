@@ -13,6 +13,7 @@ import { AuthProvider } from './utils/AuthProvider';
 import EditProfile from './pages/mypage/MyPageEditProfile';
 import Gathering from './pages/gatheringpage/Gathering';
 import GatheringCreate from './pages/gatheringpage/GatheringCreate';
+import ClassInfoInputPage from './pages/vendorgathering/ClassInfoInputPage';
 
 import FundCreateLayout from './pages/fundpage/FundCreateLayout';
 import FundCreateTermsPage from './pages/fundpage/FundCreateTermsPage';
@@ -20,7 +21,7 @@ import FundCreateInfoPage from './pages/fundpage/FundCreateInfoPage';
 import FundCreateStoryPage from './pages/fundpage/FundCreateStoryPage';
 import FundCreateRewardPage from './pages/fundpage/FundCreateRewardPage';
 import { FundingProvider } from './pages/fundpage/FundingProvider';
-import ClassCreationPage from './pages/gatheringpage/ClassCreationPage';
+import ClassCreationPage from './pages/vendorgathering/ClassCreationPage';
 import GatheringInfo from './pages/gatheringpage/GatheringInfo';
 import FundParticipatePage from './pages/fundparticipantpage/FundParticipatePage';
 import GatheringJoin from './pages/gatheringpage/GatheringJoin';
@@ -52,9 +53,13 @@ function App() {
 
               <Route path="/gathering" element={<Gathering />} />
               <Route path="/gatheringcreate" element={<GatheringCreate />} />
-              <Route path="/classcreationpage" element={<ClassCreationPage />} />
               <Route path="/gatherings/:gatheringId" element={<GatheringInfo />} />
               <Route path="/gatherings/:gatheringId/join" element={<GatheringJoin />} />
+
+              <Route path="/classcreationpage" element={<ClassCreationPage />} />
+              <Route path="/classinfoinputpage" element={<ClassInfoInputPage />} />
+
+              
 
               <Route path="/login" element={<LoginPage />} />
               <Route path="/member" element={<MemberPage />} />
