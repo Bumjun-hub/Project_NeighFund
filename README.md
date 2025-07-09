@@ -60,12 +60,16 @@
 
 ## 🚀 실행 방법 (Run Locally)
 
-```bash
-# Frontend
-cd frontend
-npm install
-npm start
+로컬 환경에서 NeighFund 프로젝트를 실행하기 위한 가이드입니다.
 
-# Backend
-cd backend
-./gradlew bootRun
+---
+
+### 🔹 Frontend 실행 (VSCode 기준)
+
+1. VSCode로 `frontend` 디렉토리를 엽니다.
+2. 터미널을 열고 아래 명령어를 입력합니다.
+
+```bash
+cd frontend
+npm install       # 패키지(의존성) 설치
+npm start         # 개발 서버 실행 (기본 주소: http://localhost:3000)
