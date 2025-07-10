@@ -19,7 +19,7 @@ public class FundListDto {
     private CommunityCategory category;
     private FundType fundType;
     private FundStatus fundStatus;
-    private String locationName;
+    private String locationName;  // 동네이름
     private String title;
     private String subTitle;
     private String imageUrl;

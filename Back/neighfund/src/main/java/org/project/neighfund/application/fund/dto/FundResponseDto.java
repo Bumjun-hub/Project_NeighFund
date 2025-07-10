@@ -24,7 +24,7 @@ public class FundResponseDto {
     private FundStatus fundStatus;
     private List<FundOptionDto> options; //옵션
 
-    private String locationName;
+    private String locationName; // 동네이름
     private String title;
     private String subTitle;
     private String content;
