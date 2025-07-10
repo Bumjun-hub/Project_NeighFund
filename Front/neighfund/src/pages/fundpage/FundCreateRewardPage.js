@@ -44,6 +44,7 @@ const FundCreateRewardPage = () => {
       targetAmount: Number(fundData.targetAmount),
       deadline: new Date(fundData.deadline).toISOString(),
       hashTags: fundData.hashTags || "",
+      locationName: fundData.locationName,
       options: rewards.map((r) => ({
         title: r.title,
         description: r.description,

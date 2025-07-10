@@ -2,6 +2,7 @@ import Section from "../../components/Section";
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import './MainPage.css';
+import { Link } from 'react-router-dom'
 import { slides, categories, neighborhoodProjects, lastMinuteProjects } from '../../datas/dummydata';
 
 const MainPage = () => {
@@ -18,6 +19,13 @@ const MainPage = () => {
         const diff = Math.ceil((deadlineDate - today) / (1000 * 60 * 60 * 24));
         return diff >= 0 ? `D-${diff}` : '마감됨';
     };
+
+    // 우리동네 펀딩
+    const neighborhoodFunds = funds.filter(
+        fund => fund.locationName && fund.locationName !== "없음"
+    );
+
+
 
 
     useEffect(() => {
@@ -157,36 +165,40 @@ const MainPage = () => {
                     <div className="container">
                         <h2 className="section-title">주목할 만한 프로젝트</h2>
                         {bestFund ? (
-                            <div className="featured-project"> {/* 🔄 수정됨 */}
-                                <div className="project-image">
-                                    <img src={bestFund.imageUrl} alt={bestFund.title} className="fund-info-image" />
-
-                                </div>
-                                <div className="project-info">
-                                    <div className="project-badge">펀딩 중</div>
-                                    <h3 className="project-title">{bestFund.title}</h3>
-                                    <p className="project-description">{bestFund.subTitle}</p>
-                                    <p className="project-detail">{bestFund.content?.slice(0, 50)}...</p>
-                                    <div className="project-stats">
-                                        <div className="stat">
-                                            <span className="stat-value">
-                                                {Math.floor((bestFund.currentAmount / bestFund.targetAmount) * 100)}%
-                                            </span>
-                                            <span className="stat-label">달성률</span>
-                                        </div>
-                                        <div className="stat">
-                                            <span className="stat-value">{bestFund.currentParticipants}</span>
-                                            <span className="stat-label">서포터</span>
-                                        </div>
-                                        <div className="stat">
-                                            <span className="stat-value">
-                                                {Math.floor((new Date(bestFund.deadline) - new Date()) / (1000 * 60 * 60 * 24))}일
-                                            </span>
-                                            <span className="stat-label">남음</span>
+                            <Link to={`/funding/info/${bestFund.id}`} className="featured-project-link">
+                                <div className="featured-project">
+                                    <div className="project-image">
+                                        <img src={bestFund.imageUrl} alt={bestFund.title} className="fund-info-image" />
+                                    </div>
+                                    <div className="project-info">
+                                        <div className="project-badge">펀딩 중</div>
+                                        <h3 className="project-title">{bestFund.title}</h3>
+                                        {/* 지역명 또는 일반 펀딩 */}
+                                        {bestFund.locationName
+                                            ? (bestFund.locationName !== "없음"
+                                                ? <div className="project-card-location">📍 {bestFund.locationName}</div>
+                                                : <div className="project-card-location">📍 일반 펀딩</div>
+                                            )
+                                            : null}
+                                        <p className="project-description">{bestFund.subTitle}</p>
+                                        <p className="project-detail">{bestFund.content?.slice(0, 50)}...</p>
+                                        <div className="project-stats">
+                                            <div className="stat">
+                                                <span className="stat-value">
+                                                    {bestFund.progressRate || 0}%
+                                                </span>
+                                                <span className="stat-label">달성률</span>
+                                            </div>
+                                            <div className="stat">
+                                                <span className="stat-value">
+                                                    {Math.floor((new Date(bestFund.deadline) - new Date()) / (1000 * 60 * 60 * 24))}일
+                                                </span>
+                                                <span className="stat-label">남음</span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </Link>
                         ) : (
                             <p>진행 중인 펀딩이 없습니다.</p>
                         )}
@@ -194,72 +206,107 @@ const MainPage = () => {
                 </section>
 
 
+
                 {/* Neighborhood Projects */}
                 <section className="projects-section">
                     <div className="container">
                         <h2 className="section-title">우리동네 펀딩</h2>
-                        <div className="projects-grid">
-                            {neighborhoodProjects.map(project => (
-                                <div key={project.id} className="project-card">
-                                    <div className="project-card-image">
-                                        <div className="project-placeholder blue-gradient"></div>
-                                    </div>
-                                    <div className="project-card-content">
-                                        <h4 className="project-card-title">{project.title}</h4>
-                                        <p className="project-card-subtitle">{project.subtitle}</p>
-                                        <div className="progress-bar">
-                                            <div
-                                                className="progress-fill"
-                                                style={{ width: `${project.progress}%` }}
-                                            ></div>
-                                        </div>
-                                        <span className="progress-text">{project.progress}%</span>
-                                    </div>
-                                </div>
-                            ))}
+                        <div className="projects-grid scroll-x">
+                            {neighborhoodFunds.length === 0 ? (
+                                <p>우리동네 펀딩이 없습니다.</p>
+                            ) : (
+                                <>
+                                    {neighborhoodFunds.map(project => (
+                                        <Link to={`/funding/info/${project.id}`} className="project-card-link" key={project.id}>
+                                            <div className="project-card">
+                                                <div className="project-card-image">
+                                                    <img src={project.imageUrl} alt={project.title} className="fund-info-image" />
+                                                </div>
+                                                <div className="project-card-content">
+                                                    <h4 className="project-card-title">{project.title}</h4>
+                                                    <p className="project-card-location">📍 {project.locationName}</p>
+                                                    <p className="project-card-subtitle">{project.subTitle}</p>
+                                                    <div className="progress-bar">
+                                                        <div
+                                                            className="progress-fill"
+                                                            style={{ width: `${project.progressRate || 0}%` }}
+                                                        ></div>
+                                                    </div>
+                                                    <span className="progress-text">
+                                                        {project.progressRate || 0}%
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </Link>
+                                    ))}
+                                    {/* 3개 이하일 때 칸을 맞추는 빈 카드 */}
+                                    {Array.from({ length: Math.max(0, 3 - neighborhoodFunds.length) }).map((_, idx) => (
+                                        <div className="project-card empty" key={`empty-town-${idx}`} />
+                                    ))}
+                                </>
+                            )}
                         </div>
                     </div>
                 </section>
+
+
+
 
                 {/* Last Minute Projects */}
                 <section className="projects-section">
                     <div className="container">
                         <h2 className="section-title">마감 임박 펀딩</h2>
-                        <div className="projects-grid">
+                        <div className="projects-grid scroll-x">
                             {urgentFunds.length === 0 ? (
                                 <p>마감 임박 펀딩이 없습니다.</p>
                             ) : (
-                                urgentFunds.map(project => (
-                                    <div key={project.id} className="project-card">
-                                        <div className="project-card-image">
-                                            <img src={project.imageUrl} alt={project.title} className="fund-info-image" />
+                                <>
+                                    {urgentFunds.map(project => (
+                                        <Link to={`/funding/info/${project.id}`} className="project-card-link" key={project.id}>
+                                            <div className="project-card">
+                                                <div className="project-card-image">
+                                                    <img src={project.imageUrl} alt={project.title} className="fund-info-image" />
+                                                </div>
+                                                <div className="project-card-content">
+                                                    <h4 className="project-card-title">{project.title}</h4>
 
+                                                    {/* 지역이름 or 일반펀딩 */}
+                                                    {project.locationName
+                                                        ? (project.locationName !== "없음"
+                                                            ? <div className="project-card-location">📍 {project.locationName}</div>
+                                                            : <div className="project-card-location">📍 일반 펀딩</div>
+                                                        )
+                                                        : null}
 
-                                        </div>
-                                        <div className="project-card-content">
-                                            <h4 className="project-card-title">{project.title}</h4>
-                                            <p className="project-card-subtitle">{project.subTitle}</p>
-                                            <div className="progress-bar">
-                                                <div
-                                                    className="progress-fill urgent"
-                                                    style={{
-                                                        width: `${Math.floor((project.currentAmount / project.targetAmount) * 100)}%`
-                                                    }}
-                                                ></div>
+                                                    <p className="project-card-subtitle">{project.subTitle}</p>
+                                                    <div className="progress-bar">
+                                                        <div
+                                                            className="progress-fill"
+                                                            style={{
+                                                                width: `${project.progressRate || 0}%`
+                                                            }}
+                                                        ></div>
+                                                    </div>
+                                                    <div className="project-footer">
+                                                        <span className="progress-text">
+                                                            {project.progressRate || 0}%
+                                                        </span>
+                                                        <span className="dday-text">{calcDday(project.deadline)}</span>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div className="project-footer">
-                                                <span className="progress-text">
-                                                    {Math.floor((project.currentAmount / project.targetAmount) * 100)}%
-                                                </span>
-                                                <span className="dday-text">{calcDday(project.deadline)}</span> {/* ✅ 여기에 표시 */}
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))
+                                        </Link>
+                                    ))}
+                                    {Array.from({ length: Math.max(0, 3 - urgentFunds.length) }).map((_, idx) => (
+                                        <div className="project-card empty" key={`empty-urgent-${idx}`} />
+                                    ))}
+                                </>
                             )}
                         </div>
                     </div>
                 </section>
+
+
 
             </div>
         </Section>

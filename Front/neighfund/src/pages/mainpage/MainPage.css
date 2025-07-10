@@ -251,6 +251,14 @@
   background: #f8f9ff;
 }
 
+.featured-project-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  cursor: pointer;
+}
+
+
 .section-title {
   font-size: 1.8rem;
   font-weight: 700;
@@ -360,19 +368,31 @@
   background: white;
 }
 
-.projects-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-  gap: 2rem;
+.project-card-link {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  display: block;
 }
 
-.project-card {
-  background: white;
-  border-radius: 15px;
-  overflow: hidden;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-  transition: transform 0.2s ease;
+
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);  /* 항상 3열 그리드! */
+  gap: 24px;
+  min-height: 250px; /* 카드 1개여도 공간 확보 */
 }
+.project-card {
+  min-height: 320px;   /* 카드 높이 고정, 예시 */
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  /* width, height 명시해도 OK */
+}
+
 
 .project-card:hover {
   transform: translateY(-5px);
@@ -439,9 +459,6 @@
   transition: width 0.3s ease;
 }
 
-.progress-fill.urgent {
-  background: #ef4444;
-}
 
 .project-footer {
   display: flex;

@@ -11,7 +11,15 @@ const SuggestionWritePage = () => {
     title: '',
     content: '',
     category: 'EDUCATION',
+    locationName: '',
   });
+
+  const dongOptions = [
+    '', // 동 선택
+    '마전동', '당하동', '원당동', '불로동', '오류동',
+    '왕길동', '대곡동', '금곡동', '백석동', '아라동'
+  ];
+
 
   const navigate = useNavigate();
   const { id } = useParams();
@@ -77,6 +85,7 @@ const SuggestionWritePage = () => {
             title: post.title,
             content: post.content,
             category: post.category,
+            locationName: post.locationName || '',
           });
         })
         .catch(err => {
@@ -165,15 +174,6 @@ const SuggestionWritePage = () => {
             required
           />
 
-          <label>내용</label>
-          <textarea
-            name="content"
-            value={formData.content}
-            onChange={handleChange}
-            rows="6"
-            required
-          />
-
           <label>카테고리</label>
           <select
             name="category"
@@ -184,6 +184,31 @@ const SuggestionWritePage = () => {
               <option key={key} value={key}>{value}</option>
             ))}
           </select>
+
+
+          <label>동(지역)</label>
+          <select
+            name="locationName"
+            value={formData.locationName}
+            onChange={handleChange}
+            required
+          >
+            {dongOptions.map(dong =>
+              <option key={dong} value={dong}>{dong === '' ? '동 선택' : dong}</option>
+            )}
+          </select>
+
+
+          <label>내용</label>
+          <textarea
+            name="content"
+            value={formData.content}
+            onChange={handleChange}
+            rows="6"
+            required
+          />
+
+
 
           <div className="suggestion-button-group">
             <button type="submit" className="suggestion-write-submit">

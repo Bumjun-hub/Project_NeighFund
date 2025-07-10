@@ -223,7 +223,7 @@ const FundInfoPage = () => {
             {/*  참여 모달 */}
             {showModal && (
                 <div className="modal-backdrop" onClick={() => setShowModal(false)}>
-                    <div className="modal-content" onClick={e => e.stopPropagation()}>
+                    <div className="modal_content" onClick={e => e.stopPropagation()}>
                         <button className="modal-close" onClick={() => setShowModal(false)}>X</button>
                         <FundParticipatePage
                             fundId={fund.id}

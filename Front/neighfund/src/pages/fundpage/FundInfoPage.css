@@ -332,19 +332,45 @@
 }
 
 .delete-btn {
-    margin-left: 20px;
-    background-color: #e74c3c;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 14px;
+  margin-left: 20px;
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
 }
 
 .delete-btn:hover {
-    background-color: #c0392b;
+  background-color: #c0392b;
 }
+
+.modal-backdrop {
+  position: fixed;
+  left: 0; top: 0; right: 0; bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.20);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+
+.modal_content {
+  background: #fff;
+  border-radius: 16px;
+  padding: 28px 24px;
+  max-width: 420px;     /* 원하는 박스 크기로! (400~500px 추천) */
+  width: 100%;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.16);
+  /* margin: 0 auto; // 필요 없음(부모 flex라서) */
+}
+
+
+
 
 @media (max-width: 1024px) {
   .fund-info-top {

@@ -261,17 +261,19 @@ public class FundService {
                         .fundType(fund.getFundType())
                         .title(fund.getTitle())
                         .subTitle(fund.getSubTitle())
+                        .locationName(fund.getLocationName())  // ✅ 동네명 추가!
                         .imageUrl(
                                 fund.getFundImages().stream()
                                         .filter(fundImage -> !fundImage.getIsDeleted())
                                         .map(FundImage::getImgUrl)
                                         .findFirst()
-                                        .orElse(null)  //첫번째 이미지 -> 썸네일
+                                        .orElse(null)
                         )
                         .progressRate(fund.getProgressRate())
                         .targetAmount(fund.getTargetAmount())
                         .deadline(fund.getDeadline())
                         .build())
+
                 .collect(Collectors.toList());
     }
 
