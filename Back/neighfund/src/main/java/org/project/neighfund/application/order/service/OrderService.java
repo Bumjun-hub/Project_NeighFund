@@ -32,32 +32,41 @@ public class OrderService {
     @Transactional
     public void createOrder(Long optionId, OrderDto orderDto, Member loginUser) {
         validateLogin(loginUser);
-        FundOption option = validateOption(optionId); //펀드랑 옵션 매핑
+        FundOption option = validateOption(optionId);
+        Fund originalFund = option.getFund();
+        Fund fund = fundRepository.findById(originalFund.getId())
+                .orElseThrow(() -> new IllegalArgumentException("펀드가 존재하지 않습니다."));
 
-        Fund fund = option.getFund();
-
-        // 상태 마감 -> 신청불가
         if (fund.getFundStatus() == FundStatus.CLOSED) {
             throw new IllegalArgumentException("마감된 펀드 입니다");
         }
 
-        //중복신청여부
         if (orderRepository.existsByFundOptionAndMember(option, loginUser)) {
             throw new IllegalArgumentException("이미 신청한 펀드 입니다");
         }
 
-        //수량
         int quantity = orderDto.getQuantity();
         if (option.getQuantity() < quantity) {
             throw new IllegalArgumentException("남은 수량이 없습니다");
         }
-        //재고차감
-        option.setQuantity((option.getQuantity() - quantity));
+        option.setQuantity(option.getQuantity() - quantity);
 
-        //총가격
         long amount = option.getPrice() * quantity;
 
-        //주문생성
+        // ✅ 1. 참여자 여부 먼저 체크하고 증가
+        boolean alreadyParticipated = orderRepository
+                .existsByMemberAndFundOption_FundAndStatus(loginUser, fund, OrderStatus.PENDING);
+        if (!alreadyParticipated) {
+            fund.setCurrentParticipants(fund.getCurrentParticipants() + 1);
+        }
+
+        // ✅ 2. 모인금액, 달성률 계산
+        fund.setCurrentAmount(fund.getCurrentAmount() + amount);
+        int progress = (int) Math.round(
+                (double) fund.getCurrentAmount() * 100 / fund.getTargetAmount());
+        fund.setProgressRate(progress);
+
+        // ✅ 3. 주문 생성 및 저장
         Order order = Order.builder()
                 .fundOption(option)
                 .member(loginUser)
@@ -67,26 +76,18 @@ public class OrderService {
                 .phone(orderDto.getPhone())
                 .paymentName(orderDto.getPaymentName())
                 .paymentBank(orderDto.getPaymentBank())
-                .accountHolderName("neighFund") // ✅ 직접 넣기
-                .virtualAccount("1234-5678-9012") // 혹시 몰라 이것도 명시
+                .accountHolderName("neighFund")
+                .virtualAccount("1234-5678-9012")
                 .bankName("TestBank")
                 .status(OrderStatus.PENDING)
                 .build();
         orderRepository.save(order);
 
-        //참여자
-        boolean alreadyParticipated = orderRepository.existsByMemberAndFundOption_Fund(loginUser, fund);
-        if (!alreadyParticipated) {
-            fund.setCurrentParticipants(fund.getCurrentParticipants() + 1);
-        }
-        //모인금액
-        fund.setCurrentAmount(fund.getCurrentAmount() + amount);
-        //달성률
-        int progress = (int) Math.round(
-                (double) fund.getCurrentAmount() * 100 / fund.getTargetAmount());
-        if (progress > 100) progress = 100;
-        fund.setProgressRate(progress);
+        // ✅ 4. 최종 펀드 반영
+        fundRepository.save(fund);
+        System.out.println("현재 참여자 수: " + fund.getCurrentParticipants());
     }
+
 
     //주문취소
     @Transactional
@@ -121,7 +122,8 @@ public class OrderService {
         //달성률
         int progress = (int) Math.round(
                 (double) fund.getCurrentAmount() * 100 / fund.getTargetAmount());
-        fund.setProgressRate(Math.max(progress, 0));
+        fund.setProgressRate(progress); // ⭐ 100% 제한 제거
+
     }
 
     //신청자보기(관리자)
@@ -255,7 +257,7 @@ public class OrderService {
         fund.setCurrentAmount(fund.getCurrentAmount() + delta);
         int progress = (int) Math.round(
                 (double) fund.getCurrentAmount() * 100 / fund.getTargetAmount());
-        fund.setProgressRate(Math.min(progress, 100));
+        fund.setProgressRate(progress);
 
         //주문 업데이트
         order.setQuantity(newQuantity);

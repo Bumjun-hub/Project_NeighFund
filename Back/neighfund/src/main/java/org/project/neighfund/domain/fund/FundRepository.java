@@ -12,9 +12,15 @@ import java.util.Optional;
 @Repository
 public interface FundRepository extends JpaRepository<Fund, Long> {
     List<Fund> findAllByIsApprovedTrue();
+
     List<Fund> findByIsApprovedFalse();
 
-    Optional<Fund>findByIdAndIsApprovedTrue(Long id);
+    Optional<Fund> findByIdAndIsApprovedTrue(Long id);
 
     List<Fund> findByDeadlineBeforeAndFundStatus(LocalDateTime now, FundStatus fundStatus);
+
+    List<Fund> findByIsDeletedFalse();
+
+    Optional<Fund> findByIdAndIsDeletedFalse(Long id);
+
 }

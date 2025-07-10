@@ -16,6 +16,9 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     boolean existsByMemberAndFundOption_Fund(Member member, Fund fund); // 중복 참여 여부
 
+    boolean existsByMemberAndFundOption_FundAndStatus(Member member, Fund fund, OrderStatus status);
+
+
 
     List<Order> findByFundOption(FundOption option);
 

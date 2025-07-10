@@ -331,7 +331,20 @@
   color: #d84315;
 }
 
+.delete-btn {
+    margin-left: 20px;
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+}
 
+.delete-btn:hover {
+    background-color: #c0392b;
+}
 
 @media (max-width: 1024px) {
   .fund-info-top {

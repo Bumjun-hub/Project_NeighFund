@@ -37,7 +37,7 @@ public class FundService {
 
     //작성
     @Transactional
-    public void createPost(FundDto fundDto, List<MultipartFile> imageFiles,List<MultipartFile>contentImages, Member loginUser) {
+    public void createPost(FundDto fundDto, List<MultipartFile> imageFiles, List<MultipartFile> contentImages, Member loginUser) {
         validateMember(loginUser);
         validateCreate(fundDto);
 
@@ -77,31 +77,31 @@ public class FundService {
         }
 
         //썸네일 + 내용
-            for (MultipartFile imageFile : imageFiles) {
-                String imageUrl = imageService.saveImage(imageFile);
+        for (MultipartFile imageFile : imageFiles) {
+            String imageUrl = imageService.saveImage(imageFile);
 
-                if (imageUrl != null) {
-                    FundImage image = FundImage.builder()
-                            .imgUrl(imageUrl)
-                            .fund(fund)
-                            .isDeleted(false)
-                            .build();
-                    fundImageRepository.save(image);
-                }
+            if (imageUrl != null) {
+                FundImage image = FundImage.builder()
+                        .imgUrl(imageUrl)
+                        .fund(fund)
+                        .isDeleted(false)
+                        .build();
+                fundImageRepository.save(image);
             }
+        }
         // content용
-            for (MultipartFile contentFile : contentImages) {
-                String imageUrl = imageService.saveImage(contentFile);
+        for (MultipartFile contentFile : contentImages) {
+            String imageUrl = imageService.saveImage(contentFile);
 
-                if (imageUrl != null) {
-                    FundContentImage image = FundContentImage.builder()
-                            .imgUrl(imageUrl)
-                            .fund(fund)
-                            .isDeleted(false)
-                            .build();
-                    fundContentImageRepository.save(image);
-                }
+            if (imageUrl != null) {
+                FundContentImage image = FundContentImage.builder()
+                        .imgUrl(imageUrl)
+                        .fund(fund)
+                        .isDeleted(false)
+                        .build();
+                fundContentImageRepository.save(image);
             }
+        }
 
         // 공동구매 오픈 알림
         String content = "🔔 \"" + fund.getTitle() + "\" 새로운 펀드가 OPEN 되었습니다!";
@@ -112,8 +112,8 @@ public class FundService {
 
     //수정  글을 수정하면 다시 검수 받아야 함
     @Transactional
-    public void editPost(Long id, FundDto fundDto, List<MultipartFile> imageFiles,List<MultipartFile>contentImages,
-                             List<Long> deleteImageIds, List<Long>deleteContentImageIds, Member loginUser) {
+    public void editPost(Long id, FundDto fundDto, List<MultipartFile> imageFiles, List<MultipartFile> contentImages,
+                         List<Long> deleteImageIds, List<Long> deleteContentImageIds, Member loginUser) {
         Fund fund = validatePost(id);
         validateMember(loginUser, fund.getMember());
         validateCreate(fundDto);
@@ -187,15 +187,15 @@ public class FundService {
                 }
             }
         }
-     //옵션관련
+        //옵션관련
         //옵션조회
         List<FundOption> findOptions = fundOptionRepository.findByFund(fund);
         Map<Long, FundOption> findOptionMap = findOptions.stream()
                 .collect(Collectors.toMap(FundOption::getId, option -> option));
         //생성
         List<FundOptionDto> options = fundDto.getOptions();
-        if (options != null && !options.isEmpty()){
-            for (FundOptionDto dto : options){
+        if (options != null && !options.isEmpty()) {
+            for (FundOptionDto dto : options) {
                 if (dto.getId() == null) {
                     //생성
                     FundOption newOption = FundOption.builder()
@@ -231,17 +231,24 @@ public class FundService {
 
     //삭제
     @Transactional
-    public void deletePost(Long id, Member loginUser) {
-        Fund fund = validatePost(id);
-        validateMember(loginUser, fund.getMember());
-        fundRepository.delete(fund);
+    public void deletePost(Long fundId, Member loginUser) {
+        Fund fund = validatePost(fundId);
+
+        if (!fund.getMember().getId().equals(loginUser.getId()) &&
+                !loginUser.getRole().getName().name().equals("ROLE_ADMIN")) {
+            throw new AccessDeniedException("작성자 또는 관리자만 삭제할 수 있습니다");
+        }
+
+        fund.setDeleted(true); // ✅ 실제 삭제 대신 삭제 표시만 함
     }
+
 
     //조회
     public List<FundListDto> viewAll(CommunityCategory category, FundStatus status, FundType type) {
         List<Fund> funds = fundRepository.findAllByIsApprovedTrue();
 
         return funds.stream()
+                .filter(f -> !f.isDeleted())
                 .filter(fund -> category == null || fund.getCategory() == category)
                 .filter(fund -> status == null || fund.getFundStatus() == status)
                 .filter(fund -> type == null || fund.getFundType() == type)
@@ -270,7 +277,9 @@ public class FundService {
     @Transactional
     public FundResponseDto detailView(Long id, Member loginUser) {
         Fund fund = fundRepository.findByIdAndIsApprovedTrue(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 펀딩입니다."));
+                .filter(f -> !f.isDeleted()) // ⭐ 삭제된 펀딩은 차단
+                .orElseThrow(() -> new IllegalArgumentException("삭제되었거나 존재하지 않는 펀딩입니다."));
+
 
         List<FundOptionDto> options = fund.getFundOptions().stream()
                 .map(option -> FundOptionDto.builder()
@@ -407,7 +416,7 @@ public class FundService {
 
 
     // 사용자 정보 확인
-    public void validateMember (Member loginUser){
+    public void validateMember(Member loginUser) {
         Member foundMember = memberRepository.findById(loginUser.getId())
                 .orElseThrow(() -> new IllegalArgumentException("해당사용자가 존재하지 않습니다"));
 
@@ -417,8 +426,8 @@ public class FundService {
     }
 
     // 글작성 공백확인
-    public void validateCreate (FundDto fundDto){
-        if (fundDto.getFundType() == null ) {
+    public void validateCreate(FundDto fundDto) {
+        if (fundDto.getFundType() == null) {
             throw new IllegalArgumentException("타입을 선택 해주세요");
         }
         if (fundDto.getTitle() == null || fundDto.getTitle().isBlank()) {
@@ -437,17 +446,18 @@ public class FundService {
 
 
     //작성자확인
-    public void validateMember (Member loginUser, Member writer){
+    public void validateMember(Member loginUser, Member writer) {
         if (!loginUser.getId().equals(writer.getId())) {
             throw new AccessDeniedException("작성자만 가능합니다");
         }
     }
 
     //글존재유무확인
-    public Fund validatePost (Long id){
-        return fundRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다"));
+    public Fund validatePost(Long fundId) {
+        return fundRepository.findByIdAndIsDeletedFalse(fundId)
+                .orElseThrow(() -> new IllegalArgumentException("삭제되었거나 존재하지 않는 펀딩입니다."));
     }
+
 
     //로그인 사용자 기준
     public void validateLogin(Member member) {
@@ -462,7 +472,7 @@ public class FundService {
 
     public FundResponseDto getUnapprovedDetail(Long id, Member loginUser) {
         validateLogin(loginUser); // 관리자 확인
-        Fund fund  = validatePost(id); // isApproved 검사 X
+        Fund fund = validatePost(id); // isApproved 검사 X
 
         List<FundOptionDto> options = fund.getFundOptions().stream()
                 .map(option -> FundOptionDto.builder()

@@ -83,4 +83,7 @@ public class Fund extends BaseEntity {
     @OneToMany(mappedBy = "fund", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Like> likes;
 
+    @Column(nullable = false)
+    private boolean isDeleted = false;
+
 }

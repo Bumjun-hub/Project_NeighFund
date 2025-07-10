@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import './FundInfoPage.css';
 import './Modal.css';
@@ -13,6 +13,8 @@ const FundInfoPage = () => {
     const [myOrderOptionIds, setMyOrderOptionIds] = useState([]);
     const [showModal, setShowModal] = useState(false); //  모달 제어용
     const isClosed = fund && new Date(fund.deadline) < new Date();
+    const [isAdmin, setIsAdmin] = useState(false); // ✅ 관리자 여부 확인용
+    const navigate = useNavigate();
 
     const categoryMap = {
         EDUCATION: "교육",
@@ -25,6 +27,8 @@ const FundInfoPage = () => {
         WELFARE: "복지",
         ETC: "기타"
     };
+
+
 
 
     //  리워드 선택
@@ -62,6 +66,41 @@ const FundInfoPage = () => {
         }
     };
 
+
+    // ✅ 관리자 여부 확인
+    useEffect(() => {
+        fetch("/api/auth/roleinfo", { credentials: "include" })
+            .then(res => res.json())
+            .then(data => {
+                if (data.roleName === "ROLE_ADMIN") setIsAdmin(true);
+            })
+            .catch(err => console.error("권한 확인 실패", err));
+    }, []);
+
+    // ✅ 삭제 처리 함수
+    const handleDelete = async () => {
+        if (!window.confirm("정말 삭제하시겠습니까?")) return;
+
+        try {
+            const token = localStorage.getItem("accessToken");
+            const res = await fetch(`/api/fund/delete/${id}`, {
+                method: "DELETE",
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+            if (!res.ok) throw new Error("삭제 실패");
+
+            alert("삭제가 완료되었습니다.");
+            navigate("/funding"); // 목록 페이지로 이동
+        } catch (err) {
+            alert("삭제 중 오류가 발생했습니다.");
+            console.error("❌ 삭제 오류:", err);
+        }
+    };
+
+
     //  주문한 리워드 불러오기
     useEffect(() => {
         fetch("/api/orders/myPage/order", {
@@ -89,8 +128,13 @@ const FundInfoPage = () => {
     return (
         <Section>
             <div className="fund-info-wrapper">
-                <h2 className="fund-title">{fund.title}</h2>
-
+                <h2 className="fund-title">{fund.title}
+                    {isAdmin && (
+                        <button className="delete-btn" onClick={handleDelete}>
+                            🗑️ 삭제
+                        </button>
+                    )}
+                </h2>
                 {/* 상단 */}
                 <div className="fund-info-top">
                     <img src={fund.fundImages?.[0]} alt={fund.title} className="fund-info-image" />
