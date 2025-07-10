@@ -48,6 +48,7 @@ public class FundService {
                 .fundType(fundDto.getFundType())
                 .fundStatus(FundStatus.ONGOING)
                 .isApproved(false)
+                .locationName(fundDto.getLocationName())
                 .title(fundDto.getTitle())
                 .subTitle(fundDto.getSubTitle())
                 .content(fundDto.getContent())
@@ -121,6 +122,7 @@ public class FundService {
         fund.setFundType(fundDto.getFundType());
         fund.setIsApproved(false);
         fund.setFundStatus(fundDto.getFundStatus());
+        fund.setLocationName(fundDto.getLocationName());
         fund.setTitle(fundDto.getTitle());
         fund.setSubTitle(fundDto.getSubTitle());
         fund.setContent(fundDto.getContent());
@@ -320,6 +322,7 @@ public class FundService {
                 .fundType(fund.getFundType())
                 .fundStatus(fund.getFundStatus())
                 .options(options)
+                .locationName(fund.getLocationName())
                 .title(fund.getTitle())
                 .subTitle(fund.getSubTitle())
                 .content(fund.getContent())
@@ -503,6 +506,7 @@ public class FundService {
                 .fundType(fund.getFundType())
                 .fundStatus(fund.getFundStatus())
                 .options(options)
+                .locationName(fund.getLocationName())
                 .title(fund.getTitle())
                 .subTitle(fund.getSubTitle())
                 .content(fund.getContent())

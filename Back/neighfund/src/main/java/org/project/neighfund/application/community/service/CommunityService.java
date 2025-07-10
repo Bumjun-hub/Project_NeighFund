@@ -36,6 +36,7 @@ public class CommunityService {
                 .category(communityDto.getCategory())
                 .status(CommunityStatus.RECRUITING)
                 .title(communityDto.getTitle())
+                .locationName(communityDto.getLocationName())
                 .content(communityDto.getContent())
                 .build();
         communityRepository.save(community);
@@ -49,6 +50,7 @@ public class CommunityService {
         validateCreate(communityDto);
 
         community.setCategory(communityDto.getCategory());
+        community.setLocationName(communityDto.getLocationName());
         community.setTitle(communityDto.getTitle());
         community.setContent(communityDto.getContent());
     }
@@ -87,6 +89,7 @@ public class CommunityService {
                     post.getCategory().name(),
                     post.getStatus().name(),
                     post.getTitle(),
+                    post.getLocationName(),
                     post.getContent(),
                     post.getCreatedAt(),
                     post.getUpdatedAt(),
@@ -114,6 +117,7 @@ public class CommunityService {
                 post.getCategory().name(),
                 post.getStatus().name(),
                 post.getTitle(),
+                post.getLocationName(),
                 post.getContent(),
                 post.getCreatedAt(),
                 post.getUpdatedAt(),
@@ -150,6 +154,7 @@ public class CommunityService {
                     post.getCategory().name(),
                     post.getStatus().name(),
                     post.getTitle(),
+                    post.getLocationName(),
                     post.getContent(),
                     post.getCreatedAt(),
                     post.getUpdatedAt(),

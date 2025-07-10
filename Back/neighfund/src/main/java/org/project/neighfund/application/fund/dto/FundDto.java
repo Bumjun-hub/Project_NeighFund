@@ -19,6 +19,7 @@ public class  FundDto {
     private CommunityCategory category;
     private FundType fundType;
     private FundStatus fundStatus;
+    private String locationName;
     private String title;
     private String subTitle;
     private String content;

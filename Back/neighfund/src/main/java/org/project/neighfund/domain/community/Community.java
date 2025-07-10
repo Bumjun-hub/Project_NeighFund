@@ -36,6 +36,9 @@ public class Community extends BaseEntity {
     private CommunityStatus status;
 
     @Column(nullable = false)
+    private String locationName;
+
+    @Column(nullable = false)
     private String title;
 
     @Column(nullable = false)
