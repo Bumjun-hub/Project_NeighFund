@@ -113,3 +113,11 @@
     /* 진한 빨강 */
     color: white;
 }
+
+.fund-card-location {
+  margin-top: 4px;
+  font-size: 0.96rem;
+  color: #4b6bd2;
+  font-weight: 500;
+  letter-spacing: -1px;
+}

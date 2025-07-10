@@ -13,6 +13,7 @@ export const FundingProvider = ({ children }) => {
     targetAmount: '',
     deadline: '',
     hashTags: '',
+    locationName:'',
     options: [              // FundOptionDto 리스트
       { title: '', description: '', amount: '' }
     ],
