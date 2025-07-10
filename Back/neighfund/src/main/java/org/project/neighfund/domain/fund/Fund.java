@@ -43,6 +43,9 @@ public class Fund extends BaseEntity {
     private Boolean isApproved = false; // 검수상태 false -> 안보임
 
     @Column(nullable = false)
+    private String locationName;
+
+    @Column(nullable = false)
     private String title;
 
     @Lob

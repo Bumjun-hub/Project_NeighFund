@@ -10,4 +10,5 @@ import lombok.Setter;
 public class VendorGatheringCreateResponse {
     private String title;
     private String message;
+    private Long gatheringId;
 }

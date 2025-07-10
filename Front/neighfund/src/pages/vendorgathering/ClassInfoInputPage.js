@@ -4,15 +4,15 @@ import './ClassInfoInputPage.css';
 const ClassInfoInputPage = () => {
   const [formData, setFormData] = useState({
     title: '', category: '', dongName: '', productPrice: '',
-    productName: '', maxParticipants: '', durationHours: '', freeParking: '', content: ''
+    productName: '', maxParticipants: '', content: ''
   });
 
   const [files, setFiles] = useState({
-    titleImage: null, businessLicense: null, productImages: []
+    titleImage: null, businessLicense: null
   });
 
   const [previews, setPreviews] = useState({
-    titleImage: null, businessLicense: null, productImages: []
+    titleImage: null, businessLicense: null
   });
 
   const [errors, setErrors] = useState({});
@@ -53,60 +53,73 @@ const ClassInfoInputPage = () => {
 
   // 파일 변경 핸들러
   const handleFileChange = (e, type) => {
-    const fileList = e.target.files;
+    const file = e.target.files[0];
+    if (!file) return;
     
-    if (type === 'productImages') {
-      const newImages = Array.from(fileList);
-      if ((files.productImages?.length || 0) + newImages.length > 5) {
-        alert('상세 이미지는 최대 5장까지 업로드할 수 있습니다.');
-        return;
-      }
-      
-      setFiles(prev => ({ ...prev, productImages: [...(prev.productImages || []), ...newImages] }));
-      
-      newImages.forEach(file => {
-        if (file.type.startsWith('image/')) {
-          const reader = new FileReader();
-          reader.onload = (e) => {
-            setPreviews(prev => ({ ...prev, productImages: [...(prev.productImages || []), e.target.result] }));
-          };
-          reader.readAsDataURL(file);
-        }
-      });
+    setFiles(prev => ({ ...prev, [type]: file }));
+    
+    if (file.type.startsWith('image/')) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setPreviews(prev => ({ ...prev, [type]: e.target.result }));
+      };
+      reader.readAsDataURL(file);
     } else {
-      const file = fileList[0];
-      if (!file) return;
-      
-      setFiles(prev => ({ ...prev, [type]: file }));
-      
-      if (file.type.startsWith('image/')) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          setPreviews(prev => ({ ...prev, [type]: e.target.result }));
-        };
-        reader.readAsDataURL(file);
-      } else {
-        setPreviews(prev => ({ ...prev, [type]: null }));
-      }
+      setPreviews(prev => ({ ...prev, [type]: null }));
     }
   };
 
-  const removeProductImage = (index) => {
-    setFiles(prev => ({ ...prev, productImages: prev.productImages.filter((_, i) => i !== index) }));
-    setPreviews(prev => ({ ...prev, productImages: prev.productImages.filter((_, i) => i !== index) }));
-  };
-
-  const handleNext = () => {
-    if (validateForm()) {
-      console.log('폼 데이터:', formData, '파일 데이터:', files);
-      alert('다음 단계(스토리 작성)로 이동합니다!');
-
+  const handleNext = async () => {
+    if (!validateForm()) return;
+    
+    try {
+      // 기본 정보 저장
+      const formDataToSend = new FormData();
+      
+      formDataToSend.append('title', formData.title);
+      formDataToSend.append('category', formData.category);
+      formDataToSend.append('content', formData.content);
+      formDataToSend.append('dongName', formData.dongName);
+      formDataToSend.append('productPrice', String(formData.productPrice));
+      formDataToSend.append('productName', formData.productName);
+      formDataToSend.append('maxParticipants', String(formData.maxParticipants));
+      
+      if (files.titleImage) {
+        formDataToSend.append('titleImage', files.titleImage);
+      }
+      
+      if (files.businessLicense) {
+        formDataToSend.append('businessLicense', files.businessLicense);
+      }
+      
+      console.log('기본 정보 저장 중...');
+      const createResponse = await fetch('/api/gatherings/vendor/create', {
+        method: 'POST',
+        body: formDataToSend,
+      });
+      
+      if (!createResponse.ok) {
+        throw new Error('기본 정보 저장 실패');
+      }
+      
+      const result = await createResponse.json();
+      console.log('저장 성공:', result);
+      
+      // gatheringId를 localStorage에 저장
+      localStorage.setItem('currentGatheringId', result.gatheringId);
+      
+      alert('클래스 정보가 성공적으로 저장되었습니다. 다음 단계로 이동합니다.');
+      window.location.href = '/classInfoInputPage2';
+      
+    } catch (error) {
+      console.error('에러:', error);
+      alert('저장 중 오류가 발생했습니다. 다시 시도해주세요.');
     }
   };
 
   const handlePrevious = () => {
     alert('이전 단계(정책 동의)로 돌아갑니다!');
-        window.location.href = '/classcreationpage'; 
+    window.location.href = '/classcreationpage'; 
   };
 
   // 파일 업로드 컴포넌트
@@ -122,7 +135,6 @@ const ClassInfoInputPage = () => {
           onChange={(e) => handleFileChange(e, type)}
           className={`info-file-input-vendor ${error ? 'info-error-vendor' : ''}`}
           id={type}
-          multiple={type === 'productImages'}
         />
         <label htmlFor={type} className="info-upload-label-vendor">
           {preview ? (
@@ -158,7 +170,11 @@ const ClassInfoInputPage = () => {
           </div>
           <div className="agreement-step-arrow">{'>'}</div>
           <div className="agreement-step agreement-step-active">
-            <span className="agreement-step-text">정보 입력</span>
+            <span className="agreement-step-text">기본 정보</span>
+          </div>
+          <div className="agreement-step-arrow">{'>'}</div>
+          <div className="agreement-step">
+            <span className="agreement-step-text">세부 정보</span>
           </div>
           <div className="agreement-step-arrow">{'>'}</div>
           <div className="agreement-step">
@@ -252,37 +268,6 @@ const ClassInfoInputPage = () => {
             </div>
           </div>
 
-          {/* 세부 정보 */}
-          <div className="info-section-vendor">
-            <h3 className="info-section-title-vendor">⚙️ 세부 정보</h3>
-            
-            <div className="info-field-vendor">
-              <label className="info-label-vendor">수업 시간</label>
-              <div className="info-duration-input-vendor">
-                <input
-                  type="number"
-                  name="durationHours"
-                  value={formData.durationHours}
-                  onChange={handleInputChange}
-                  className="info-input-vendor"
-                  placeholder="2"
-                  min="0.5"
-                  step="0.5"
-                />
-                <span className="info-duration-unit-vendor">시간</span>
-              </div>
-            </div>
-
-            <div className="info-field-vendor">
-              <label className="info-label-vendor">무료 주차</label>
-              <select name="freeParking" value={formData.freeParking} onChange={handleInputChange} className="info-input-vendor">
-                <option value="">선택하세요</option>
-                <option value="true">🅿️ 가능</option>
-                <option value="false">❌ 불가능</option>
-              </select>
-            </div>
-          </div>
-
           {/* 파일 업로드 */}
           <div className="info-section-vendor">
             <h3 className="info-section-title-vendor">📸 이미지 및 첨부파일</h3>
@@ -304,35 +289,6 @@ const ClassInfoInputPage = () => {
               fileName={files.businessLicense?.name}
               error={errors.businessLicense}
             />
-
-            <div className="info-field-vendor">
-              <label className="info-label-vendor">상세 이미지 (최대 5장)</label>
-              <div className="info-upload-area-vendor">
-                <input
-                  type="file"
-                  accept="image/*"
-                  multiple
-                  onChange={(e) => handleFileChange(e, 'productImages')}
-                  className="info-file-input-vendor"
-                  id="productImages"
-                />
-                <label htmlFor="productImages" className="info-upload-label-vendor">
-                  <div className="info-upload-icon-vendor">📤</div>
-                  <div className="info-upload-text-vendor">이미지를 업로드 하세요</div>
-                </label>
-              </div>
-              
-              {previews.productImages?.length > 0 && (
-                <div className="info-image-grid-vendor">
-                  {previews.productImages.map((preview, index) => (
-                    <div key={index} className="info-image-grid-item-vendor">
-                      <img src={preview} alt={`상세 이미지 ${index + 1}`} />
-                      <button type="button" onClick={() => removeProductImage(index)} className="info-image-remove-vendor">✕</button>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
           </div>
         </div>
 

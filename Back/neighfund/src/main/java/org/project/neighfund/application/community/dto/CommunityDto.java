@@ -12,6 +12,7 @@ import org.project.neighfund.enums.CommunityCategory;
 @Builder
 public class CommunityDto {
     private CommunityCategory category;
+    private String locationName;
     private String title;
     private String content;
 }

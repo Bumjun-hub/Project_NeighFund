@@ -14,6 +14,7 @@ public class CommunityResponseDto {
     private String category;
     private String status;
     private String title;
+    private String locationName;
     private String content;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
