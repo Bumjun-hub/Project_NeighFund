@@ -112,18 +112,25 @@ const SuggestionPage = () => {
                     {filtered.map((item) => (
                         <div key={item.id} className="suggestion-card" data-category={item.category}>
                             <button
-                                className="suggestion-edit-button" // 🔧 이 클래스는 스타일링용
-                                onClick={() => navigate(`/suggestion/write/${item.id}`)} // 🔧 수정 페이지로 이동
+                                className="suggestion-edit-button"
+                                onClick={() => navigate(`/suggestion/write/${item.id}`)}
                             >
                                 ✏
                             </button>
                             <div className="suggestion-category">#{categoryMap[item.category]}</div>
+
+                            {/* ✅ 동 정보 출력 */}
+                            {item.locationName && (
+                                <div className="suggestion-location">
+                                    📍 {item.locationName}
+                                </div>
+                            )}
+
                             <div className="title">{item.title}</div>
                             <div className="suggestion-content">{item.content}</div>
                             <div className="suggestion-username">작성자: {item.username}</div>
                             <div className="suggestion-meta">
                                 <span className="suggestion-likes">♡ {item.likes}</span>
-
                                 {item.status === 'RECRUITING' ? (
                                     <button
                                         onClick={() => handleLike(item.id)}
@@ -137,12 +144,10 @@ const SuggestionPage = () => {
                                     </span>
                                 )}
                             </div>
-
-
-
                         </div>
                     ))}
                 </div>
+
             </div>
         </Section>
     );

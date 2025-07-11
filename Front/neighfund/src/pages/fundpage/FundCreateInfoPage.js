@@ -4,6 +4,22 @@ import './FundCreateInfoPage.css';
 import { useNavigate } from 'react-router-dom';
 import { useFunding } from './FundingProvider';
 
+// ✅ 검단신도시 동 리스트
+const dongOptions = [
+  '', // 동 선택
+  '마전동',
+  '당하동',
+  '원당동',
+  '불로동',
+  '오류동',
+  '왕길동',
+  '대곡동',
+  '금곡동',
+  '백석동',
+  '아라동',
+];
+
+
 const FundCreateInfoPage = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -13,17 +29,19 @@ const FundCreateInfoPage = () => {
     goalAmount: '',
     endDate: '',
     fundType: '',
+    locationName: '', // ✅ 동
+    hashTags: '',
   });
   const { setFundData } = useFunding();
 
-
+  // ✅ 입력값 변경 처리
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  // ✅ '다음' 클릭 시 context에 저장
   const handleNext = () => {
-    // ✅ context에 저장 (백엔드 DTO 기준 필드명 반영)
     setFundData((prev) => ({
       ...prev,
       category: formData.category,
@@ -33,13 +51,22 @@ const FundCreateInfoPage = () => {
       hashTags: formData.hashTags,
       targetAmount: formData.goalAmount,
       deadline: formData.endDate,
-
+      //  주민제안형 아니면 locationName에 "없음" 자동 저장
+      locationName:
+        formData.fundType === "COMMUNITY_BASED"
+          ? formData.locationName
+          : "없음",
     }));
-
     navigate('/funding/create/story');
   };
 
-  const isValid = Object.values(formData).every((v) => v !== '');
+
+  // ✅ 유효성 검사: 주민제안형일 때만 동 필수
+  const isValid = Object.entries(formData).every(([key, v]) =>
+    key === "locationName"
+      ? formData.fundType !== "COMMUNITY_BASED" || v !== ''
+      : v !== ''
+  );
 
   return (
     <FundCreateLayout currentStep="정보 입력">
@@ -68,6 +95,19 @@ const FundCreateInfoPage = () => {
           <option value="COMMUNITY_BASED">주민 제안형</option>
         </select>
 
+        {/* ✅ 주민제안형 선택 시 동 선택 노출 */}
+        {formData.fundType === 'COMMUNITY_BASED' && (
+          <label>
+            위치 (동 선택)
+            <select name="locationName" value={formData.locationName} onChange={handleChange}>
+              {dongOptions.map((dong) => (
+                <option key={dong} value={dong}>{dong === '' ? '동 선택' : dong}</option>
+              ))}
+            </select>
+            <p>선택한 동: {formData.locationName}</p>
+          </label>
+        )}
+
         <label>
           프로젝트 제목
           <input type="text" name="title" value={formData.title} onChange={handleChange} />
@@ -94,8 +134,6 @@ const FundCreateInfoPage = () => {
           />
         </label>
 
-
-
         <label>
           목표 금액 (원)
           <input type="number" name="goalAmount" value={formData.goalAmount} onChange={handleChange} />
@@ -113,3 +151,4 @@ const FundCreateInfoPage = () => {
 };
 
 export default FundCreateInfoPage;
+

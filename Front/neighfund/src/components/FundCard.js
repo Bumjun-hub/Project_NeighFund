@@ -3,9 +3,9 @@ import './FundCard.css';
 import { Link } from 'react-router-dom';
 
 const FundCard = ({ fund }) => {
-  const { id, title, subTitle, imageUrl, progressRate, deadline, fundStatus } = fund;
+  const { id, title, subTitle, imageUrl, progressRate, deadline, fundStatus, locationName } = fund;
 
-  // ✅ D-day 계산
+  // D-day 계산
   const calcDday = (deadlineStr) => {
     if (!deadlineStr) return null;
     const deadlineDate = new Date(deadlineStr);
@@ -33,6 +33,15 @@ const FundCard = ({ fund }) => {
         <h3 className="fund-card-title">{title}</h3>
         <p className="fund-card-sub">{subTitle}</p>
 
+        {/* 동(위치) 정보 출력 */}
+        {locationName
+          ? (locationName !== "없음"
+            ? <div className="fund-card-location">📍 {locationName}</div>
+            : <div className="fund-card-location">📍 일반 펀딩</div>
+          )
+          : null}
+
+
         <div className="fund-card-progress">
           <div className="fund-card-bar">
             <div className="filled" style={{ width: `${progressRate || 0}%` }} />
@@ -45,3 +54,4 @@ const FundCard = ({ fund }) => {
 };
 
 export default FundCard;
+
