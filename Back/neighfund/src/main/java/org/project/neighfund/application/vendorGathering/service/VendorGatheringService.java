@@ -15,6 +15,9 @@ import org.project.neighfund.global.image.ImageService;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.project.neighfund.application.vendorGathering.dto.VendorGatheringAdminResponseDto;
+
+
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -155,6 +158,69 @@ public class VendorGatheringService {
         .collect(Collectors.toList())
         );
         return dto;
+    }
+    // 관리자용 벤더 개더링 목록 조회 (승인 대기 포함)
+    public List<VendorGatheringAdminResponseDto> getVendorGatheringsForAdmin(Member loginUser) {
+        validateAdmin(loginUser);
+
+        List<VendorGathering> gatherings = vendorGatheringRepository.findAll();
+
+        return gatherings.stream()
+                .map(gathering -> VendorGatheringAdminResponseDto.builder()
+                        .id(gathering.getId())
+                        .title(gathering.getTitle())
+                        .description(gathering.getContent())
+                        .category(gathering.getCategory() != null ? gathering.getCategory().toString() : "")
+                        .maxParticipants(gathering.getMaxParticipants())
+                        .duration(0) // 임시로 0 설정
+                        .price(gathering.getProductPrice())
+                        .location(gathering.getDongName())
+                        .vendorName(gathering.getMember() != null ? gathering.getMember().getUsername() : "")
+                        .vendorContact(gathering.getMember() != null ? gathering.getMember().getPhone() : "")
+                        .vendorEmail(gathering.getMember() != null ? gathering.getMember().getEmail() : "")
+                        .materials(gathering.getProductName() != null ? gathering.getProductName() : "")
+                        .requirements("")
+                        .status(gathering.isConfirmed() ? "APPROVED" : "PENDING")
+                        .submittedAt(gathering.getCreatedAt())
+                        .vendorExperience("")
+                        .build())
+                .toList();
+    }
+
+    // 벤더 개더링 승인
+    @Transactional
+    public void approveVendorGathering(Long gatheringId, Member loginUser) {
+        validateAdmin(loginUser);
+
+        VendorGathering gathering = vendorGatheringRepository.findById(gatheringId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 클래스가 존재하지 않습니다."));
+
+        gathering.setConfirmed(true);
+        vendorGatheringRepository.save(gathering);
+    }
+
+    // 벤더 개더링 거절
+    @Transactional
+    public void rejectVendorGathering(Long gatheringId, Member loginUser) {
+        validateAdmin(loginUser);
+
+        VendorGathering gathering = vendorGatheringRepository.findById(gatheringId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 클래스가 존재하지 않습니다."));
+
+        gathering.setConfirmed(false);
+        // 거절 상태를 명확히 표시하기 위해 별도 필드가 필요할 수 있음
+        // 현재는 confirmed=false로 처리
+        vendorGatheringRepository.save(gathering);
+    }
+
+    // 관리자 권한 검증
+    private void validateAdmin(Member loginUser) {
+        if (loginUser == null) {
+            throw new AccessDeniedException("로그인이 필요합니다");
+        }
+        if (!loginUser.getRole().equals(RoleName.ROLE_ADMIN)) {
+            throw new AccessDeniedException("관리자만 접근 가능합니다.");
+        }
     }
 
 }
