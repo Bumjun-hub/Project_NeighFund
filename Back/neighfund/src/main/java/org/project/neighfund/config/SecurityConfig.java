@@ -50,6 +50,8 @@ public class SecurityConfig {
                         .requestMatchers("/login/oauth2/**", "/api/Oauth/**", "/oauth2/**").permitAll() // social login api 허용
                         .requestMatchers("/api/auth/refresh", "/api/auth/mypage/**", "/api/likes/**").authenticated()
                         .requestMatchers("/ws/**").authenticated()// 웹소켓 엔드포인트 허용
+                        .requestMatchers("/api/gatherings/vendor/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/**/admin/**").hasRole("ADMIN") // 모든 admin API에 대한 권한
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2

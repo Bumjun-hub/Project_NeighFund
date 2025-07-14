@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.project.neighfund.application.vendorGathering.dto.ReservationAdminResponseDto;
 import org.project.neighfund.application.vendorGathering.dto.ReservationDto;
 import org.project.neighfund.application.vendorGathering.dto.ReservationResponseDto;
+import org.project.neighfund.application.vendorGathering.dto.VendorGatheringAdminResponseDto; // 추가
 import org.project.neighfund.application.vendorGathering.service.ReservationService;
+import org.project.neighfund.application.vendorGathering.service.VendorGatheringService; // 추가
 import org.project.neighfund.config.CustomUserDetails;
 import org.project.neighfund.domain.member.Member;
 import org.project.neighfund.enums.OrderStatus;
@@ -20,6 +22,7 @@ import java.util.List;
 public class ReservationController {
 
     private final ReservationService reservationService;
+    private final VendorGatheringService vendorGatheringService; // 추가된 필드
 
     //신청하기
     @PostMapping("/reservation/{vendorGatheringId}")
@@ -27,7 +30,7 @@ public class ReservationController {
             @PathVariable Long vendorGatheringId,
             @RequestBody ReservationDto dto,
             @AuthenticationPrincipal CustomUserDetails userDetails
-            ){
+    ){
         Member loginUSer = userDetails.getMember();
         reservationService.createReservation(vendorGatheringId, dto, loginUSer);
         return ResponseEntity.ok("원데이클래스가 예약되었습니다.");
@@ -76,8 +79,32 @@ public class ReservationController {
         return ResponseEntity.ok("주문상태가 변경되었습니다.");
     }
 
+    // 관리자용 - 벤더 개더링 목록 조회
+    @GetMapping("/admin/vendor-gatherings")
+    public ResponseEntity<List<VendorGatheringAdminResponseDto>> getVendorGatheringsForAdmin(
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        Member loginUser = userDetails.getMember();
+        List<VendorGatheringAdminResponseDto> gatherings = vendorGatheringService.getVendorGatheringsForAdmin(loginUser);
+        return ResponseEntity.ok(gatherings);
+    }
 
+    // 관리자용 - 벤더 개더링 승인
+    @PutMapping("/admin/vendor-gatherings/{gatheringId}/approve")
+    public ResponseEntity<String> approveVendorGathering(
+            @PathVariable Long gatheringId,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        Member loginUser = userDetails.getMember();
+        vendorGatheringService.approveVendorGathering(gatheringId, loginUser);
+        return ResponseEntity.ok("원데이클래스가 승인되었습니다.");
+    }
 
-
-
+    // 관리자용 - 벤더 개더링 거절
+    @PutMapping("/admin/vendor-gatherings/{gatheringId}/reject")
+    public ResponseEntity<String> rejectVendorGathering(
+            @PathVariable Long gatheringId,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        Member loginUser = userDetails.getMember();
+        vendorGatheringService.rejectVendorGathering(gatheringId, loginUser);
+        return ResponseEntity.ok("원데이클래스가 거절되었습니다.");
+    }
 }

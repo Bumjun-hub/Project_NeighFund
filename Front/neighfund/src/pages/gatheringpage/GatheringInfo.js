@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import gatheringApi from './GatheringAPI'; // 기존 API 경로 사용
 import GatheringBoard from './GatheringBoard'; 
@@ -13,7 +13,9 @@ const GatheringInfo = () => {
   const [error, setError] = useState(null);
   const [isMember, setIsMember] = useState(false);
   const [activeTab, setActiveTab] = useState('intro');
-  const [members, setMembers] = useState([]); // 참여자 정보 상태 추가
+  const [members, setMembers] = useState([]); 
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const menuRef = useRef(null);
 
   useEffect(() => {
     fetchGatheringDetail();
@@ -26,7 +28,6 @@ const GatheringInfo = () => {
       const data = await gatheringApi.getGatheringDetail(gatheringId);
       setGathering(data);
       
-      // 백엔드에서 이미 isMember를 계산해서 보내줌!
       setIsMember(data.isMember || false);
       
       // 참여자 정보도 함께 가져오기
@@ -43,13 +44,17 @@ const GatheringInfo = () => {
   };
 
   const handleLike = async () => {
-    // 좋아요 기능 구현 (API 엔드포인트가 있다면)
+    // 좋아요 기능 구현 
   };
 
   const handleJoin = () => {
     // 참여하기 버튼 클릭시 GatheringJoin 페이지로 이동
     navigate(`/gatherings/${gatheringId}/join`);
   };
+
+  const toggleMenu = () => {
+  setIsMenuOpen(!isMenuOpen);
+};
 
   const handleEdit = () => {
     // 수정 페이지로 이동 - 기존 데이터를 state로 전달
@@ -63,23 +68,39 @@ const GatheringInfo = () => {
           dongName: gathering.dongName,
           content: gathering.content,
           titleImage: gathering.titleImage,
-          type: 'FREE' // 기본값
+          type: 'FREE'
         }
       }
     });
+    setIsMenuOpen(false);
   };
+
+  // 외부 클릭 시 메뉴 닫기
+useEffect(() => {
+  const handleClickOutside = (event) => {
+    if (menuRef.current && !menuRef.current.contains(event.target)) {
+      setIsMenuOpen(false);
+    }
+  };
+
+  document.addEventListener('mousedown', handleClickOutside);
+  return () => {
+    document.removeEventListener('mousedown', handleClickOutside);
+  };
+}, []);
 
   const handleDelete = async () => {
     if (window.confirm('정말로 이 소모임을 삭제하시겠습니까?')) {
       try {
         await gatheringApi.deleteGathering(gatheringId);
         alert('소모임이 삭제되었습니다.');
-        navigate('/gathering'); // 목록 페이지로 이동
+        navigate('/gathering'); 
       } catch (error) {
         console.error('Delete error:', error);
         alert('삭제하는데 실패했습니다. 다시 시도해주세요.');
       }
     }
+    setIsMenuOpen(false);
   };
 
   const handleBack = () => {
@@ -158,7 +179,7 @@ const GatheringInfo = () => {
         {members.map((member, index) => {
           console.log(`👤 멤버 ${index + 1}:`, {
             nickname: member.nickname,
-            imageUrl: member.imageUrl, // 올바른 필드명
+            imageUrl: member.imageUrl,
             role: member.role
           });
           
@@ -305,12 +326,21 @@ const GatheringInfo = () => {
       <div className="gathering-info-content">
         <div className="header-actions">
           <div className="owner-actions">
-            <button onClick={handleEdit} className="edit-button">
-              ✏️ 수정
-            </button>
-            <button onClick={handleDelete} className="delete-button">
-              🗑️ 삭제
-            </button>
+            <div className="menu-container" ref={menuRef}>
+              <button onClick={toggleMenu} className="menu-button">
+                ⋮
+              </button>
+              {isMenuOpen && (
+                <div className="dropdown-menu">
+                  <button onClick={handleEdit} className="menu-item">
+                    ✏️ 수정
+                  </button>
+                  <button onClick={handleDelete} className="menu-item">
+                    🗑️ 삭제
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
         
