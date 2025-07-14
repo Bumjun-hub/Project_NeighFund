@@ -93,5 +93,26 @@ public class CommunityController {
         return ResponseEntity.ok("상태가 변경되었습니다.");
     }
 
+    // 내가 쓴 제안글 조회 (마이페이지)
+    @GetMapping("/myPosts")
+    public ResponseEntity<List<CommunityResponseDto>> getMyPosts(
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        if (userDetails == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+        Member loginUser = userDetails.getMember();
+        List<CommunityResponseDto> posts = communityService.findByAuthor(loginUser);
+        return ResponseEntity.ok(posts);
+    }
+
+    @GetMapping("/myLiked")
+    public ResponseEntity<List<CommunityResponseDto>> getMyLikedPosts(
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        Member loginUser = userDetails.getMember();
+        List<CommunityResponseDto> likedPosts = communityService.findLikedByMember(loginUser);
+        return ResponseEntity.ok(likedPosts);
+    }
+
+
 
 }

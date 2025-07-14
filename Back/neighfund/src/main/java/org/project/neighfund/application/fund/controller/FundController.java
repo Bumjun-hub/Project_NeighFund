@@ -146,6 +146,14 @@ public class FundController {
     }
 
 
+    // Controller
+    @GetMapping("/api/fund/myParticipation")
+    public ResponseEntity<List<FundListDto>> getMyParticipation(@AuthenticationPrincipal CustomUserDetails user) {
+        Member loginUser = user.getMember();
+        List<FundListDto> list = fundService.findMyParticipation(loginUser);
+        return ResponseEntity.ok(list);
+    }
+
 
 
 }

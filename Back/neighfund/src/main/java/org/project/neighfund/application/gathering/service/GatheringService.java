@@ -500,4 +500,48 @@ public class GatheringService {
                 .members(memberInfos) // 🆕 참여자 정보 추가
                 .build();
     }
+
+    public List<MemberInfo> getGatheringMembers(Long gatheringId) {
+        List<GatheringMember> members = gatheringMemberRepository.findByGatheringId(gatheringId);
+        return members.stream()
+                .map(gm -> MemberInfo.builder()
+                        .id(gm.getMember().getId())
+                        .nickname(gm.getNickname()) // ← 이걸 사용
+                        .introduction(gm.getIntroduction())
+                        .imageUrl(gm.getImageUrl())
+                        .role(String.valueOf(gm.getRole()))
+                        .joinedAt(gm.getCreatedAt())
+                        .build())
+                .toList();
+    }
+
+    public List<GatheringResponse> findMyParticipation(Member member) {
+        // 내가 참여중인 GatheringMember 리스트 조회
+        List<GatheringMember> myMemberships = gatheringMemberRepository.findByMember(member);
+
+        // GatheringMember → GatheringResponse로 변환 (fromEntity 절대 사용 X)
+        return myMemberships.stream()
+                .map(gm -> {
+                    Gathering g = gm.getGathering();
+                    return GatheringResponse.builder()
+                            .id(g.getId())
+                            .title(g.getTitle())
+                            .category(g.getCategory().name()) // ← .name() 붙이면 enum을 문자열로 바꿔줌
+                            .dongName(g.getDongName())
+                            .content(g.getContent())
+                            .introduction(gm.getIntroduction())
+                            .nickname(gm.getNickname())      // 내 소모임 닉네임(gm에서)
+                            .type(g.getType().name())
+                            .createdAt(g.getCreatedAt())
+                            .updatedAt(g.getUpdatedAt())
+                            // 필요한 필드 추가 가능!
+                            .build();
+                })
+                .toList();
+    }
+
+
+
+
+
 }

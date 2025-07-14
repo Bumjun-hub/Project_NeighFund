@@ -1,5 +1,6 @@
 package org.project.neighfund.domain.gathering;
 
+import org.project.neighfund.domain.member.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -17,4 +18,6 @@ public interface GatheringMemberRepository extends JpaRepository<GatheringMember
 
     // 🆕 디버깅을 위한 메서드 추가 (선택사항)
     List<GatheringMember> findByGatheringId(Long gatheringId);
+
+    List<GatheringMember> findByMember(Member member);
 }

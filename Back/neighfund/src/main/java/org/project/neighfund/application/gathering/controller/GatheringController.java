@@ -23,7 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class GatheringController {
     private final GatheringService gatheringService;
-    
+
     // 사용자 FREE 소모임 작성
     @PostMapping("/create")
     public ResponseEntity<GatheringCreateResponse> createGathering(@AuthenticationPrincipal CustomUserDetails userDetails,
@@ -36,7 +36,7 @@ public class GatheringController {
                                                                    @RequestPart("nickname") String nickname,
                                                                    @RequestPart(value = "titleImage", required = false) MultipartFile titleImage,
                                                                    @RequestPart(value = "profileImage", required = false) MultipartFile profileImage
-                                                                   ) throws IOException {
+    ) throws IOException {
         GatheringDto dto = GatheringDto.builder()
                 .title(title)
                 .category(GatheringCategory.valueOf(category.toUpperCase()))
@@ -48,10 +48,10 @@ public class GatheringController {
                 .build();
 
         Member m = userDetails.getMember();
-        gatheringService.createGathering(dto, titleImage ,m, profileImage);
+        gatheringService.createGathering(dto, titleImage, m, profileImage);
         return ResponseEntity.ok(new GatheringCreateResponse(dto.getTitle(), "소모임이 정상적으로 OPEN 되었습니다."));
     }
-    
+
     // FREE 소모임 참여
     @PostMapping("/{gatheringId}/join")
     public ResponseEntity<String> joinGathering(
@@ -68,7 +68,7 @@ public class GatheringController {
         gatheringService.joinGathering(gatheringId, dto, member, image);
         return ResponseEntity.ok(String.format("%d번 소모임 조인 성공", gatheringId));
     }
-    
+
     // FREE 소모임 상세보기
     @GetMapping("/detail/{gatheringId}")
     public ResponseEntity<GatheringResponse> getGathering(@PathVariable Long gatheringId,
@@ -77,16 +77,16 @@ public class GatheringController {
         GatheringResponse response = gatheringService.getGathering(gatheringId, m);
         return ResponseEntity.ok(response);
     }
-    
+
     // FREE 소모임 수정
     @PutMapping("/edit/{id}")
     public ResponseEntity<GatheringResponse> editGathering(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                                                   @PathVariable Long id,
-                                                                   @RequestPart("title") String title,
-                                                                   @RequestPart("category") String category,
-                                                                   @RequestPart("dongName") String dongName,
-                                                                   @RequestPart("content") String content,
-                                                                   @RequestPart(value = "titleImage", required = false) MultipartFile titleImage) throws IOException {
+                                                           @PathVariable Long id,
+                                                           @RequestPart("title") String title,
+                                                           @RequestPart("category") String category,
+                                                           @RequestPart("dongName") String dongName,
+                                                           @RequestPart("content") String content,
+                                                           @RequestPart(value = "titleImage", required = false) MultipartFile titleImage) throws IOException {
         GatheringDto dto = GatheringDto.builder()
                 .title(title)
                 .category(GatheringCategory.valueOf(category.toUpperCase()))
@@ -95,9 +95,9 @@ public class GatheringController {
                 .build();
 
         Member m = userDetails.getMember();
-        return ResponseEntity.ok(gatheringService.editGathering(id, dto, titleImage ,m));
+        return ResponseEntity.ok(gatheringService.editGathering(id, dto, titleImage, m));
     }
-    
+
     // FREE 소모임 삭제
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<DeleteResponse> deleteGathering(@PathVariable Long id,
@@ -106,13 +106,13 @@ public class GatheringController {
         gatheringService.deleteGathering(id, m);
         return ResponseEntity.ok(new DeleteResponse("소모임이 삭제되었습니다."));
     }
-    
+
     // FREE 소모임 전체 조회
     @GetMapping("/list")
     public List<GatheringResponse> getGatheringList() {
         return gatheringService.getGatheringList();
     }
-    
+
     // FREE 소모임 블랙리스트 등록
     @PostMapping("/{gatheringId}/blacklist/{targetMemberId}")
     public ResponseEntity<MessageResponse> addToBlacklist(
@@ -123,7 +123,7 @@ public class GatheringController {
         gatheringService.addToBlacklist(gatheringId, targetMemberId, member);
         return ResponseEntity.ok(new MessageResponse("블랙리스트 등록 완료:" + member.getUsername()));
     }
-    
+
     // FREE 소모임 내 게시글 생성
     @PostMapping("/{gatheringId}/create/posts")
     public ResponseEntity<MessageResponse> createPost(
@@ -142,7 +142,7 @@ public class GatheringController {
         gatheringService.createPost(gatheringId, request, member, image);
         return ResponseEntity.ok(new MessageResponse(gatheringId + "번 소모임 게시글 작성 성공:" + request.getTitle()));
     }
-    
+
 
     // FREE 소모임 내 게시글 전부 조회
     @GetMapping("/{gatheringId}/getPosts")
@@ -153,8 +153,8 @@ public class GatheringController {
 
     @GetMapping("/{gatheringId}/detail/{postId}")
     public ResponseEntity<GroupPostDto> getGatheringDetail(@PathVariable Long gatheringId,
-                                                                @PathVariable Long postId,
-                                                                @AuthenticationPrincipal CustomUserDetails userDetails) {
+                                                           @PathVariable Long postId,
+                                                           @AuthenticationPrincipal CustomUserDetails userDetails) {
         Member member = userDetails.getMember();
         GroupPostDto dto = gatheringService.detailPost(gatheringId, postId, member);
         return ResponseEntity.ok(dto);
@@ -189,5 +189,16 @@ public class GatheringController {
         List<GroupPhotoResponse> photos = gatheringService.getPhotos(gatheringId);
         return ResponseEntity.ok(photos);
     }
+
+
+    // 마이페이지 - 내가 참여 중인 소모임 조회
+    @GetMapping("/myParticipation")
+    public ResponseEntity<List<GatheringResponse>> getMyParticipation(
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        Member loginUser = userDetails.getMember();
+        List<GatheringResponse> gatherings = gatheringService.findMyParticipation(loginUser);
+        return ResponseEntity.ok(gatherings);
+    }
+
 
 }
