@@ -126,7 +126,7 @@ const MainPage = () => {
                     <button className="nav-btn prev-btn" onClick={prevSlide}>
                         <ChevronLeft size={24} />
                     </button>
-                    <button className="nav-btn next-btn" onClick={nextSlide}>
+                    <button className="nav-btn next-btn-main" onClick={nextSlide}>
                         <ChevronRight size={24} />
                     </button>
 

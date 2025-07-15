@@ -131,6 +131,7 @@ public class VendorGatheringService {
     private VendorDetailResponse toGatheringDetailResponse(VendorGathering gathering) {
         boolean liked = false;
         VendorDetailResponse dto = new VendorDetailResponse();
+        dto.setConfirmed(gathering.isConfirmed());
         dto.setId(gathering.getId());
         dto.setTitle(gathering.getTitle());
         dto.setCategory(gathering.getCategory());
@@ -139,12 +140,22 @@ public class VendorGatheringService {
         dto.setTitleImage(gathering.getTitleImage());
         dto.setProductPrice(gathering.getProductPrice());
         dto.setProductName(gathering.getProductName());
+        dto.setMaxParticipants(gathering.getMaxParticipants());
+        dto.setWriterName(gathering.getMember().getUsername());
+        dto.setWriterPhone(gathering.getMember().getPhone());
+        dto.setWriterEmail(gathering.getMember().getEmail());
         dto.setFreeParking(gathering.getFreeParking());
         dto.setDurationHours(gathering.getDurationHours());
         dto.setCreatedAt(gathering.getCreatedAt());
         dto.setUpdatedAt(gathering.getUpdatedAt());
         dto.setLikes((long) gathering.getLikes().stream().filter(l -> l.getGathering() != null).count());
         dto.setLiked(liked);
+        dto.setProductImages(gathering.getImages().stream()
+                .map(img -> VendorImageDto.builder()
+                        .id(img.getId())
+                        .imageUrl(img.getImgUrl())
+                        .build())
+                .collect(Collectors.toList()));
         dto.setImages(gathering.getImages().stream().map(img -> VendorImageDto.builder()
                 .id(img.getId())
                 .imageUrl(img.getImgUrl())
@@ -218,7 +229,7 @@ public class VendorGatheringService {
         if (loginUser == null) {
             throw new AccessDeniedException("로그인이 필요합니다");
         }
-        if (!loginUser.getRole().equals(RoleName.ROLE_ADMIN)) {
+        if (!loginUser.getRole().getName().equals(RoleName.ROLE_ADMIN)) {
             throw new AccessDeniedException("관리자만 접근 가능합니다.");
         }
     }

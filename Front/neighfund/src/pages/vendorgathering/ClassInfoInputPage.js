@@ -148,7 +148,7 @@ const ClassInfoInputPage = () => {
           ) : (
             <>
               <div className="info-upload-icon-vendor">📤</div>
-              <div className="info-upload-text-vendor">이미지를 업로드 하세요</div>
+              <div className="info-upload-text-vendor">이미지 혹은 파일을 업로드 하세요</div>
             </>
           )}
         </label>
@@ -176,10 +176,8 @@ const ClassInfoInputPage = () => {
           <div className="agreement-step">
             <span className="agreement-step-text">세부 정보</span>
           </div>
-          <div className="agreement-step-arrow">{'>'}</div>
-          <div className="agreement-step">
-            <span className="agreement-step-text">스토리 작성</span>
-          </div>
+          
+          
         </div>
 
         <div className="info-form-container-vendor">
