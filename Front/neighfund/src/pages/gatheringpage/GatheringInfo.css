@@ -4,6 +4,7 @@
   align-items: center;
   margin-bottom: 20px;
   padding: 0 10px;
+  justify-content: flex-end;
 }
 
 /* 관리자 액션 버튼들 */
@@ -12,36 +13,66 @@
   gap: 8px;
 }
 
-.edit-button {
-  padding: 8px 12px;
-  background-color: #28a745;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.2s;
+.menu-container {
+  position: relative;
+  display: inline-block;
   margin-top: 20px;
 }
 
-.edit-button:hover {
-  background-color: #318c45;
+.menu-button {
+  padding: 8px 12px;
+  background-color: #f8f9fa;
+  color: #495057;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: bold;
+  transition: all 0.2s;
+  width: 40px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.delete-button {
-  padding: 8px 12px;
-  background-color: #dc3545;
-  color: white;
-  border: none;
+.menu-button:hover {
+  background-color: #e9ecef;
+  border-color: #adb5bd;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: white;
+  border: 1px solid #dee2e6;
   border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  min-width: 120px;
+  z-index: 1000;
+  overflow: hidden;
+}
+
+.menu-item {
+  display: block;
+  width: 100%;
+  padding: 10px 16px;
+  background-color: transparent;
+  color: #495057;
+  border: none;
+  text-align: left;
   cursor: pointer;
   font-size: 14px;
   transition: background-color 0.2s;
-  margin-top: 20px;
 }
 
-.delete-button:hover {
-  background-color: #c82333;
+.menu-item:hover {
+  background-color: #f8f9fa;
+}
+
+.menu-item:first-child {
+  border-bottom: 1px solid #dee2e6;
 }
 
 /* 액션 버튼들 스타일 조정 */
