@@ -246,7 +246,7 @@ const GatheringCreate = () => {
                 placeholder="소모임 제목을 입력하세요"
                 maxLength={50}
               />
-              <span className="char-count">{formData.title.length}/50</span>
+              <span className="char-count-gathering">{formData.title.length}/50</span>
             </div>
 
             <div className="form-row">
@@ -296,7 +296,7 @@ const GatheringCreate = () => {
                 rows={6}
                 maxLength={1000}
               />
-              <span className="char-count">{formData.content.length}/1000</span>
+              <span className="char-count-gathering">{formData.content.length}/1000</span>
             </div>
           </div>
 
@@ -316,7 +316,7 @@ const GatheringCreate = () => {
                   placeholder="소모임에서 사용할 닉네임"
                   maxLength={20}
                 />
-                <span className="char-count">{formData.nickname.length}/20</span>
+                <span className="char-count-gathering">{formData.nickname.length}/20</span>
               </div>
 
               <div className="form-group">
@@ -330,7 +330,7 @@ const GatheringCreate = () => {
                   placeholder="자신을 한줄로 소개해주세요"
                   maxLength={100}
                 />
-                <span className="char-count">{formData.introduction.length}/100</span>
+                <span className="char-count-gathering">{formData.introduction.length}/100</span>
               </div>
             </div>
           )}

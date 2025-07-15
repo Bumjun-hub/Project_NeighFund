@@ -140,12 +140,22 @@ public class VendorGatheringService {
         dto.setTitleImage(gathering.getTitleImage());
         dto.setProductPrice(gathering.getProductPrice());
         dto.setProductName(gathering.getProductName());
+        dto.setMaxParticipants(gathering.getMaxParticipants());
+        dto.setWriterName(gathering.getMember().getUsername());
+        dto.setWriterPhone(gathering.getMember().getPhone());
+        dto.setWriterEmail(gathering.getMember().getEmail());
         dto.setFreeParking(gathering.getFreeParking());
         dto.setDurationHours(gathering.getDurationHours());
         dto.setCreatedAt(gathering.getCreatedAt());
         dto.setUpdatedAt(gathering.getUpdatedAt());
         dto.setLikes((long) gathering.getLikes().stream().filter(l -> l.getGathering() != null).count());
         dto.setLiked(liked);
+        dto.setProductImages(gathering.getImages().stream()
+                .map(img -> VendorImageDto.builder()
+                        .id(img.getId())
+                        .imageUrl(img.getImgUrl())
+                        .build())
+                .collect(Collectors.toList()));
         dto.setImages(gathering.getImages().stream().map(img -> VendorImageDto.builder()
                 .id(img.getId())
                 .imageUrl(img.getImgUrl())

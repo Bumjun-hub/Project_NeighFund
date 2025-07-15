@@ -14,7 +14,7 @@ import java.time.LocalTime;
 @AllArgsConstructor
 @Builder
 public class ReservationResponseDto {
-
+    private Long vendorGatheringId;
     private String classTitle;      //클래스명
     private LocalDate date;         //날짜
     private LocalTime startTime;    //시작시간

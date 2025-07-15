@@ -24,12 +24,17 @@ public class VendorDetailResponse {
     private String titleImage;
     private long productPrice;
     private String productName;
+    private int maxParticipants;
     private String freeParking;
     private String durationHours;
+    private String writerName;
+    private String writerPhone;
+    private String writerEmail;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private long likes;
     private List<VendorImageDto> images;
+    private List<VendorImageDto> productImages;
     private List<ReservationSlotDto> reservationSlots;
     private boolean liked;
 

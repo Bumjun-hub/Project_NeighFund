@@ -17,6 +17,7 @@ import ClassInfoInputPage from './pages/vendorgathering/ClassInfoInputPage';
 import ClassInfoInputPage2 from './pages/vendorgathering/ClassInfoInputPage2';
 import VendorAdminPage from './pages/vendorgathering/VendorAdminPage';
 import ClassListPage from './pages/vendorgathering/ClassListPage';
+import VendorGatheringDetail from './pages/vendorgathering/VendorGatheringDetail';
 
 import FundCreateLayout from './pages/fundpage/FundCreateLayout';
 import FundCreateTermsPage from './pages/fundpage/FundCreateTermsPage';
@@ -64,6 +65,8 @@ function App() {
               <Route path="/classinfoinputpage2" element={<ClassInfoInputPage2 />} />
               <Route path="/VendorAdminPage" element={<VendorAdminPage />} />
               <Route path="/classlistpage" element={<ClassListPage />} />
+              <Route path="/vendorgatheringdetail" element={<VendorGatheringDetail />} />
+              <Route path="/classlistpage/class/:classId" element={<ClassListPage />} />
 
               
 

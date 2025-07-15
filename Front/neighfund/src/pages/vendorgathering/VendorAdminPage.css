@@ -1,5 +1,5 @@
-/* AdminPage.css */
-.admin-page {
+/* VendorAdminPage.css */
+.vendor-admin-page {
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
@@ -7,23 +7,23 @@
 }
 
 /* 헤더 */
-.admin-header {
+.vendor-admin-header {
   margin-bottom: 30px;
 }
 
-.admin-header h1 {
+.vendor-admin-header h1 {
   margin: 0 0 20px 0;
   color: #333;
   font-size: 28px;
 }
 
-.admin-nav {
+.vendor-admin-nav {
   display: flex;
   gap: 10px;
   border-bottom: 1px solid #e0e0e0;
 }
 
-.admin-nav button {
+.vendor-admin-nav-btn {
   padding: 12px 24px;
   border: none;
   background: none;
@@ -34,24 +34,24 @@
   transition: all 0.2s;
 }
 
-.admin-nav button:hover {
+.vendor-admin-nav-btn:hover {
   color: #333;
 }
 
-.admin-nav button.active {
+.vendor-admin-nav-btn.active {
   color: #007bff;
   border-bottom-color: #007bff;
 }
 
 /* 로딩 */
-.loading {
+.vendor-admin-loading {
   text-align: center;
   padding: 50px;
   color: #666;
 }
 
 /* 테이블 공통 스타일 */
-.admin-table {
+.vendor-admin-table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
@@ -59,64 +59,65 @@
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
-.admin-table th,
-.admin-table td {
+.vendor-admin-table th,
+.vendor-admin-table td {
   padding: 12px;
   text-align: left;
   border-bottom: 1px solid #e0e0e0;
 }
 
-.admin-table th {
+.vendor-admin-table th {
   background: #f8f9fa;
   font-weight: 600;
   color: #333;
 }
 
-.admin-table tr:hover {
+.vendor-admin-table-row:hover {
   background: #f8f9fa;
 }
 
 /* 상태 배지 */
-.status-badge {
+.vendor-status-badge {
   padding: 4px 8px;
   border-radius: 12px;
   font-size: 12px;
   font-weight: 500;
   text-transform: uppercase;
+  color: white;
 }
 
-.status-pending {
+.vendor-status-pending {
   background: #fff3cd;
   color: #856404;
 }
 
-.status-approved {
+.vendor-status-approved {
   background: #d4edda;
   color: #155724;
 }
 
-.status-rejected {
+.vendor-status-rejected {
   background: #f8d7da;
   color: #721c24;
 }
 
-.status-paid {
+.vendor-status-paid {
   background: #d1ecf1;
   color: #0c5460;
 }
 
-.status-completed {
+.vendor-status-completed {
   background: #d4edda;
   color: #155724;
 }
 
-.status-cancelled {
+.vendor-status-cancelled {
   background: #f8d7da;
   color: #721c24;
 }
 
 /* 버튼 */
-.btn {
+.vendor-btn {
   padding: 8px 16px;
   border: none;
   border-radius: 4px;
@@ -126,93 +127,270 @@
   margin-right: 8px;
 }
 
-.btn-approve {
+.vendor-btn-approve {
   background: #28a745;
   color: white;
 }
 
-.btn-approve:hover {
+.vendor-btn-approve:hover {
   background: #218838;
 }
 
-.btn-reject {
+.vendor-btn-reject {
   background: #dc3545;
   color: white;
 }
 
-.btn-reject:hover {
+.vendor-btn-reject:hover {
   background: #c82333;
 }
 
-.btn-update {
+.vendor-btn-confirm {
   background: #007bff;
   color: white;
 }
 
-.btn-update:hover {
+.vendor-btn-confirm:hover {
   background: #0056b3;
 }
 
-/* 필터 */
-.filter-section {
+.vendor-btn-complete {
+  background: #6f42c1;
+  color: white;
+}
+
+.vendor-btn-complete:hover {
+  background: #5a32a3;
+}
+
+.vendor-btn-cancel {
+  background: #fd7e14;
+  color: white;
+}
+
+.vendor-btn-cancel:hover {
+  background: #e8670e;
+}
+
+.vendor-btn-refund {
+  background: #6c757d;
+  color: white;
+}
+
+.vendor-btn-refund:hover {
+  background: #5a6268;
+}
+
+.vendor-btn-delete {
+  background: #dc3545;
+  color: white;
+}
+
+.vendor-btn-delete:hover {
+  background: #c82333;
+}
+
+/* 원데이클래스 관리 필터 */
+.vendor-gathering-management {
+  margin-bottom: 30px;
+}
+
+.vendor-gathering-filter-section {
+  margin-bottom: 20px;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.vendor-gathering-filter-select {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.vendor-gathering-count {
+  font-weight: 600;
+  color: #333;
+}
+
+/* 예약 관리 필터 */
+.vendor-reservation-management {
+  margin-bottom: 30px;
+}
+
+.vendor-reservation-filter-section {
   margin-bottom: 20px;
   padding: 20px;
   background: #f8f9fa;
   border-radius: 8px;
 }
 
-.filter-section select {
+.vendor-reservation-filter-controls {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.vendor-reservation-filter-select {
   padding: 8px 12px;
   border: 1px solid #ddd;
   border-radius: 4px;
-  margin-right: 10px;
+}
+
+.vendor-reservation-count-badge {
+  background: #007bff;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.vendor-reservation-table-container {
+  overflow-x: auto;
+}
+
+/* 액션 버튼 컨테이너 */
+.vendor-action-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
 }
 
 /* 상세 정보 */
-.detail-row {
+.vendor-detail-row {
   background: #f8f9fa !important;
 }
 
-.detail-content {
+.vendor-detail-content {
   padding: 20px;
 }
 
-.detail-grid {
+.vendor-detail-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 20px;
 }
 
-.detail-item {
+.vendor-detail-section h4 {
+  margin: 0 0 15px 0;
+  color: #333;
+  font-size: 16px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 8px;
+}
+
+.vendor-detail-item {
   margin-bottom: 12px;
 }
 
-.detail-label {
+.vendor-detail-label {
   font-weight: 600;
   color: #333;
   margin-bottom: 4px;
+  display: inline-block;
+  min-width: 100px;
 }
 
-.detail-value {
+.vendor-detail-value {
   color: #666;
   word-break: break-word;
 }
 
+/* 예약 관리 전용 스타일 */
+.vendor-class-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.vendor-class-title {
+  font-weight: 600;
+  color: #333;
+}
+
+.vendor-datetime-info {
+  font-size: 14px;
+  color: #666;
+}
+
+.vendor-participant-count {
+  text-align: center;
+  color: #333;
+}
+
+.vendor-payment-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.vendor-payment-name {
+  font-weight: 500;
+  color: #333;
+}
+
+.vendor-bank-info {
+  color: #666;
+  font-size: 14px;
+}
+
+.vendor-expanded {
+  background: #f0f8ff !important;
+}
+
+/* 빈 상태 */
+.vendor-empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: #666;
+  font-style: italic;
+}
+
 /* 반응형 */
 @media (max-width: 768px) {
-  .admin-page {
+  .vendor-admin-page {
     padding: 10px;
   }
   
-  .admin-table {
+  .vendor-admin-table {
     font-size: 14px;
   }
   
-  .admin-nav {
+  .vendor-admin-nav {
     flex-direction: column;
   }
   
-  .detail-grid {
+  .vendor-admin-nav-btn {
+    text-align: left;
+  }
+  
+  .vendor-detail-grid {
     grid-template-columns: 1fr;
+  }
+  
+  .vendor-gathering-filter-section,
+  .vendor-reservation-filter-controls {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .vendor-action-buttons {
+    flex-direction: column;
+  }
+  
+  .vendor-btn {
+    margin-bottom: 4px;
+    margin-right: 0;
+  }
+  
+  .vendor-reservation-table-container {
+    font-size: 12px;
+  }
+  
+  .vendor-admin-table th,
+  .vendor-admin-table td {
+    padding: 8px 4px;
   }
 }

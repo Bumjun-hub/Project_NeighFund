@@ -91,7 +91,7 @@ const ClassInfoInputPage2 = () => {
       if (!formData.freeParking && !formData.durationHours && files.productImages?.length === 0) {
         // 아무것도 입력하지 않았으면 바로 다음 단계로
         alert('세부 정보를 건너뛰고 다음 단계로 이동합니다.');
-        window.location.href = '/story-creation-page';
+        window.location.href = '/classlistpage';
         return;
       }
 
@@ -120,13 +120,11 @@ const ClassInfoInputPage2 = () => {
         throw new Error('세부 정보 저장 실패');
       }
       
-      console.log('세부 정보 저장 성공');
-      alert('세부 정보가 성공적으로 저장되었습니다. 다음 단계로 이동합니다.');
+      alert('세부 정보가 성공적으로 저장되었습니다. 관리자의 승인을 기다려 주십시오');
       
-      // localStorage 정리
       localStorage.removeItem('currentGatheringId');
       
-      window.location.href = '/story-creation-page';
+      window.location.href = '/classlistpage';
       
     } catch (error) {
       console.error('에러:', error);
@@ -141,7 +139,7 @@ const ClassInfoInputPage2 = () => {
   const handleSkip = () => {
     if (window.confirm('세부 정보를 건너뛰고 다음 단계로 이동하시겠습니까?')) {
       localStorage.removeItem('currentGatheringId');
-      window.location.href = '/story-creation-page';
+      window.location.href = '/classlistpage';
     }
   };
 
@@ -163,10 +161,8 @@ const ClassInfoInputPage2 = () => {
           <div className="agreement-step agreement-step-active">
             <span className="agreement-step-text">세부 정보</span>
           </div>
-          <div className="agreement-step-arrow">{'>'}</div>
-          <div className="agreement-step">
-            <span className="agreement-step-text">스토리 작성</span>
-          </div>
+        
+          
         </div>
 
         <div className="info-form-container-vendor">

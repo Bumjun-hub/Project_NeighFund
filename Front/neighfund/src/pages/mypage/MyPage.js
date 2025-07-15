@@ -143,8 +143,8 @@ const MyPage = () => {
 
     return (
         <div className="mypage-container">
-            <div className="profile-section">
-                <div className="profile-image">
+            <div className="profile-section-mypage">
+                <div className="profile-image-mypage">
                     {userInfo.profileImage ? (
                         <img 
                             src={getProfileImageUrl(userInfo.profileImage)}
@@ -157,17 +157,17 @@ const MyPage = () => {
                         </div>
                     )}
                 </div>
-                <h2 className="profile-name" key={`username-${updateKey}`}>
+                <h2 className="profile-name-mypage" key={`username-${updateKey}`}>
                     {userInfo.username || '홍길동'}
                 </h2>
-                <p className="profile-email">
+                <p className="profile-email-mypage">
                     {userInfo.email || user?.email || 'example@email.com'}
                 </p>
                 
             </div>
 
-            <div className="menu-section">
-                <div className="menu-list">
+            <div className="menu-section-mypage">
+                <div className="menu-list-mypage">
                     <MenuItem 
                         icon="👤" 
                         text="프로필 편집" 
@@ -206,12 +206,12 @@ const MenuItem = ({ icon, text, onClick }) => {
     return (
         <button 
             onClick={onClick}
-            className="menu-item"
+            className="menu-item-mypage"
         >
-            <span className="menu-icon">{icon}</span>
-            <span className="menu-text">{text}</span>
+            <span className="menu-icon-mypage">{icon}</span>
+            <span className="menu-text-mypage">{text}</span>
             <svg 
-                className="menu-arrow" 
+                className="menu-arrow-mypage" 
                 fill="none" 
                 stroke="currentColor" 
                 viewBox="0 0 24 24"

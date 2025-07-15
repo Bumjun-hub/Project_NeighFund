@@ -4,9 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.project.neighfund.application.vendorGathering.dto.ReservationAdminResponseDto;
 import org.project.neighfund.application.vendorGathering.dto.ReservationDto;
 import org.project.neighfund.application.vendorGathering.dto.ReservationResponseDto;
-import org.project.neighfund.application.vendorGathering.dto.VendorGatheringAdminResponseDto; // 추가
+import org.project.neighfund.application.vendorGathering.dto.VendorGatheringAdminResponseDto;
 import org.project.neighfund.application.vendorGathering.service.ReservationService;
-import org.project.neighfund.application.vendorGathering.service.VendorGatheringService; // 추가
+import org.project.neighfund.application.vendorGathering.service.VendorGatheringService;
 import org.project.neighfund.config.CustomUserDetails;
 import org.project.neighfund.domain.member.Member;
 import org.project.neighfund.enums.OrderStatus;
@@ -22,7 +22,7 @@ import java.util.List;
 public class ReservationController {
 
     private final ReservationService reservationService;
-    private final VendorGatheringService vendorGatheringService; // 추가된 필드
+    private final VendorGatheringService vendorGatheringService;
 
     //신청하기
     @PostMapping("/reservation/{vendorGatheringId}")
@@ -37,13 +37,13 @@ public class ReservationController {
     }
 
     //신청취소
-    @DeleteMapping("/delete/{reservationId}")
+    @DeleteMapping("/reservation/{reservationId}")  // 변경: delete -> reservation
     public ResponseEntity<String> deleteReservation(
             @PathVariable Long reservationId,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ){
-        Member loginUSer = userDetails.getMember();
-        reservationService.deleteReservation(reservationId, loginUSer);
+        Member loginUser = userDetails.getMember();
+        reservationService.deleteReservation(reservationId, loginUser);
         return ResponseEntity.ok("예약이 취소되었습니다");
     }
 
@@ -67,7 +67,7 @@ public class ReservationController {
         return ResponseEntity.ok(reservation);
     }
 
-    //입금상태변경(관리자)
+    //입금상태변경(관리자) - 기존 방식 (RequestParam)
     @PutMapping("/admin/{reservationId}/status")
     public ResponseEntity<String> updateStatus(
             @AuthenticationPrincipal CustomUserDetails userDetails,
@@ -75,6 +75,27 @@ public class ReservationController {
             @RequestParam OrderStatus status
     ){
         Member loginUser = userDetails.getMember();
+        reservationService.updateStatus(reservationId, status, loginUser);
+        return ResponseEntity.ok("주문상태가 변경되었습니다.");
+    }
+
+    // 예약상태 확인
+    @PutMapping("/admin/reservations/{reservationId}/status")
+    public ResponseEntity<String> updateReservationStatus(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @PathVariable Long reservationId,
+            @RequestBody StatusUpdateRequest request
+    ){
+        Member loginUser = userDetails.getMember();
+
+        // String을 OrderStatus로 변환
+        OrderStatus status;
+        try {
+            status = OrderStatus.valueOf(request.getStatus().toUpperCase());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("유효하지 않은 상태값입니다: " + request.getStatus());
+        }
+
         reservationService.updateStatus(reservationId, status, loginUser);
         return ResponseEntity.ok("주문상태가 변경되었습니다.");
     }
@@ -106,5 +127,24 @@ public class ReservationController {
         Member loginUser = userDetails.getMember();
         vendorGatheringService.rejectVendorGathering(gatheringId, loginUser);
         return ResponseEntity.ok("원데이클래스가 거절되었습니다.");
+    }
+
+    // StatusUpdateRequest DTO를 위한 내부 클래스
+    public static class StatusUpdateRequest {
+        private String status;
+
+        public StatusUpdateRequest() {}
+
+        public StatusUpdateRequest(String status) {
+            this.status = status;
+        }
+
+        public String getStatus() {
+            return status;
+        }
+
+        public void setStatus(String status) {
+            this.status = status;
+        }
     }
 }

@@ -21,6 +21,7 @@
   position: relative;
   max-width: 600px;
   margin: 0 auto;
+  margin-right: 150px;
 }
 
 .search-icon {
@@ -31,6 +32,7 @@
   font-size: 18px;
   color: #6c757d;
   pointer-events: none;
+  margin-left: 340px;
 }
 
 .search-input {
