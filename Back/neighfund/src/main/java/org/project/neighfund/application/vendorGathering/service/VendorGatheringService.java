@@ -131,6 +131,7 @@ public class VendorGatheringService {
     private VendorDetailResponse toGatheringDetailResponse(VendorGathering gathering) {
         boolean liked = false;
         VendorDetailResponse dto = new VendorDetailResponse();
+        dto.setConfirmed(gathering.isConfirmed());
         dto.setId(gathering.getId());
         dto.setTitle(gathering.getTitle());
         dto.setCategory(gathering.getCategory());
@@ -218,7 +219,7 @@ public class VendorGatheringService {
         if (loginUser == null) {
             throw new AccessDeniedException("로그인이 필요합니다");
         }
-        if (!loginUser.getRole().equals(RoleName.ROLE_ADMIN)) {
+        if (!loginUser.getRole().getName().equals(RoleName.ROLE_ADMIN)) {
             throw new AccessDeniedException("관리자만 접근 가능합니다.");
         }
     }

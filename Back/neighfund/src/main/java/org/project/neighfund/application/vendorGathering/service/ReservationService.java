@@ -52,6 +52,7 @@ public class ReservationService {
                         .participantCount(dto.getParticipantCount())
                         .paymentBank(dto.getPaymentBank())
                         .paymentName(dto.getPaymentName())
+                        .reservationDateTime(LocalDateTime.of(dto.getDate(), dto.getStartTime()))
                         .status(OrderStatus.PENDING)
                         .build());
         return reservation.getId();

@@ -15,6 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class VendorDetailResponse {
+    private boolean confirmed;
     private long id;
     private String title;
     private GatheringCategory category;
