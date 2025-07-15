@@ -534,6 +534,7 @@ public class GatheringService {
                             .type(g.getType().name())
                             .createdAt(g.getCreatedAt())
                             .updatedAt(g.getUpdatedAt())
+                            .titleImage(g.getTitleImage())
                             // 필요한 필드 추가 가능!
                             .build();
                 })

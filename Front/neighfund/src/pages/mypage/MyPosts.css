@@ -1,74 +1,240 @@
 /* MyPosts.css */
 
-/* 전체 컨테이너 */
-.myposts-container {
-  width: 100%;
-  max-width: 1200px;
-  margin: 40px auto 0;
-  padding: 0 20px 40px 20px;
-  min-height: 80vh;
-}
-
-/* 탭 컨테이너 */
-.tab-container {
+.mypage-root {
   display: flex;
-  justify-content: flex-start;
-  gap: 16px;
-  margin-bottom: 30px;
+  max-width: 1300px;
+  min-height: 80vh;
+  margin: 40px auto 0 auto;
+  /* 가운데 정렬 */
+  background: #f8fafd;
+  /* 원하는 배경 */
+  border-radius: 16px;
+  box-shadow: 0 2px 16px 0 rgba(0, 0, 0, 0.05);
+  padding: 40px 24px;
+  gap: 32px;
 }
 
-/* 탭 버튼 스타일 */
-.tab-btn {
-  padding: 10px 28px;
-  border-radius: 24px;
-  background: #f6f6f6;
-  color: #222;
-  font-weight: 600;
-  font-size: 17px;
+/* 사이드바 스타일 개선 */
+.mypage-sidebar {
+  width: 220px;
+  min-width: 180px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 1px 10px rgba(100, 110, 140, 0.06);
+  padding: 36px 16px 16px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* 프로필박스 */
+.user-profile-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 36px;
+  width: 100%;
+}
+
+.profile-img {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 16px;
+  border: 2.5px solid #dbeafe;
+  background: #eee;
+}
+
+.profile-placeholder {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: #c1cbe2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #fff;
+  margin-bottom: 16px;
+}
+
+.profile-name {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #212648;
+  margin-bottom: 6px;
+  text-align: center;
+}
+
+.profile-info {
+  font-size: 0.95rem;
+  color: #8690a0;
+}
+
+/* 사이드바 버튼 */
+.sidebar-menu {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 6px;
+}
+
+.sidebar-menu button {
+  background: none;
   border: none;
   outline: none;
+  font-size: 1.07rem;
+  color: #4a5260;
+  padding: 10px 8px;
+  text-align: left;
+  border-radius: 8px;
   cursor: pointer;
   transition: background 0.18s, color 0.18s;
 }
 
-.tab-btn.active, .tab-btn:hover {
-  background: #4ea685;
-  color: #fff;
+.sidebar-menu button.active,
+.sidebar-menu button:hover {
+  background: #e8f0fe;
+  color: #3271e9;
   font-weight: bold;
 }
 
-/* 카드 리스트 그리드 (flex-wrap) */
-.myposts-container > div > div {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 24px;
-  margin-top: 10px;
-}
-
-/* "작성한 글이 없습니다" 등 안내 문구 */
-.myposts-container > div > div > div {
-  width: 100%;
-  text-align: center;
-  color: #999;
-  font-size: 18px;
-  padding: 40px 0 10px 0;
-}
-.mini-card-list {
-  display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-.mini-card {
-  border: 1px solid #e6e6e6;
-  border-radius: 12px;
-  padding: 16px;
-  width: 220px;
-  box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+/* 오른쪽 메인 */
+.mypage-main-content {
+  flex: 1;
+  background: transparent;
+  min-width: 0;
+  padding: 20px 12px;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  background: #fff;
+  align-items: center;
+  /* 여기서 카드 리스트도 중앙 정렬됨 */
 }
-.card-title { font-weight: 600; font-size: 1.05rem; margin-bottom: 5px;}
-.card-option { color: #585858; font-size: 0.97rem; margin-bottom: 3px;}
-.card-qty { color: #409fff; font-size: 0.97rem;}
+
+.mypage-main-content h3 {
+  font-size: 1.4rem;
+  font-weight: bold;
+  margin-bottom: 32px;
+  text-align: center;
+  width: 100%;
+}
+
+/* 카드 리스트 (가운데) */
+.card-list-flex {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: stretch;
+  /* 카드 높이 맞추기 위해 추가됨 */
+  gap: 24px 32px;
+  width: 100%;
+  min-height: 240px;
+}
+
+.card-list-flex>div {
+  width: 100%;
+  text-align: center;
+}
+
+/* 미니 카드 리스트 (펀딩, 클래스 등) */
+.mini-card-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px 28px;
+  justify-content: flex-start;
+  margin-top: 8px;
+}
+
+
+.mini-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 210px;
+  max-width: 240px;
+  width: 22vw;
+  background: linear-gradient(120deg, #f0f4fa 60%, #f8fafc 100%);
+  border-radius: 14px;
+  box-shadow: 0 2px 10px 0 rgba(80, 110, 160, 0.10);
+  padding: 22px 20px 18px 20px;
+  margin-bottom: 10px;
+  transition: box-shadow 0.16s, transform 0.16s;
+  position: relative;
+  min-height: 260px;
+  justify-content: flex-start;
+}
+
+
+
+.mini-card .card-title {
+  font-size: 1.08rem;
+  font-weight: 700;
+  margin-bottom: 5px;
+  color: #23439c;
+  text-align: center;
+  width: 100%;
+  word-break: keep-all;
+}
+
+.mini-card .card-option {
+  font-size: 1rem;
+  color: #5e6876;
+  margin-bottom: 3px;
+  text-align: center;
+  width: 100%;
+}
+
+.mini-card .card-qty {
+  font-size: 0.96rem;
+  color: #417c7b;
+  font-weight: 500;
+  margin-bottom: 7px;
+  text-align: center;
+  width: 100%;
+}
+
+.mini-card img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 9px;
+  margin-bottom: 10px;
+  background: #eef0f4;
+  display: block;
+}
+
+.mini-progress-bar-wrapper {
+  width: 100%;
+  margin: 10px 0 2px 0;
+  background: #e5e9f2;
+  border-radius: 6px;
+  height: 10px;
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(80,110,160,0.08);
+}
+
+.mini-progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #3cc9f3 50%, #24c48b 100%);
+  border-radius: 6px;
+  transition: width 0.3s;
+}
+
+@media (max-width: 900px) {
+  .mypage-root {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .mypage-sidebar {
+    margin-bottom: 28px;
+    width: 95%;
+  }
+
+  .mypage-main-content {
+    width: 95%;
+    padding: 28px 6vw 30px 6vw;
+  }
+}

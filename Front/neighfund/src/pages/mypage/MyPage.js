@@ -163,9 +163,7 @@ const MyPage = () => {
                 <p className="profile-email">
                     {userInfo.email || user?.email || 'example@email.com'}
                 </p>
-                <button className="edit-profile-btn" onClick={handleEditProfile}>
-                    호밋킹
-                </button>
+                
             </div>
 
             <div className="menu-section">
