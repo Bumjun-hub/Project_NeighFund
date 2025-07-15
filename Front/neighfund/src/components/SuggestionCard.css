@@ -1,0 +1,121 @@
+/* suggestioncard.css */
+
+/* --- 카드 공통 (카테고리 그라데이션/컬러는 기존 코드 그대로) --- */
+.suggestion-card {
+  position: relative;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  background: linear-gradient(to right, #ffffff 65%, #e0f5ff);
+  transition: background 1.0s, transform 0.2s;
+  margin-bottom: 20px;
+  /* 여기서 크기 미지정, 아래에서 large/small에서 지정 */
+}
+
+/* 크기별 스타일 */
+.suggestion-card.large {
+  width: 1200px;
+  min-height: 170px;
+  padding: 26px 34px 18px 34px;
+  font-size: 1.08rem;
+}
+
+
+.suggestion-card.small {
+  width: 400px;
+  min-height: 110px;
+  padding: 13px 15px 10px 15px;
+  font-size: 0.96rem;
+  margin-right: 10px;
+  margin-bottom: 16px;
+}
+
+/* --- 나머지 카테고리별 색상/그라데이션 기존 코드 그대로 복붙 --- */
+.suggestion-card[data-category="EDUCATION"] {
+  background: linear-gradient(to right, #ffffff 65%, #bbdefb);
+}
+.suggestion-card[data-category="EDUCATION"] .suggestion-category {
+  background-color: #2196f3;
+}
+.suggestion-card[data-category="ENVIRONMENT"] {
+  background: linear-gradient(to right, #ffffff 65%, #b2dfdb);
+}
+.suggestion-card[data-category="ENVIRONMENT"] .suggestion-category {
+  background-color: #4caf50;
+}
+.suggestion-card[data-category="CULTURE"] {
+  background: linear-gradient(to right, #ffffff 65%, #e1bee7);
+}
+.suggestion-card[data-category="CULTURE"] .suggestion-category {
+  background-color: #ab47bc;
+}
+.suggestion-card[data-category="PET"] {
+  background: linear-gradient(to right, #ffffff 65%, #ffe0b2);
+}
+.suggestion-card[data-category="PET"] .suggestion-category {
+  background-color: #ff9800;
+}
+.suggestion-card[data-category="SPORTS"] {
+  background: linear-gradient(to right, #ffffff 65%, #c5e1a5);
+}
+.suggestion-card[data-category="SPORTS"] .suggestion-category {
+  background-color: #8bc34a;
+}
+.suggestion-card[data-category="FOOD"] {
+  background: linear-gradient(to right, #ffffff 65%, #fff9c4);
+}
+.suggestion-card[data-category="FOOD"] .suggestion-category {
+  background-color: #fbc02d;
+}
+.suggestion-card[data-category="HOBBY"] {
+  background: linear-gradient(to right, #ffffff 65%, #f8bbd0);
+}
+.suggestion-card[data-category="HOBBY"] .suggestion-category {
+  background-color: #ec407a;
+}
+.suggestion-card[data-category="WELFARE"] {
+  background: linear-gradient(to right, #ffffff 65%, #c8e6c9);
+}
+.suggestion-card[data-category="WELFARE"] .suggestion-category {
+  background-color: #66bb6a;
+}
+.suggestion-card[data-category="ETC"] {
+  background: linear-gradient(to right, #ffffff 65%, #e0e0e0);
+}
+.suggestion-card[data-category="ETC"] .suggestion-category {
+  background-color: #9e9e9e;
+}
+
+/* 공통 내부 구조 스타일은 그대로 사용! */
+.suggestion-card .suggestion-category {
+  font-size: 14px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 20px;
+  display: inline-block;
+  margin-bottom: 8px;
+  color: white;
+}
+
+.suggestion-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;  /* 이거만 추가하면 됨! */
+  gap: 20px;
+}
+
+
+/* 나머지 .title, .suggestion-content 등도 기존과 동일하게 두면 됨 */
+
+/* 호버효과는 공통으로 */
+.suggestion-card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transform: translateY(-2px);
+}
+
+/* 반응형(선택) */
+@media (max-width: 700px) {
+  .suggestion-card.large { width: 96vw; min-width: 0; padding: 13px 4vw; }
+}
+@media (max-width: 430px) {
+  .suggestion-card.small { width: 98vw; min-width: 0; }
+}

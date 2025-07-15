@@ -210,4 +210,54 @@ public class CommunityService {
 
 
 
+    public List<CommunityResponseDto> findByAuthor(Member author) {
+        return communityRepository.findByMember(author)
+                .stream()
+                .map(entity -> new CommunityResponseDto(
+                        entity.getId(),
+                        // 작성자 정보 (null-safe)
+                        (entity.getMember() != null) ? entity.getMember().getUsername() : "알 수 없음",
+                        entity.getCategory() != null ? entity.getCategory().name() : null,
+                        entity.getStatus() != null ? entity.getStatus().name() : null,
+                        entity.getTitle(),
+                        entity.getLocationName(),
+                        entity.getContent(),
+                        entity.getCreatedAt(),
+                        entity.getUpdatedAt(),
+                        // 좋아요 개수 (null-safe)
+                        (entity.getLikes() != null) ? (long) entity.getLikes().size() : 0L,
+                        false // liked(좋아요 여부)는 기본 false, 필요하면 추가 로직
+                ))
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public List<CommunityResponseDto> findLikedByMember(Member loginUser) {
+        // Community 엔티티와 Like 연관관계(community.getLikes()) 기준!
+        List<Community> likedCommunities = communityRepository.findAll().stream()
+                .filter(community ->
+                        community.getLikes().stream()
+                                .anyMatch(like -> like.getMember() != null &&
+                                        like.getMember().getId().equals(loginUser.getId()))
+                )
+                .collect(Collectors.toList());
+
+        // DTO 변환은 기존 스타일대로
+        return likedCommunities.stream()
+                .map(post -> new CommunityResponseDto(
+                        post.getId(),
+                        post.getMember() != null ? post.getMember().getUsername() : "알 수 없음",
+                        post.getCategory() != null ? post.getCategory().name() : null,
+                        post.getStatus() != null ? post.getStatus().name() : null,
+                        post.getTitle(),
+                        post.getLocationName(),
+                        post.getContent(),
+                        post.getCreatedAt(),
+                        post.getUpdatedAt(),
+                        post.getLikes() != null ? (long)post.getLikes().size() : 0L,
+                        true // liked = true
+                ))
+                .collect(Collectors.toList());
+    }
+
 }

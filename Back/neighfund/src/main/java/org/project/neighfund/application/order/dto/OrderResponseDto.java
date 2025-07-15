@@ -28,4 +28,10 @@ public class OrderResponseDto {
     private String paymentName;  //입금자명(사용자)
     private String paymentBank;  //입금음행(사용자)
     private OrderStatus status;
+
+    private String fundImage;       // 대표 이미지 (String 또는 필요하면 List<String> 중 1개)
+    private String locationName;    // 동네
+    private String subTitle;        // 소제목
+    private Integer progressRate;   // 달성률
+
 }

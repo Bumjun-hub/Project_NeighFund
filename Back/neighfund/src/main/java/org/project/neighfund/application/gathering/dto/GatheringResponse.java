@@ -23,6 +23,8 @@ public class GatheringResponse {
     private String category;
     private String content;
     private String dongName;
+    private String nickname;
+    private String type;
     private String titleImage;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -33,4 +35,5 @@ public class GatheringResponse {
     @JsonProperty("isMember") // 🔧 이 줄 추가
     private boolean isMember;
     private List<MemberInfo> members;
+    private String introduction;
 }

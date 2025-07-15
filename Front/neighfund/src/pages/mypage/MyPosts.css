@@ -1,263 +1,240 @@
-.myposts-container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #fff;
-    min-height: 100vh;
+/* MyPosts.css */
+
+.mypage-root {
+  display: flex;
+  max-width: 1300px;
+  min-height: 80vh;
+  margin: 40px auto 0 auto;
+  /* 가운데 정렬 */
+  background: #f8fafd;
+  /* 원하는 배경 */
+  border-radius: 16px;
+  box-shadow: 0 2px 16px 0 rgba(0, 0, 0, 0.05);
+  padding: 40px 24px;
+  gap: 32px;
 }
 
-.myposts-header {
-    margin-bottom: 30px;
-    text-align: center;
+/* 사이드바 스타일 개선 */
+.mypage-sidebar {
+  width: 220px;
+  min-width: 180px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 1px 10px rgba(100, 110, 140, 0.06);
+  padding: 36px 16px 16px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.myposts-header h2 {
-    font-size: 28px;
-    font-weight: bold;
-    color: #333;
-    margin-bottom: 8px;
+/* 프로필박스 */
+.user-profile-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 36px;
+  width: 100%;
 }
 
-.posts-count {
-    color: #666;
-    font-size: 14px;
+.profile-img {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 16px;
+  border: 2.5px solid #dbeafe;
+  background: #eee;
 }
 
-/* 탭 스타일 */
-.tab-container {
-    display: flex;
-    border-bottom: 2px solid #f0f0f0;
-    margin-bottom: 30px;
-    gap: 0;
+.profile-placeholder {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: #c1cbe2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #fff;
+  margin-bottom: 16px;
 }
 
-.tab-btn {
-    padding: 12px 20px;
-    border: none;
-    background: none;
-    font-size: 16px;
-    font-weight: 500;
-    color: #666;
-    cursor: pointer;
-    border-bottom: 3px solid transparent;
-    transition: all 0.3s ease;
+.profile-name {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #212648;
+  margin-bottom: 6px;
+  text-align: center;
 }
 
-.tab-btn:hover {
-    color: #333;
-    background-color: #f8f9fa;
+.profile-info {
+  font-size: 0.95rem;
+  color: #8690a0;
 }
 
-.tab-btn.active {
-    color: #ff6b6b;
-    border-bottom-color: #ff6b6b;
+/* 사이드바 버튼 */
+.sidebar-menu {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 6px;
 }
 
-/* 로딩 및 에러 상태 */
-.loading-container, .error-container {
-    text-align: center;
-    padding: 60px 20px;
+.sidebar-menu button {
+  background: none;
+  border: none;
+  outline: none;
+  font-size: 1.07rem;
+  color: #4a5260;
+  padding: 10px 8px;
+  text-align: left;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s;
 }
 
-.loading-spinner {
-    width: 40px;
-    height: 40px;
-    border: 4px solid #f3f3f3;
-    border-top: 4px solid #ff6b6b;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin: 0 auto 20px;
+.sidebar-menu button.active,
+.sidebar-menu button:hover {
+  background: #e8f0fe;
+  color: #3271e9;
+  font-weight: bold;
 }
 
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+/* 오른쪽 메인 */
+.mypage-main-content {
+  flex: 1;
+  background: transparent;
+  min-width: 0;
+  padding: 20px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* 여기서 카드 리스트도 중앙 정렬됨 */
 }
 
-.retry-btn {
-    padding: 10px 20px;
-    border: 1px solid #ff6b6b;
-    background-color: #fff;
-    color: #ff6b6b;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 14px;
-    transition: all 0.3s ease;
+.mypage-main-content h3 {
+  font-size: 1.4rem;
+  font-weight: bold;
+  margin-bottom: 32px;
+  text-align: center;
+  width: 100%;
 }
 
-.retry-btn:hover {
-    background-color: #ff6b6b;
-    color: #fff;
+/* 카드 리스트 (가운데) */
+.card-list-flex {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: stretch;
+  /* 카드 높이 맞추기 위해 추가됨 */
+  gap: 24px 32px;
+  width: 100%;
+  min-height: 240px;
 }
 
-/* 빈 상태 */
-.empty-container {
-    text-align: center;
-    padding: 80px 20px;
+.card-list-flex>div {
+  width: 100%;
+  text-align: center;
 }
 
-.empty-icon {
-    font-size: 64px;
-    margin-bottom: 20px;
-    opacity: 0.5;
+/* 미니 카드 리스트 (펀딩, 클래스 등) */
+.mini-card-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px 28px;
+  justify-content: flex-start;
+  margin-top: 8px;
 }
 
-.empty-container h3 {
-    font-size: 24px;
-    color: #333;
-    margin-bottom: 12px;
+
+.mini-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 210px;
+  max-width: 240px;
+  width: 22vw;
+  background: linear-gradient(120deg, #f0f4fa 60%, #f8fafc 100%);
+  border-radius: 14px;
+  box-shadow: 0 2px 10px 0 rgba(80, 110, 160, 0.10);
+  padding: 22px 20px 18px 20px;
+  margin-bottom: 10px;
+  transition: box-shadow 0.16s, transform 0.16s;
+  position: relative;
+  min-height: 260px;
+  justify-content: flex-start;
 }
 
-.empty-container p {
-    color: #666;
-    font-size: 16px;
-    margin-bottom: 30px;
+
+
+.mini-card .card-title {
+  font-size: 1.08rem;
+  font-weight: 700;
+  margin-bottom: 5px;
+  color: #23439c;
+  text-align: center;
+  width: 100%;
+  word-break: keep-all;
 }
 
-.write-btn {
-    padding: 12px 30px;
-    background-color: #ff6b6b;
-    color: #fff;
-    border: none;
-    border-radius: 25px;
-    font-size: 16px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.3s ease;
+.mini-card .card-option {
+  font-size: 1rem;
+  color: #5e6876;
+  margin-bottom: 3px;
+  text-align: center;
+  width: 100%;
 }
 
-.write-btn:hover {
-    background-color: #ff5252;
-    transform: translateY(-2px);
+.mini-card .card-qty {
+  font-size: 0.96rem;
+  color: #417c7b;
+  font-weight: 500;
+  margin-bottom: 7px;
+  text-align: center;
+  width: 100%;
 }
 
-/* 게시글 목록 */
-.posts-list {
-    display: flex;
+.mini-card img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 9px;
+  margin-bottom: 10px;
+  background: #eef0f4;
+  display: block;
+}
+
+.mini-progress-bar-wrapper {
+  width: 100%;
+  margin: 10px 0 2px 0;
+  background: #e5e9f2;
+  border-radius: 6px;
+  height: 10px;
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(80,110,160,0.08);
+}
+
+.mini-progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #3cc9f3 50%, #24c48b 100%);
+  border-radius: 6px;
+  transition: width 0.3s;
+}
+
+@media (max-width: 900px) {
+  .mypage-root {
     flex-direction: column;
-    gap: 20px;
-}
-
-.post-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    padding: 24px;
-    border: 1px solid #e9ecef;
-    cursor: pointer;
-    border-radius: 12px;
-    background-color: #fff;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-.post-item:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    transform: translateY(-2px);
-}
-
-.post-content {
-    flex: 1;
-    margin-right: 20px;
-}
-
-.post-header {
-    display: flex;
     align-items: center;
-    gap: 12px;
-    margin-bottom: 12px;
-}
+  }
 
-.post-title {
-    font-size: 18px;
-    font-weight: 600;
-    color: #333;
-    margin: 0;
-    transition: color 0.3s ease;
-    flex: 1;
-}
+  .mypage-sidebar {
+    margin-bottom: 28px;
+    width: 95%;
+  }
 
-
-/* 상태 배지 */
-.status-badge {
-    padding: 4px 12px;
-    border-radius: 12px;
-    font-size: 12px;
-    font-weight: 500;
-    white-space: nowrap;
-}
-
-.status-published {
-    background-color: #d4edda;
-    color: #155724;
-}
-
-.status-draft {
-    background-color: #fff3cd;
-    color: #856404;
-}
-
-.status-pending {
-    background-color: #d1ecf1;
-    color: #0c5460;
-}
-
-.status-unknown {
-    background-color: #f8d7da;
-    color: #721c24;
-}
-
-.post-excerpt {
-    color: #666;
-    font-size: 14px;
-    line-height: 1.5;
-    margin-bottom: 16px;
-}
-
-.post-meta {
-    display: flex;
-    gap: 16px;
-    font-size: 13px;
-    color: #999;
-}
-
-.post-meta span {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-}
-
-/* 액션 버튼들 */
-.post-actions {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.action-btn {
-    width: 36px;
-    height: 36px;
-    border: 1px solid #e9ecef;
-    background-color: #fff;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
-}
-
-.action-btn:hover {
-    background-color: #f8f9fa;
-}
-
-.edit-btn:hover {
-    border-color: #28a745;
-    background-color: #d4edda;
-}
-
-.delete-btn:hover {
-    border-color: #dc3545;
-    background-color: #f8d7da;
+  .mypage-main-content {
+    width: 95%;
+    padding: 28px 6vw 30px 6vw;
+  }
 }

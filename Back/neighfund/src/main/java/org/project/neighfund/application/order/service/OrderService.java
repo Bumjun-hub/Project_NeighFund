@@ -184,6 +184,9 @@ public class OrderService {
 
         return orders.stream().map(order -> {
                     Fund fund = order.getFundOption().getFund();
+                    String fundImage = (fund.getFundImages() != null && !fund.getFundImages().isEmpty())
+                            ? fund.getFundImages().get(0).getImgUrl()
+                            :null;
                     return OrderResponseDto.builder()
                             .id(order.getId())
                             .fundId(fund.getId())
@@ -198,6 +201,10 @@ public class OrderService {
                             .paymentName(order.getPaymentName())
                             .paymentBank(order.getPaymentBank())
                             .status(order.getStatus())
+                            .fundImage(fundImage) // 대표 이미지
+                            .locationName(fund.getLocationName()) // 동네
+                            .subTitle(fund.getSubTitle())         // 소제목
+                            .progressRate(fund.getProgressRate()) // 달성률
                             .build();
                 })
                 .collect(Collectors.toList());
