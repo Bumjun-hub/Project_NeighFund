@@ -1,0 +1,531 @@
+/* VendorGatheringDetail.css */
+.vendor-detail-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+/* 뒤로가기 버튼 */
+.vendor-detail-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  color: #6b7280;
+  cursor: pointer;
+  font-size: 14px;
+  margin-bottom: 24px;
+  padding: 8px 0;
+  transition: color 0.2s;
+}
+
+.vendor-detail-back-btn:hover {
+  color: #374151;
+}
+
+.vendor-detail-back-icon {
+  width: 16px;
+  height: 16px;
+}
+
+/* 헤더 스타일 */
+.vendor-detail-header {
+  margin-bottom: 32px;
+}
+
+.vendor-detail-title {
+  font-size: 32px;
+  font-weight: bold;
+  color: #111827;
+  margin-bottom: 8px;
+  line-height: 1.2;
+}
+
+.vendor-detail-meta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  color: #6b7280;
+  flex-wrap: wrap;
+}
+
+.vendor-detail-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.vendor-detail-meta-icon {
+  width: 16px;
+  height: 16px;
+}
+
+/* 메인 이미지 */
+.vendor-detail-main-image {
+  margin-bottom: 32px;
+}
+
+.vendor-detail-main-image .vendor-detail-image {
+  width: 100%;
+  height: 400px;
+  object-fit: cover;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 추가 이미지 갤러리 */
+.vendor-detail-gallery {
+  margin-bottom: 32px;
+}
+
+.vendor-detail-gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+    padding: 16px 0;
+  }
+
+  .vendor-detail-image-container {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1; /* 정사각형 비율 */
+    overflow: hidden;
+    border-radius: 8px;
+    background-color: #f5f5f5;
+  }
+
+  .vendor-detail-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* 이미지를 컨테이너에 맞게 크롭 */
+    object-position: center;
+    transition: transform 0.3s ease;
+    border-radius: 8px;
+  }
+
+.vendor-detail-main-image .vendor-detail-image {
+  width: 100%;
+  height: 400px;
+  object-fit: cover;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 메인 레이아웃 */
+.vendor-detail-layout {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 32px;
+}
+
+@media (max-width: 1024px) {
+  .vendor-detail-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+.vendor-detail-section {
+  margin-bottom: 32px;
+}
+
+.vendor-detail-section-title {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: #111827;
+  
+}
+
+.vendor-detail-description {
+  color: #374151;
+  line-height: 1.7;
+  font-size: 16px;
+}
+
+/* 클래스 정보 박스 */
+.vendor-detail-info-box {
+  background-color: #f9fafb;
+  padding: 24px;
+  border-radius: 8px;
+}
+
+.vendor-detail-info-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.vendor-detail-info-item:last-child {
+  border-bottom: none;
+}
+
+.vendor-detail-info-label {
+  font-weight: 500;
+  color: #374151;
+}
+
+.vendor-detail-info-value {
+  color: #111827;
+}
+
+/* 강사 정보 */
+.vendor-detail-instructor {
+  background-color: #f9fafb;
+  padding: 24px;
+  border-radius: 8px;
+}
+
+.vendor-detail-instructor-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.vendor-detail-instructor-icon {
+  width: 32px;
+  height: 32px;
+  color: #6b7280;
+  margin-right: 12px;
+}
+
+.vendor-detail-instructor-name {
+  font-weight: 600;
+  font-size: 18px;
+  margin: 0;
+}
+
+.vendor-detail-instructor-role {
+  color: #6b7280;
+  margin: 0;
+}
+
+.vendor-detail-instructor-contact {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.vendor-detail-contact-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.vendor-detail-contact-icon {
+  width: 16px;
+  height: 16px;
+  color: #6b7280;
+}
+
+.vendor-detail-contact-text {
+  color: #374151;
+}
+
+/* 예약 사이드바 */
+.vendor-detail-reservation-sidebar {
+  position: sticky;
+  top: 24px;
+}
+
+.vendor-detail-reservation-card {
+  background-color: white;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.vendor-detail-price-section {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.vendor-detail-price {
+  font-size: 32px;
+  font-weight: bold;
+  color: #2563eb;
+  margin-bottom: 8px;
+}
+
+.vendor-detail-price-unit {
+  color: #6b7280;
+}
+
+.vendor-detail-reservation-btn {
+  width: 100%;
+  background-color: #2563eb;
+  color: white;
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.vendor-detail-reservation-btn:hover {
+  background-color: #1d4ed8;
+}
+
+
+
+.vendor-detail-form-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.vendor-detail-form-group {
+  margin-bottom: 16px;
+}
+
+.vendor-detail-form-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 8px;
+}
+
+.vendor-detail-form-label-icon {
+  width: 16px;
+  height: 16px;
+  display: inline;
+  margin-right: 4px;
+}
+
+.vendor-detail-form-input,
+.vendor-detail-form-select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.vendor-detail-form-input:focus,
+.vendor-detail-form-select:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* 시간 선택 그리드 */
+.vendor-detail-time-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.vendor-detail-time-slot {
+  padding: 8px;
+  font-size: 12px;
+  border-radius: 8px;
+  border: 1px solid;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s;
+}
+
+.vendor-detail-time-slot.available {
+  background-color: white;
+  color: #374151;
+  border-color: #d1d5db;
+}
+
+.vendor-detail-time-slot.available:hover {
+  background-color: #f9fafb;
+}
+
+.vendor-detail-time-slot.selected {
+  background-color: #2563eb;
+  color: white;
+  border-color: #2563eb;
+}
+
+.vendor-detail-time-slot.unavailable {
+  background-color: #f3f4f6;
+  color: #9ca3af;
+  border-color: #e5e7eb;
+  cursor: not-allowed;
+}
+
+.vendor-detail-time-info {
+  font-size: 10px;
+  margin-top: 2px;
+}
+
+/* 총 금액 표시 */
+.vendor-detail-total-box {
+  background-color: #f9fafb;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.vendor-detail-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.vendor-detail-total-amount {
+  color: #2563eb;
+}
+
+/* 버튼 그룹 */
+.vendor-detail-button-group {
+  display: flex;
+  gap: 8px;
+}
+
+.vendor-detail-btn-secondary {
+  flex: 1;
+  background-color: #6b7280;
+  color: white;
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.vendor-detail-btn-secondary:hover {
+  background-color: #4b5563;
+}
+
+.vendor-detail-btn-primary {
+  flex: 1;
+  background-color: #2563eb;
+  color: white;
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.vendor-detail-btn-primary:hover {
+  background-color: #1d4ed8;
+}
+
+/* 로딩 스타일 */
+.vendor-detail-loading {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.vendor-detail-loading-content {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.vendor-detail-loading-image {
+  background-color: #d1d5db;
+  height: 256px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+}
+
+.vendor-detail-loading-text {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.vendor-detail-loading-line {
+  background-color: #d1d5db;
+  border-radius: 4px;
+}
+
+.vendor-detail-loading-line.title {
+  height: 32px;
+  width: 75%;
+}
+
+.vendor-detail-loading-line.meta {
+  height: 16px;
+  width: 50%;
+}
+
+.vendor-detail-loading-line.description {
+  height: 16px;
+  width: 66%;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* 에러 스타일 */
+.vendor-detail-error {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+  text-align: center;
+}
+
+.vendor-detail-error-icon {
+  width: 64px;
+  height: 64px;
+  color: #ef4444;
+  margin: 0 auto 16px;
+}
+
+.vendor-detail-error-text {
+  color: #6b7280;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .vendor-detail-container {
+    padding: 16px;
+  }
+  
+  .vendor-detail-title {
+    font-size: 24px;
+  }
+  
+  .vendor-detail-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .vendor-detail-main-image .vendor-detail-image {
+    height: 250px; /* 모바일에서 메인 이미지 높이 조정 */
+  }
+  
+  .vendor-detail-gallery-grid {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* 모바일에서 더 작은 그리드 */
+  }
+  
+  .vendor-detail-gallery-grid .vendor-detail-image {
+    height: 120px; /* 모바일에서 추가 이미지 높이 조정 */
+  }
+  
+  .vendor-detail-section-title {
+    font-size: 20px;
+  }
+  
+  .vendor-detail-price {
+    font-size: 28px;
+  }
+  
+  .vendor-detail-time-grid {
+    grid-template-columns: 1fr;
+  }
+}

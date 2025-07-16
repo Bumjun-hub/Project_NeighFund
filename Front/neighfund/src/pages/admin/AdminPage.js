@@ -4,6 +4,7 @@ import FundAdminTab from './FundAdminTab';
 import CommunityAdminTab from './CommunityAdminTab';
 import SurveyAdminTab from './SurveyAdminTab';
 import OrderAdminTab from './OrderAdminTab';
+import GatheringAdminTab from './GatheringAdminTab';
 
 const AdminPage = () => {
   const [activeTab, setActiveTab] = useState('fund'); // 현재 탭
@@ -18,6 +19,8 @@ const AdminPage = () => {
 
   const [funds, setFunds] = useState([]); // 전체 펀딩 목록
   const [selectedFundId, setSelectedFundId] = useState("");
+
+  const [gatherings, setGatherings] = useState([]);
 
   // 관리자 인증
   useEffect(() => {
@@ -40,6 +43,7 @@ const AdminPage = () => {
     fetchCommunityPosts();
     fetchSurveys();
     fetchFundTitles();
+    fetchGatherings();
   }, []);
 
   // 펀딩명 바뀌면 주문 목록 새로고침
@@ -125,6 +129,25 @@ const AdminPage = () => {
     fetchOrders();
   };
 
+  const handleGatheringDelete = async (id) => {
+    if (!window.confirm("정말 이 소모임을 삭제할까요?")) return;
+    await fetch(`/api/gatherings/free/delete/${id}`, {
+      method: 'DELETE',
+      credentials: 'include'
+    });
+    alert('소모임이 삭제되었습니다!');
+    // 삭제 후 소모임 목록 다시 불러오기
+    fetchGatherings();
+  };
+
+  const fetchGatherings = async () => {
+    const res = await fetch('/api/gatherings/free/list', { credentials: 'include' });
+    const data = await res.json();
+    setGatherings(Array.isArray(data) ? data : []);
+  };
+
+
+
   return (
     <div className="fund-admin">
       <h2>🔧 관리자 페이지</h2>
@@ -134,6 +157,7 @@ const AdminPage = () => {
         <button className={activeTab === 'community' ? 'active' : ''} onClick={() => setActiveTab('community')}>🗂 제안 게시판</button>
         <button className={activeTab === 'survey' ? 'active' : ''} onClick={() => setActiveTab('survey')}>📊 설문관리</button>
         <button className={activeTab === 'orders' ? 'active' : ''} onClick={() => { setActiveTab('orders'); fetchOrders(); }}>📦 주문 관리</button>
+        <button className={activeTab === 'gathering' ? 'active' : ''} onClick={() => setActiveTab('gathering')}>👥 소모임 관리</button>
         {activeTab === 'orders' && (
           <select value={selectedFundId} onChange={(e) => setSelectedFundId(e.target.value)}>
             <option value="">펀딩 선택</option>
@@ -178,6 +202,12 @@ const AdminPage = () => {
           orders={orders}
           selectedFundId={selectedFundId} // ✅ 추가
           handleOrderStatusChange={handleOrderStatusChange}
+        />
+      )}
+      {activeTab === 'gathering' && (
+        <GatheringAdminTab
+          gatherings={gatherings}
+          onDelete={handleGatheringDelete}
         />
       )}
     </div>

@@ -43,7 +43,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, "/api/auth/signup", "/api/auth/login").permitAll()
                         .requestMatchers("api/auth/**").authenticated()
-                        .requestMatchers("/api/community/view/**","/api/fund/view","/api/fund/view/**", "api/gatherings/free/**", "api/gathering/vendor/**").permitAll()
+                        .requestMatchers("/api/community/view/**","/api/fund/view","/api/fund/view/**", "/api/gatherings/free/**", "/api/gathering/vendor/**").permitAll()
                         .requestMatchers("/api/comment/**", "/api/likes/**").authenticated()
                         .requestMatchers("/api/notifications/**").authenticated()
                         .requestMatchers("/uploads/**").permitAll() // 이미지 경로
@@ -51,7 +51,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/refresh", "/api/auth/mypage/**", "/api/likes/**").authenticated()
                         .requestMatchers("/ws/**").authenticated()// 웹소켓 엔드포인트 허용
                         .requestMatchers("/api/gatherings/vendor/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/api/**/admin/**").hasRole("ADMIN") // 모든 admin API에 대한 권한
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN") // 모든 admin API에 대한 권한
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2

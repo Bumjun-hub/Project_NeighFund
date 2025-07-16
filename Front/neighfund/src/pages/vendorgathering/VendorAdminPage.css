@@ -1,724 +1,396 @@
 /* VendorAdminPage.css */
-
-/* 기본 리셋 및 글로벌 스타일 */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-.container-Reservation {
-  min-height: 100vh;
-  background-color: #f9fafb;
+.vendor-admin-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  color: #374151;
-  line-height: 1.6;
 }
 
-/* 헤더 스타일 */
-.header-Reservation {
-  background-color: white;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  border-bottom: 1px solid #e5e7eb;
+/* 헤더 */
+.vendor-admin-header {
+  margin-bottom: 30px;
 }
 
-.header-content-Reservation {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 1.5rem 1rem;
+.vendor-admin-header h1 {
+  margin: 0 0 20px 0;
+  color: #333;
+  font-size: 28px;
+}
+
+.vendor-admin-nav {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid #e0e0e0;
 }
 
-.header-left-Reservation {
-  flex: 1;
-}
-
-.page-title-Reservation {
-  font-size: 1.875rem;
-  font-weight: bold;
-  color: #111827;
-  margin-bottom: 0.25rem;
-}
-
-.page-subtitle-Reservation {
-  color: #6b7280;
-  font-size: 0.875rem;
-}
-
-.refresh-btn-Reservation {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  background-color: #3b82f6;
-  color: white;
-  border: none;
-  border-radius: 0.375rem;
-  cursor: pointer;
-  font-size: 0.875rem;
-  transition: background-color 0.2s;
-}
-
-.refresh-btn-Reservation:hover {
-  background-color: #2563eb;
-}
-
-.refresh-btn-Reservation:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.spinning-Reservation {
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-/* 메인 컨텐츠 */
-.main-content-Reservation {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 1.5rem 1rem;
-}
-
-/* 탭 스타일 */
-.tabs-Reservation {
-  border-bottom: 1px solid #e5e7eb;
-  margin-bottom: 1.5rem;
-}
-
-.tab-nav-Reservation {
-  display: flex;
-  gap: 2rem;
-}
-
-.tab-button-Reservation {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 0.25rem;
+.vendor-admin-nav-btn {
+  padding: 12px 24px;
   border: none;
   background: none;
+  cursor: pointer;
+  font-size: 16px;
+  color: #666;
   border-bottom: 2px solid transparent;
-  color: #6b7280;
-  font-weight: 500;
-  font-size: 0.875rem;
-  cursor: pointer;
   transition: all 0.2s;
 }
 
-.tab-button-Reservation.active-Reservation {
-  border-bottom-color: #3b82f6;
-  color: #2563eb;
+.vendor-admin-nav-btn:hover {
+  color: #333;
 }
 
-.tab-button-Reservation:hover {
-  color: #374151;
+.vendor-admin-nav-btn.active {
+  color: #007bff;
+  border-bottom-color: #007bff;
 }
 
-.tab-badge-Reservation {
-  background-color: #f3f4f6;
-  color: #6b7280;
-  padding: 0.125rem 0.5rem;
-  border-radius: 9999px;
-  font-size: 0.75rem;
-  font-weight: normal;
+/* 로딩 */
+.vendor-admin-loading {
+  text-align: center;
+  padding: 50px;
+  color: #666;
 }
 
-/* 검색 섹션 */
-.search-section-Reservation {
-  background-color: white;
-  border-radius: 0.5rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  padding: 1rem;
-  margin-bottom: 1.5rem;
-}
-
-.search-container-Reservation {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-@media (min-width: 768px) {
-  .search-container-Reservation {
-    flex-direction: row;
-    align-items: center;
-  }
-}
-
-.search-input-wrapper-Reservation {
-  flex: 1;
-  position: relative;
-}
-
-.search-icon-Reservation {
-  position: absolute;
-  left: 0.75rem;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #9ca3af;
-}
-
-.search-input-Reservation {
-  width: 100%;
-  padding: 0.5rem 0.5rem 0.5rem 2.5rem;
-  border: 1px solid #d1d5db;
-  border-radius: 0.375rem;
-  font-size: 0.875rem;
-  transition: all 0.2s;
-}
-
-.search-input-Reservation:focus {
-  outline: none;
-
-  border-color: transparent;
-}
-
-.filter-wrapper-Reservation {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.filter-icon-Reservation {
-  color: #9ca3af;
-}
-
-.filter-select-Reservation {
-  padding: 0.5rem 0.75rem;
-  border: 1px solid #d1d5db;
-  border-radius: 0.375rem;
-  font-size: 0.875rem;
-  background-color: white;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.filter-select-Reservation:focus {
-  outline: none;
-
-  border-color: transparent;
-}
-
-/* 테이블 컨테이너 */
-.table-container-Reservation {
-  background-color: white;
-  border-radius: 0.5rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-}
-
-.table-header-Reservation {
-  padding: 1.5rem 1.5rem 1rem;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.table-title-Reservation {
-  font-size: 1.125rem;
-  font-weight: 500;
-  color: #111827;
-  margin-bottom: 0.25rem;
-}
-
-.table-subtitle-Reservation {
-  font-size: 0.875rem;
-  color: #6b7280;
-}
-
-.table-wrapper-Reservation {
-  overflow-x: auto;
-}
-
-.data-table-Reservation {
+/* 테이블 공통 스타일 */
+.vendor-admin-table {
   width: 100%;
   border-collapse: collapse;
+  margin-top: 20px;
+  background: white;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
-.table-head-Reservation {
-  background-color: #f9fafb;
-}
-
-.table-th-Reservation {
-  padding: 0.75rem 1.5rem;
+.vendor-admin-table th,
+.vendor-admin-table td {
+  padding: 12px;
   text-align: left;
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: #6b7280;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid #e0e0e0;
 }
 
-.table-body-Reservation {
-  background-color: white;
+.vendor-admin-table th {
+  background: #f8f9fa;
+  font-weight: 600;
+  color: #333;
 }
 
-.table-row-Reservation {
-  transition: background-color 0.2s;
-}
-
-.table-row-Reservation:hover {
-  background-color: #f9fafb;
-}
-
-.table-td-Reservation {
-  padding: 1rem 1.5rem;
-  border-bottom: 1px solid #e5e7eb;
-  vertical-align: top;
-}
-
-/* 클래스 정보 스타일 */
-.class-info-Reservation {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.class-title-Reservation {
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: #111827;
-}
-
-.class-category-Reservation {
-  font-size: 0.875rem;
-  color: #6b7280;
-}
-
-.class-details-Reservation {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.75rem;
-  color: #6b7280;
-  margin-top: 0.25rem;
-}
-
-.class-details-Reservation svg {
-  width: 12px;
-  height: 12px;
-}
-
-/* 강사 정보 스타일 */
-.vendor-name-Reservation {
-  font-size: 0.875rem;
-  color: #111827;
-  margin-bottom: 0.125rem;
-}
-
-.vendor-email-Reservation,
-.vendor-contact-Reservation {
-  font-size: 0.875rem;
-  color: #6b7280;
-}
-
-/* 위치 및 신청 정보 */
-.location-info-Reservation {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  font-size: 0.875rem;
-  color: #6b7280;
-  margin-bottom: 0.25rem;
-}
-
-.location-text-Reservation {
-  max-width: 150px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.submission-info-Reservation {
-  font-size: 0.75rem;
-  color: #9ca3af;
+.vendor-admin-table-row:hover {
+  background: #f8f9fa;
 }
 
 /* 상태 배지 */
-.status-badge-Reservation {
+.vendor-status-badge {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  color: white;
+}
+
+.vendor-status-pending {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.vendor-status-approved {
+  background: #d4edda;
+  color: #155724;
+}
+
+.vendor-status-rejected {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.vendor-status-paid {
+  background: #d1ecf1;
+  color: #0c5460;
+}
+
+.vendor-status-completed {
+  background: #d4edda;
+  color: #155724;
+}
+
+.vendor-status-cancelled {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+/* 버튼 */
+.vendor-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+  margin-right: 8px;
+}
+
+.vendor-btn-approve {
+  background: #28a745;
+  color: white;
+}
+
+.vendor-btn-approve:hover {
+  background: #218838;
+}
+
+.vendor-btn-reject {
+  background: #dc3545;
+  color: white;
+}
+
+.vendor-btn-reject:hover {
+  background: #c82333;
+}
+
+.vendor-btn-confirm {
+  background: #007bff;
+  color: white;
+}
+
+.vendor-btn-confirm:hover {
+  background: #0056b3;
+}
+
+.vendor-btn-complete {
+  background: #6f42c1;
+  color: white;
+}
+
+.vendor-btn-complete:hover {
+  background: #5a32a3;
+}
+
+.vendor-btn-cancel {
+  background: #fd7e14;
+  color: white;
+}
+
+.vendor-btn-cancel:hover {
+  background: #e8670e;
+}
+
+.vendor-btn-refund {
+  background: #6c757d;
+  color: white;
+}
+
+.vendor-btn-refund:hover {
+  background: #5a6268;
+}
+
+.vendor-btn-delete {
+  background: #dc3545;
+  color: white;
+}
+
+.vendor-btn-delete:hover {
+  background: #c82333;
+}
+
+/* 원데이클래스 관리 필터 */
+.vendor-gathering-management {
+  margin-bottom: 30px;
+}
+
+.vendor-gathering-filter-section {
+  margin-bottom: 20px;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.vendor-gathering-filter-select {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.vendor-gathering-count {
+  font-weight: 600;
+  color: #333;
+}
+
+/* 예약 관리 필터 */
+.vendor-reservation-management {
+  margin-bottom: 30px;
+}
+
+.vendor-reservation-filter-section {
+  margin-bottom: 20px;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.vendor-reservation-filter-controls {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.vendor-reservation-filter-select {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.vendor-reservation-count-badge {
+  background: #007bff;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.vendor-reservation-table-container {
+  overflow-x: auto;
+}
+
+/* 액션 버튼 컨테이너 */
+.vendor-action-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+/* 상세 정보 */
+.vendor-detail-row {
+  background: #f8f9fa !important;
+}
+
+.vendor-detail-content {
+  padding: 20px;
+}
+
+.vendor-detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.vendor-detail-section h4 {
+  margin: 0 0 15px 0;
+  color: #333;
+  font-size: 16px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 8px;
+}
+
+.vendor-detail-item {
+  margin-bottom: 12px;
+}
+
+.vendor-detail-label {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 4px;
   display: inline-block;
-  padding: 0.125rem 0.5rem;
-  border-radius: 9999px;
-  font-size: 0.75rem;
+  min-width: 100px;
+}
+
+.vendor-detail-value {
+  color: #666;
+  word-break: break-word;
+}
+
+/* 예약 관리 전용 스타일 */
+.vendor-class-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.vendor-class-title {
+  font-weight: 600;
+  color: #333;
+}
+
+.vendor-datetime-info {
+  font-size: 14px;
+  color: #666;
+}
+
+.vendor-participant-count {
+  text-align: center;
+  color: #333;
+}
+
+.vendor-payment-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.vendor-payment-name {
   font-weight: 500;
+  color: #333;
 }
 
-.status-pending-Reservation {
-  background-color: #fef3c7;
-  color: #92400e;
+.vendor-bank-info {
+  color: #666;
+  font-size: 14px;
 }
 
-.status-approved-Reservation {
-  background-color: #d1fae5;
-  color: #065f46;
-}
-
-.status-rejected-Reservation {
-  background-color: #fee2e2;
-  color: #991b1b;
-}
-
-.status-confirmed-Reservation {
-  background-color: #dbeafe;
-  color: #1e40af;
-}
-
-.status-cancelled-Reservation {
-  background-color: #f3f4f6;
-  color: #374151;
-}
-
-/* 액션 버튼 */
-.action-buttons-table-Reservation {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-}
-
-.action-btn-view-Reservation,
-.action-btn-approve-Reservation,
-.action-btn-reject-Reservation {
-  padding: 0.25rem;
-  border: none;
-  background: none;
-  cursor: pointer;
-  border-radius: 0.25rem;
-  transition: all 0.2s;
-}
-
-.action-btn-view-Reservation {
-  color: #2563eb;
-}
-
-.action-btn-view-Reservation:hover {
-  color: #1d4ed8;
-  background-color: #dbeafe;
-}
-
-.action-btn-approve-Reservation {
-  color: #059669;
-}
-
-.action-btn-approve-Reservation:hover {
-  color: #047857;
-  background-color: #d1fae5;
-}
-
-.action-btn-reject-Reservation {
-  color: #dc2626;
-}
-
-.action-btn-reject-Reservation:hover {
-  color: #b91c1c;
-  background-color: #fee2e2;
-}
-
-/* 예약 관리 스타일 */
-.reservation-id-Reservation {
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: #111827;
-}
-
-.participant-count-Reservation {
-  font-size: 0.875rem;
-  color: #6b7280;
-}
-
-.schedule-info-Reservation,
-.time-info-Reservation {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  font-size: 0.875rem;
-  color: #111827;
-  margin-bottom: 0.125rem;
-}
-
-.time-info-Reservation {
-  color: #6b7280;
-}
-
-.customer-name-Reservation {
-  font-size: 0.875rem;
-  color: #111827;
-  margin-bottom: 0.125rem;
-}
-
-.payment-bank-Reservation {
-  font-size: 0.875rem;
-  color: #6b7280;
-}
-
-.reservation-actions-Reservation {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.btn-confirm-Reservation,
-.btn-cancel-Reservation {
-  padding: 0.25rem 0.75rem;
-  font-size: 0.875rem;
-  border: none;
-  border-radius: 0.25rem;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.btn-confirm-Reservation {
-  background-color: #3b82f6;
-  color: white;
-}
-
-.btn-confirm-Reservation:hover {
-  background-color: #2563eb;
-}
-
-.btn-cancel-Reservation {
-  background-color: #ef4444;
-  color: white;
-}
-
-.btn-cancel-Reservation:hover {
-  background-color: #dc2626;
+.vendor-expanded {
+  background: #f0f8ff !important;
 }
 
 /* 빈 상태 */
-.empty-state-Reservation {
+.vendor-empty-state {
   text-align: center;
-  padding: 2rem;
-  color: #6b7280;
-  font-size: 0.875rem;
+  padding: 40px 20px;
+  color: #666;
+  font-style: italic;
 }
 
-/* 모달 스타일 */
-.modal-overlay-Reservation {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 50;
-  padding: 1rem;
-}
-
-.modal-content-Reservation {
-  background-color: white;
-  border-radius: 0.5rem;
-  padding: 1.5rem;
-  max-width: 48rem;
-  width: 100%;
-  max-height: 80vh;
-  overflow-y: auto;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-}
-
-.modal-header-Reservation {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.modal-title-Reservation {
-  font-size: 1.25rem;
-  font-weight: bold;
-  color: #111827;
-}
-
-.modal-close-Reservation {
-  background: none;
-  border: none;
-  color: #6b7280;
-  cursor: pointer;
-  padding: 0.25rem;
-  border-radius: 0.25rem;
-  transition: all 0.2s;
-}
-
-.modal-close-Reservation:hover {
-  color: #374151;
-  background-color: #f3f4f6;
-}
-
-.modal-body-Reservation {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-/* 상세 정보 그리드 */
-.detail-grid-Reservation {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.5rem;
-}
-
-@media (min-width: 768px) {
-  .detail-grid-Reservation {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-.detail-section-Reservation,
-.detail-section-full-Reservation {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.section-title-Reservation {
-  font-weight: 600;
-  color: #374151;
-  padding-bottom: 0.25rem;
-  border-bottom: 1px solid #e5e7eb;
-  font-size: 0.875rem;
-}
-
-.section-content-Reservation {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.section-content-Reservation p {
-  font-size: 0.875rem;
-  color: #111827;
-}
-
-.label-Reservation {
-  font-weight: 500;
-  color: #374151;
-}
-
-.description-Reservation,
-.location-Reservation,
-.materials-Reservation,
-.experience-Reservation {
-  font-size: 0.875rem;
-  color: #6b7280;
-  line-height: 1.5;
-}
-
-/* 모달 푸터 */
-.modal-footer-Reservation {
-  background-color: #f9fafb;
-  padding: 1rem;
-  border-radius: 0.5rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.footer-info-Reservation {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.submission-date-Reservation {
-  font-size: 0.875rem;
-  color: #6b7280;
-}
-
-.status-info-Reservation {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.875rem;
-  color: #6b7280;
-}
-
-.action-buttons-Reservation {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.btn-reject-Reservation,
-.btn-approve-Reservation {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 0.375rem;
-  font-size: 0.875rem;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.btn-reject-Reservation {
-  background-color: #ef4444;
-  color: white;
-}
-
-.btn-reject-Reservation:hover {
-  background-color: #dc2626;
-}
-
-.btn-approve-Reservation {
-  background-color: #10b981;
-  color: white;
-}
-
-.btn-approve-Reservation:hover {
-  background-color: #059669;
-}
-
-/* 반응형 디자인 */
+/* 반응형 */
 @media (max-width: 768px) {
-  .header-content-Reservation {
-    flex-direction: column;
-    gap: 1rem;
-    align-items: flex-start;
+  .vendor-admin-page {
+    padding: 10px;
   }
-
-  .main-content-Reservation {
-    padding: 1rem;
+  
+  .vendor-admin-table {
+    font-size: 14px;
   }
-
-  .tab-nav-Reservation {
-    gap: 1rem;
-  }
-
-  .search-container-Reservation {
+  
+  .vendor-admin-nav {
     flex-direction: column;
   }
-
-  .modal-content-Reservation {
-    margin: 1rem;
-    padding: 1rem;
+  
+  .vendor-admin-nav-btn {
+    text-align: left;
   }
-
-  .modal-footer-Reservation {
+  
+  .vendor-detail-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .vendor-gathering-filter-section,
+  .vendor-reservation-filter-controls {
     flex-direction: column;
     align-items: flex-start;
   }
-
-  .action-buttons-Reservation {
-    width: 100%;
-    justify-content: flex-end;
+  
+  .vendor-action-buttons {
+    flex-direction: column;
   }
-
-  .table-wrapper-Reservation {
-    overflow-x: scroll;
+  
+  .vendor-btn {
+    margin-bottom: 4px;
+    margin-right: 0;
   }
-
-  .data-table-Reservation {
-    min-width: 800px;
+  
+  .vendor-reservation-table-container {
+    font-size: 12px;
+  }
+  
+  .vendor-admin-table th,
+  .vendor-admin-table td {
+    padding: 8px 4px;
   }
 }
