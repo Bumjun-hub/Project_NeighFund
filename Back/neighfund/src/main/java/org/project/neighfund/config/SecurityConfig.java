@@ -56,6 +56,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/community/admin/**").hasRole("ADMIN") // 모든 admin API에 대한 권한
 
 
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN") // 모든 admin API에 대한 권한
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2

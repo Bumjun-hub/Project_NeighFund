@@ -58,8 +58,12 @@ const MyPosts = () => {
             setParticipatedFunds(myOrders.ok ? await myOrders.json() : []);
             const gatheringsRes = await authenticatedFetch('/api/gatherings/free/myParticipation', { credentials: 'include' });
             setParticipatedGatherings(gatheringsRes.ok ? await gatheringsRes.json() : []);
+            const myReservationsRes = await authenticatedFetch('/api/gatherings/vendor/myPage/reservation', { credentials: 'include' });
+            setMyReservations(myReservationsRes.ok ? await myReservationsRes.json() : []);
+        
+        
         } catch (e) {
-            setMyCommunityPosts([]); setLikedPosts([]); setParticipatedFunds([]);
+            setMyCommunityPosts([]); setLikedPosts([]); setParticipatedFunds([]); setMyReservations([]);
         } finally {
             setLoading(false);
         }
@@ -185,15 +189,61 @@ const MyPosts = () => {
                     </div>
                 )}
                 {activeTab === TAB.CLASS && (
-                    <div>
-                        <h3>예약한 원데이클래스</h3>
-                        <div className="mini-card-list">
-                            {myReservations.length === 0
-                                ? <div>예약 내역이 없습니다.</div>
-                                : myReservations.map(res => <div className="mini-card" key={res.id}>{res.classTitle || res.title}</div>)}
+    <div>
+        <h3>예약한 원데이클래스</h3>
+        <div className="mini-card-list">
+            {myReservations.length === 0
+                ? <div>예약 내역이 없습니다.</div>
+                : myReservations.map((res, index) => (
+                    <div
+                        className="reservation-card"
+                        key={index}
+                    >
+                        {/* 클래스 제목 */}
+                        <div className="reservation-title">
+                            {res.classTitle || "클래스명 없음"}
                         </div>
+                        
+                        {/* 예약 날짜와 시간 */}
+                        <div className="reservation-datetime">
+                            <div className="reservation-date">
+                                📅 {res.date}
+                            </div>
+                            <div className="reservation-time">
+                                🕐 {res.startTime} - {res.endTime}
+                            </div>
+                        </div>
+                        
+                        {/* 인원수와 상태 */}
+                        <div className="reservation-info">
+                            <div className="reservation-participants">
+                                👥 {res.participantCount}명
+                            </div>
+                            <div className={`reservation-status status-${res.status?.toLowerCase()}`}>
+                                {res.status === 'PAID' ? '✅ 결제완료' : 
+                                 res.status === 'PENDING' ? '⏳ 입금대기' :
+                                 res.status === 'CANCELLED' ? '❌ 취소됨' : 
+                                 res.status}
+                            </div>
+                        </div>
+                        
+                        {/* 입금 정보 (PENDING 상태일 때만) */}
+                        {res.status === 'PENDING' && res.paymentBank && (
+                            <div className="payment-info">
+                                <div className="payment-bank">
+                                    🏦 {res.paymentBank}
+                                </div>
+                                <div className="payment-name">
+                                    💳 {res.paymentName}
+                                </div>
+                            </div>
+                        )}
                     </div>
-                )}
+                ))
+            }
+        </div>
+    </div>
+)}
             </div>
         </div>
     );

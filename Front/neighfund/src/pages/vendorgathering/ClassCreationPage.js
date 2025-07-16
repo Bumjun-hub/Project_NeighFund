@@ -93,10 +93,7 @@ const ClassCreationPage = () => {
           <div className="agreement-step">
             <span className="agreement-step-text">세부 정보</span>
           </div>
-          <div className="agreement-step-arrow">{'>'}</div>
-          <div className="agreement-step">
-            <span className="agreement-step-text">스토리 작성</span>
-          </div>
+        
         </div>
 
         {/* 전체 동의 */}

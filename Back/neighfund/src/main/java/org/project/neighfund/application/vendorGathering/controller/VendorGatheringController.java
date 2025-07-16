@@ -100,7 +100,7 @@ public class VendorGatheringController {
     }
 
     // 원데이클래스 삭제
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/gathering/{id}")  // 변경: delete -> gathering
     public ResponseEntity<DeleteResponse> deleteGathering(@PathVariable Long id,
                                                           @AuthenticationPrincipal CustomUserDetails userDetails) {
         Member m = userDetails.getMember();
