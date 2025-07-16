@@ -242,6 +242,48 @@
   transition: background 0.2s;
 }
 
+
+.admin-btn {
+  margin-right: 10px;
+  padding: 6px 12px;
+  font-weight: bold;
+  border-radius: 8px;
+  background: #2a7cff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.admin-btn:hover {
+  background: #1254a1;
+}
+.header-user-profile {
+  display: flex;
+  align-items: center;
+  margin-right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+.header-profile-image {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  margin-right: 5px;
+  object-fit: cover;
+}
+.header-profile-placeholder {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #eee;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 5px;
+  font-size: 1.2rem;
+}
+
 /* 반응형 */
 @media (max-width: 768px) {
   .Header {
