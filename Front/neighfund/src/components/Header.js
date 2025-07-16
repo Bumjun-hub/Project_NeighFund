@@ -11,13 +11,28 @@ const Header = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [userInfo, setUserInfo] = useState(null);
     const [unreadCount, setUnreadCount] = useState(0);
+    const [isAdmin, setIsAdmin] = useState(false);
+
     const navigate = useNavigate();
+
+
+    useEffect(() => {
+        fetch("/api/auth/roleinfo", {
+            credentials: "include"
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.roleName === "ROLE_ADMIN") setIsAdmin(true);
+            })
+            .catch(err => console.error("권한 확인 실패", err));
+    }, []);
+
 
     // ✅ 사용자 인증 상태 확인
     const checkAuth = async () => {
         try {
             console.log('Header: 사용자 인증 상태 확인 중...'); // 디버깅
-            
+
             const response = await fetch('http://localhost:8080/api/auth/mypage', {
                 credentials: 'include'
             });
@@ -25,7 +40,7 @@ const Header = () => {
             if (response.ok) {
                 const userData = await response.json();
                 console.log('Header: 받아온 사용자 데이터:', userData); // 디버깅
-                
+
                 setIsLoggedIn(true);
                 setUserInfo(userData);
             } else {
@@ -119,7 +134,7 @@ const Header = () => {
                 console.error('알림 수 불러오기 실패', err);
             }
         };
-        
+
         if (isLoggedIn) {
             fetchUnreadCount();
         }
@@ -146,16 +161,16 @@ const Header = () => {
             console.log('Header: authChange 이벤트 감지 - 사용자 정보 새로고침');
             checkAuth(); // 사용자 정보 다시 불러오기
         };
-        
+
         const handleProfileUpdate = () => {
             console.log('Header: profileUpdate 이벤트 감지 - 사용자 정보 새로고침');
             checkAuth(); // 프로필 업데이트 시에도 헤더 정보 갱신
         };
-        
+
         // 두 이벤트 모두 감지
         window.addEventListener('authChange', handleAuthChange);
         window.addEventListener('profileUpdate', handleProfileUpdate);
-        
+
         return () => {
             window.removeEventListener('authChange', handleAuthChange);
             window.removeEventListener('profileUpdate', handleProfileUpdate);
@@ -181,67 +196,80 @@ const Header = () => {
                 <Link to="/classlistpage">원데이클래스</Link>
             </nav>
 
-            <nav className="header-right">
-                {isLoggedIn && (
-                    <div className="notification-container">
-                        <button className="notification-bell" onClick={toggleNotifications}>
-                            <IoIosNotificationsOutline size={25} />
-                            {/* ✅ 종 옆 알림 수 뱃지 표시 */}
-                            {unreadCount > 0 && (
-                                <span className="notification-badge">{unreadCount}</span>
-                            )}
-                        </button>
-                        {showNotifications && (
-                            <div className="notification-dropdown">
-                                <div className="notification-header">알림</div>
-                                {notifications.length === 0 ? (
-                                    <div className="notification-empty">새로운 알림이 없습니다.</div>
-                                ) : (
-                                    <ul className="notification-list">
-                                        {notifications.map((n, idx) => (
-                                            <li
-                                                key={n.id || idx}
-                                                className={`notification-item ${n.isRead ? 'read' : ''}`}
-                                                onMouseEnter={() => !n.isRead && handleMarkAsRead(n.id)}
-                                                onClick={() => handleNotificationClick(n)}
-                                                style={{ cursor: 'pointer' }}
-                                            >
-                                                <div className="noti-card">
-                                                    <div className="noti-header">
-                                                        <span className={`noti-type ${n.type?.toLowerCase()}`}>
-                                                            {n.type === "GROUP_BUY_OPEN" && "🛒 공동구매 오픈"}
-                                                            {n.type === "GROUP_BUY_COMPLETED" && "✅ 마감 완료"}
-                                                            {n.type === "GROUP_BUY_CLOSED" && "❌ 마감 실패"}
-                                                            {!["GROUP_BUY_OPEN", "GROUP_BUY_COMPLETED", "GROUP_BUY_CLOSED"].includes(n.type) && "🔔 알림"}
-                                                        </span>
-                                                        {n.createdAt && (
-                                                            <span className="noti-time">
-                                                                {new Date(n.createdAt).toLocaleString()}
-                                                            </span>
-                                                        )}
-                                                    </div>
-                                                    <div className="noti-content">
-                                                        {n.content}
-                                                    </div>
-                                                </div>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                )}
-                            </div>
-                        )}
-                    </div>
-                )}
 
+
+
+            <nav className="header-right">
                 {isLoggedIn ? (
-                    <>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                        {/* 관리자 버튼: 종 왼쪽 */}
+                        {isAdmin && (
+                            <button
+                                className="admin-btn"
+                                onClick={() => navigate('/admin')}
+                                style={{ marginRight: '10px' }}
+                            >
+                                관리자
+                            </button>
+                        )}
+
+                        {/* 종 버튼 및 알림 */}
+                        <div className="notification-container" style={{ marginRight: '10px' }}>
+                            <button className="notification-bell" onClick={toggleNotifications}>
+                                <IoIosNotificationsOutline size={25} />
+                                {unreadCount > 0 && (
+                                    <span className="notification-badge">{unreadCount}</span>
+                                )}
+                            </button>
+                            {showNotifications && (
+                                <div className="notification-dropdown">
+                                    <div className="notification-header">알림</div>
+                                    {notifications.length === 0 ? (
+                                        <div className="notification-empty">새로운 알림이 없습니다.</div>
+                                    ) : (
+                                        <ul className="notification-list">
+                                            {notifications.map((n, idx) => (
+                                                <li
+                                                    key={n.id || idx}
+                                                    className={`notification-item ${n.isRead ? 'read' : ''}`}
+                                                    onMouseEnter={() => !n.isRead && handleMarkAsRead(n.id)}
+                                                    onClick={() => handleNotificationClick(n)}
+                                                    style={{ cursor: 'pointer' }}
+                                                >
+                                                    <div className="noti-card">
+                                                        <div className="noti-header">
+                                                            <span className={`noti-type ${n.type?.toLowerCase()}`}>
+                                                                {n.type === "GROUP_BUY_OPEN" && "🛒 공동구매 오픈"}
+                                                                {n.type === "GROUP_BUY_COMPLETED" && "✅ 마감 완료"}
+                                                                {n.type === "GROUP_BUY_CLOSED" && "❌ 마감 실패"}
+                                                                {!["GROUP_BUY_OPEN", "GROUP_BUY_COMPLETED", "GROUP_BUY_CLOSED"].includes(n.type) && "🔔 알림"}
+                                                            </span>
+                                                            {n.createdAt && (
+                                                                <span className="noti-time">
+                                                                    {new Date(n.createdAt).toLocaleString()}
+                                                                </span>
+                                                            )}
+                                                        </div>
+                                                        <div className="noti-content">
+                                                            {n.content}
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+
+                        {/* 프로필 */}
                         <button className="header-user-profile" onClick={handleProfileClick}>
                             {userInfo?.imageUrl ? (
-                                <img 
+                                <img
                                     src={getProfileImageUrl(userInfo.imageUrl)}
-                                    alt="프로필" 
+                                    alt="프로필"
                                     className="header-profile-image"
-                                    key={userInfo.imageUrl} 
+                                    key={userInfo.imageUrl}
                                 />
                             ) : (
                                 <div className="header-profile-placeholder">
@@ -252,10 +280,12 @@ const Header = () => {
                                 <span className="header-username">{userInfo.username || userInfo.name}님</span>
                             )}
                         </button>
+
+                        {/* 로그아웃 */}
                         <button className="header-logout-btn" onClick={handleLogout}>
                             로그아웃
                         </button>
-                    </>
+                    </div>
                 ) : (
                     <Link to="/login">로그인</Link>
                 )}
