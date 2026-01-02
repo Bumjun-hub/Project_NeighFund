@@ -213,5 +213,8 @@ DB 계정, 포트, 스키마 이름 등은 환경에 맞게 수정 필요
 
 ![](./screenshots/classcreate2.png)
 
-![](./screenshots/classcreate3.png)
+
 > 원데이 클래스 등록 화면 - 일정, 가격, 모집 인원 설정 및 이미지 첨부 가능
+
+![](./screenshots/classcreate3.png)
+> 추후 관리자는 관리자 페이지에서 원데이 클래스 강사의 데이터를 보고 승인 가능
