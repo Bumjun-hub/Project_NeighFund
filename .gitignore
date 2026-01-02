@@ -23,5 +23,7 @@
 hs_err_pid*
 replay_pid*
 
-
-applecation.yml
+# Environment variables
+.env
+.env.*
+application.yml
