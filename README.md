@@ -187,6 +187,7 @@ DB 계정, 포트, 스키마 이름 등은 환경에 맞게 수정 필요
 > 소모임 목록 화면 - 모임 제목, 지역, 모집 인원, 참여 현황 확인 가능
 
 ![소모임 상세](./screenshots/groupdetail.png)
+
 ![](./screenshots/groupdetail2.png)
 > 소모임 상세 화면 - 모임 소개, 일정, 참여 여부 및 상세 정보 확인
 
@@ -208,4 +209,8 @@ DB 계정, 포트, 스키마 이름 등은 환경에 맞게 수정 필요
 > 원데이 클래스 상세 화면 - 클래스 소개, 장소, 시간, 가격 정보 확인 및 신청 가능
 
 ![원데이 클래스 등록](./screenshots/classcreate.png)
+
+![](./screenshots/classcreate2.png)
+
+![](./screenshots/classcreate3.png)
 > 원데이 클래스 등록 화면 - 일정, 가격, 모집 인원 설정 및 이미지 첨부 가능
